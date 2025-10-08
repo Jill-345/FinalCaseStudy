@@ -27,7 +27,7 @@
         android:layout_width="346dp"
         android:layout_height="138dp"
         android:gravity="center"
-        android:text="Lost & Found Online System"
+        android:text="Lost and Found Online System"
         android:textColor="#373636"
         android:textSize="50sp"
         android:textStyle="bold"
@@ -36,7 +36,7 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.367" />
+        app:layout_constraintVertical_bias="0.401" />
 
     <TextView
         android:id="@+id/textView3"
