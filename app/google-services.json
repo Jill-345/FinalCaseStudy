@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "358066613011",
+    "project_id": "lost-and-found-system-1040e",
+    "storage_bucket": "lost-and-found-system-1040e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358066613011:android:87a37e1007931d718388e6",
+        "android_client_info": {
+          "package_name": "com.example.finalcasestudy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSuAiTBGszplNUPYJYwSnogcnSoKOKXhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
