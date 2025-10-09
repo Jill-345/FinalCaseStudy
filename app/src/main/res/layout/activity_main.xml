@@ -11,16 +11,16 @@
         android:id="@+id/textView2"
         android:layout_width="276dp"
         android:layout_height="139dp"
-        android:fontFamily="@font/lora"
+        android:fontFamily="@font/times_new_roman"
         android:text="BPSU"
         android:textColor="#94221e"
-        android:textSize="96sp"
+        android:textSize="98sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.637"
+        app:layout_constraintHorizontal_bias="0.614"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.152" />
+        app:layout_constraintVertical_bias="0.184" />
 
     <TextView
         android:id="@+id/textView"

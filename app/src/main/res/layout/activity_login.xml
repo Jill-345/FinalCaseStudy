@@ -17,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.785"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.286" />
+        app:layout_constraintVertical_bias="0.283" />
 
     <Button
         android:id="@+id/button4"
@@ -27,7 +27,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.556"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.743" />
@@ -36,15 +36,15 @@
         android:id="@+id/textViewResend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="Resend verification email"
         android:textColor="#5170ff"
-        android:textStyle="bold"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@+id/button4"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"
-        app:layout_constraintHorizontal_bias="0.5"/>
+        app:layout_constraintHorizontal_bias="0.546"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button4" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -60,24 +60,24 @@
 
     <TextView
         android:id="@+id/textView7"
-        android:layout_width="212dp"
-        android:layout_height="78dp"
-        android:fontFamily="@font/lora"
+        android:layout_width="209dp"
+        android:layout_height="68dp"
+        android:fontFamily="@font/times_new_roman"
         android:text="BPSU"
         android:textColor="#94221e"
         android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.773"
+        app:layout_constraintHorizontal_bias="0.762"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.197" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="212dp"
         android:layout_height="78dp"
-        android:fontFamily="@font/lora"
+        android:fontFamily="@font/times_new_roman"
         android:text="LOST AND FOUND SYSTEM"
         android:textColor="#94221e"
         android:textSize="24sp"

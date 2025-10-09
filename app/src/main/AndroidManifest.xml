@@ -13,9 +13,23 @@
         android:theme="@style/Theme.FinalCaseStudy"
         tools:replace="android:allowBackup">
         <activity
-            android:name=".LoginActivity"
+            android:name=".FoundReportActivity"
             android:exported="false" />
-        <!-- ✅ Firebase initialization -->
+        <activity
+            android:name=".LostReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LostRepostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SummariesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReportItemActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" /> <!-- ✅ Firebase initialization -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" /> <!-- ✅ Activities -->

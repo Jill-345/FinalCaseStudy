@@ -44,22 +44,22 @@
         android:id="@+id/textView5"
         android:layout_width="212dp"
         android:layout_height="78dp"
-        android:fontFamily="@font/lora"
+        android:fontFamily="@font/times_new_roman"
         android:text="BPSU"
         android:textColor="#94221e"
-        android:textSize="60sp"
+        android:textSize="64sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.763"
+        app:layout_constraintHorizontal_bias="0.768"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.088" />
+        app:layout_constraintVertical_bias="0.099" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="212dp"
         android:layout_height="78dp"
-        android:fontFamily="@font/lora"
+        android:fontFamily="@font/times_new_roman"
         android:text="LOST AND FOUND SYSTEM"
         android:textColor="#94221e"
         android:textSize="24sp"
