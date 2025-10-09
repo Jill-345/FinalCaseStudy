@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "358066613011",
-    "project_id": "lost-and-found-system-1040e",
-    "storage_bucket": "lost-and-found-system-1040e.firebasestorage.app"
+    "project_number": "21369714661",
+    "project_id": "bpsu-lost-and-found-system",
+    "storage_bucket": "bpsu-lost-and-found-system.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:358066613011:android:87a37e1007931d718388e6",
+        "mobilesdk_app_id": "1:21369714661:android:69a32a12d9656fe4f8e10c",
         "android_client_info": {
           "package_name": "com.example.finalcasestudy"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCSuAiTBGszplNUPYJYwSnogcnSoKOKXhg"
+          "current_key": "AIzaSyD8GnpSb010fj_yasMRXYTXOQmY5DrqrdU"
         }
       ],
       "services": {
