@@ -13,6 +13,21 @@
         android:theme="@style/Theme.FinalCaseStudy"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".FoundDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LostDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ItemLostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ItemFoundActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MatchingResultsActivity"
+            android:exported="false" />
+        <activity
             android:name=".FoundReportActivity"
             android:exported="false" />
         <activity

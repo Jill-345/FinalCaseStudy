@@ -1,6 +1,8 @@
 package com.example.finalcasestudy;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +11,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class ReportItemActivity extends AppCompatActivity {
+
+    private Button reportLostBtn, reportFoundBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +23,19 @@ public class ReportItemActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        reportLostBtn = findViewById(R.id.button5);
+        reportFoundBtn = findViewById(R.id.button6);
+
+        reportLostBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(ReportItemActivity.this, LostReportActivity.class);
+            startActivity(intent);
+        });
+
+        reportFoundBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(ReportItemActivity.this, FoundReportActivity.class);
+            startActivity(intent);
         });
     }
 }

@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.editTextText6);
         signInBtn = findViewById(R.id.button4);
         resendEmailText = findViewById(R.id.textViewResend);
-        signUpText = findViewById(R.id.textView9); // Adjust ID if different in your XML
+        signUpText = findViewById(R.id.textView9);
 
         signInBtn.setOnClickListener(v -> loginUser());
         resendEmailText.setOnClickListener(v -> resendVerificationEmail());
