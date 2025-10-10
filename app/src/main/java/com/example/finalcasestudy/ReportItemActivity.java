@@ -14,6 +14,8 @@ public class ReportItemActivity extends AppCompatActivity {
     private Button reportLostBtn, reportFoundBtn;
     private Spinner spinner;
 
+    boolean spinnerInitialized;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,13 +46,11 @@ public class ReportItemActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            boolean firstSelection = true; // To ignore the initial trigger
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Prevent the first auto-trigger when the spinner loads
-                if (firstSelection) {
-                    firstSelection = false;
+                // ignore the initial automatic selection when the spinner first loads
+                if (!spinnerInitialized) {
+                    spinnerInitialized = true;
                     return;
                 }
 
@@ -58,29 +58,36 @@ public class ReportItemActivity extends AppCompatActivity {
 
                 switch (selected) {
                     case "Home":
-                        startActivity(new Intent(ReportItemActivity.this, HomeActivity.class));
+                        openIfNotCurrent(ReportItemActivity.class);
                         break;
-
-                    case "Report Item":
-                        // Do nothing, we’re already here
+                    case "Lost Item":
+                        openIfNotCurrent(LostReportActivity.class);
                         break;
-
                     case "Found Items":
-                        startActivity(new Intent(ReportItemActivity.this, FoundItemsActivity.class));
+                        openIfNotCurrent(FoundReportActivity.class);
                         break;
-
-                    case "Profile":
-                        startActivity(new Intent(ReportItemActivity.this, ProfileActivity.class));
+                    case "Summary":
+                        openIfNotCurrent(SummariesActivity.class);
                         break;
-
                     case "Logout":
-                        finish(); // or handle logout logic
+                        finish();
                         break;
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // nothing
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
+    }
+
+    // Start target Activity only if it's not the current one
+    private void openIfNotCurrent(Class<?> targetActivity) {
+        if (getClass() != targetActivity) {
+            Intent intent = new Intent(this, targetActivity);
+            // Option: avoid stacking duplicate activities — bring existing instance to front
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            // optional: call finish() if you want to remove the current activity from backstack
+        }
+    }
+}
