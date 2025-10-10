@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import android.content.Intent;
+
 
 public class ItemLostActivity extends AppCompatActivity {
 
@@ -20,5 +23,12 @@ public class ItemLostActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
+
+        fabAdd.setOnClickListener(v -> {
+            startActivity(new Intent(this, LostReportActivity.class));
+        });
+
     }
 }
