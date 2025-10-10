@@ -13,9 +13,6 @@
         android:theme="@style/Theme.FinalCaseStudy"
         tools:replace="android:allowBackup">
         <activity
-            android:name=".ResetPasswordActivity"
-            android:exported="false" />
-        <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
@@ -40,9 +37,6 @@
             android:name=".LostReportActivity"
             android:exported="false" />
         <activity
-            android:name=".LostRepostActivity"
-            android:exported="false" />
-        <activity
             android:name=".SummariesActivity"
             android:exported="false" />
         <activity
@@ -54,9 +48,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" /> <!-- ✅ Activities -->
-        <activity
-            android:name=".login"
-            android:exported="true" />
         <activity
             android:name=".SignupActivity"
             android:exported="true" />
