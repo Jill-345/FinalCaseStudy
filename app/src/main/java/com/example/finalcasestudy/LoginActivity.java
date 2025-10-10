@@ -1,5 +1,6 @@
 package com.example.finalcasestudy;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -20,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText emailField, passwordField;
     private Button signInBtn;
-    private TextView resendEmailText, signUpText;
+    private TextView resendEmailText, signUpText, forgotPasswordText;
     private FirebaseAuth mAuth;
 
     @Override
@@ -41,13 +42,14 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.editTextText6);
         signInBtn = findViewById(R.id.button4);
         resendEmailText = findViewById(R.id.textViewResend);
-        signUpText = findViewById(R.id.textView9);
+        forgotPasswordText = findViewById(R.id.textView9);
 
         signInBtn.setOnClickListener(v -> loginUser());
         resendEmailText.setOnClickListener(v -> resendVerificationEmail());
-        signUpText.setOnClickListener(v ->
-                startActivity(new Intent(this, SignupActivity.class))
-        );
+        forgotPasswordText.setOnClickListener(v -> showForgotPasswordDialog());
+
+        forgotPasswordText.setOnClickListener(view ->
+                startActivity(new Intent(this, ForgotPasswordActivity.class)));
     }
 
     private void loginUser() {
@@ -96,5 +98,36 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Please log in first to resend verification email.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showForgotPasswordDialog() {
+        final EditText resetMail = new EditText(this);
+        resetMail.setHint("Enter your BPSU email");
+
+        new AlertDialog.Builder(this)
+                .setTitle("Reset Password?")
+                .setMessage("Enter your @bpsu.edu.ph email to receive a reset link.")
+                .setView(resetMail)
+                .setPositiveButton("Send", (dialog, which) -> {
+                    String email = resetMail.getText().toString().trim();
+
+                    if (!email.endsWith("@bpsu.edu.ph")) {
+                        Toast.makeText(this, "Only @bpsu.edu.ph emails allowed.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (email.isEmpty()) {
+                        Toast.makeText(this, "Please enter your email.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    mAuth.sendPasswordResetEmail(email)
+                            .addOnSuccessListener(unused ->
+                                    Toast.makeText(this, "Reset link sent to your email.", Toast.LENGTH_LONG).show())
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create().show();
     }
 }
