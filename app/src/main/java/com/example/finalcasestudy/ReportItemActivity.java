@@ -2,40 +2,61 @@ package com.example.finalcasestudy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-
-import androidx.activity.EdgeToEdge;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class ReportItemActivity extends AppCompatActivity {
 
-    private Button reportLostBtn, reportFoundBtn;
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_report_item);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
-        reportLostBtn = findViewById(R.id.button5);
-        reportFoundBtn = findViewById(R.id.button6);
+        setContentView(R.layout.activity_report_item); // adjust to your XML filename
 
-        reportLostBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(ReportItemActivity.this, LostReportActivity.class);
-            startActivity(intent);
-        });
+        spinner = findViewById(R.id.spinner);
 
-        reportFoundBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(ReportItemActivity.this, FoundReportActivity.class);
-            startActivity(intent);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.menu_items,
+                android.R.layout.simple_spinner_item
+        );
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+
+                switch (selected) {
+                    case "Home":
+                        startActivity(new Intent(ReportItemActivity.this, ReportItemActivity.class));
+                        break;
+                    case "Lost Items":
+                        startActivity(new Intent(ReportItemActivity.this, ItemLostActivity.class));
+                        break;
+                    case "Found Items":
+                        startActivity(new Intent(ReportItemActivity.this, ItemFoundActivity.class));
+                        break;
+                    case "Summary":
+                        startActivity(new Intent(ReportItemActivity.this, SummariesActivity.class));
+                        break;
+                    case "Logout":
+                        finish();
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 }
