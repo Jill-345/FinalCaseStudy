@@ -37,16 +37,17 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        // ✅ Link XML components
         emailField = findViewById(R.id.editTextText5);
         passwordField = findViewById(R.id.editTextText6);
         signInBtn = findViewById(R.id.button4);
         resendEmailText = findViewById(R.id.textViewResend);
-        signUpText = findViewById(R.id.textView9); // adjust ID if needed
+        signUpText = findViewById(R.id.textView9); // Adjust ID if different in your XML
 
         signInBtn.setOnClickListener(v -> loginUser());
         resendEmailText.setOnClickListener(v -> resendVerificationEmail());
-        signUpText.setOnClickListener(v -> startActivity(new Intent(this, SignupActivity.class)));
+        signUpText.setOnClickListener(v ->
+                startActivity(new Intent(this, SignupActivity.class))
+        );
     }
 
     private void loginUser() {
@@ -58,9 +59,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // ✅ Restrict login to @bpsu.edu.ph emails only
         if (!email.endsWith("@bpsu.edu.ph")) {
-            Toast.makeText(this, "Only @bpsu.edu.ph accounts can log in.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please use your BPSU email address.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -70,7 +70,9 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null && user.isEmailVerified()) {
                             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(this, MainActivity.class));
+
+                            Intent intent = new Intent(this, ReportItemActivity.class);
+                            startActivity(intent);
                             finish();
                         } else {
                             Toast.makeText(this, "Please verify your email before logging in.", Toast.LENGTH_LONG).show();
