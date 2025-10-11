@@ -98,6 +98,7 @@
         android:id="@+id/button3"
         android:layout_width="224dp"
         android:layout_height="50dp"
+        android:backgroundTint="#940202"
         android:text="Create account"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
