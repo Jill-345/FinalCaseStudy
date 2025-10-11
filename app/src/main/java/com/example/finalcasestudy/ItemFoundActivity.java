@@ -24,7 +24,7 @@ public class ItemFoundActivity extends AppCompatActivity {
             return insets;
         });
 
-        FloatingActionButton fabAddFound = findViewById(R.id.floatingActionButton);
+        FloatingActionButton fabAddFound = findViewById(R.id.floatingActionButton2);
 
         fabAddFound.setOnClickListener(v -> {
             startActivity(new Intent(this, LostReportActivity.class));
