@@ -25,7 +25,7 @@ public class FoundReportActivity extends AppCompatActivity {
             return insets;
         });
 
-        reportFoundBtn = findViewById(R.id.button10);
+        reportFoundBtn = findViewById(R.id.button11);
 
         reportFoundBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, MatchingResultsActivity.class);
