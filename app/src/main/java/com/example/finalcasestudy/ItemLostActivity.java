@@ -97,8 +97,6 @@ public class ItemLostActivity extends AppCompatActivity {
         });
     }
 
-        //cafjimenez24@bpsu.edu.ph
-
     // Start target Activity only if it's not the current one
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
