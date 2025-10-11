@@ -61,10 +61,10 @@ public class ReportItemActivity extends AppCompatActivity {
                         openIfNotCurrent(ReportItemActivity.class);
                         break;
                     case "Lost Item":
-                        openIfNotCurrent(LostReportActivity.class);
+                        openIfNotCurrent(ItemLostActivity.class);
                         break;
                     case "Found Items":
-                        openIfNotCurrent(FoundReportActivity.class);
+                        openIfNotCurrent(ItemFoundActivity.class);
                         break;
                     case "Summary":
                         openIfNotCurrent(SummariesActivity.class);
