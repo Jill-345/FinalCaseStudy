@@ -2,7 +2,7 @@
     <string name="app_name">FinalCaseStudy</string>
     <string-array name="menu_items">
         <item>Home</item>
-        <item>Lost Item</item>
+        <item>Lost Items</item>
         <item>Found Items</item>
         <item>Summary</item>
         <item>Logout</item>
