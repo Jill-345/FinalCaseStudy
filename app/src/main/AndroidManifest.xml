@@ -13,6 +13,9 @@
         android:theme="@style/Theme.FinalCaseStudy"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".ItemFoundFrame"
+            android:exported="false" />
+        <activity
             android:name=".ItemLostFrame"
             android:exported="false" />
         <activity

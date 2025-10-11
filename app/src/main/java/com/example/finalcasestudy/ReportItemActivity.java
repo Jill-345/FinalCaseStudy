@@ -20,7 +20,7 @@ public class ReportItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_report_item); // adjust to your XML filename
+        setContentView(R.layout.activity_report_item);
 
         spinner = findViewById(R.id.spinner);
         reportLostBtn = findViewById(R.id.button5);
@@ -48,7 +48,6 @@ public class ReportItemActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // ignore the initial automatic selection when the spinner first loads
                 if (!spinnerInitialized) {
                     spinnerInitialized = true;
                     return;
@@ -60,7 +59,7 @@ public class ReportItemActivity extends AppCompatActivity {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
                         break;
-                    case "Lost Item":
+                    case "Lost Items":
                         openIfNotCurrent(ItemLostActivity.class);
                         break;
                     case "Found Items":
@@ -73,21 +72,27 @@ public class ReportItemActivity extends AppCompatActivity {
                         finish();
                         break;
                 }
+
+                // 👇 reset the spinner to prevent being "stuck"
+                spinner.setSelection(0);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 
+    //cafjimenez24@bpsu.edu.ph
+
     // Start target Activity only if it's not the current one
     private void openIfNotCurrent(Class<?> targetActivity) {
-        if (getClass() != targetActivity) {
+        if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
-            // Option: avoid stacking duplicate activities — bring existing instance to front
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            // These flags prevent duplicate screens from stacking
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            // optional: call finish() if you want to remove the current activity from backstack
+            overridePendingTransition(0, 0);
         }
     }
 }
