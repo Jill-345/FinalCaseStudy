@@ -28,7 +28,7 @@ public class LostReportActivity extends AppCompatActivity {
         reportLostBtn = findViewById(R.id.button9);
 
         reportLostBtn.setOnClickListener (view -> {
-            Intent intent = new Intent(this, MatchingResultsActivity.class);
+            Intent intent = new Intent(this, FoundDetailsActivity.class);
             startActivity(intent);
         });
     }

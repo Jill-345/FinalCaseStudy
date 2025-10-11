@@ -31,7 +31,7 @@
             android:textSize="13sp" />
 
         <RadioButton
-            android:id="@+id/radioUnlaimed"
+            android:id="@+id/radioUnclaimed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleX="0.9"
@@ -108,23 +108,49 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
 
-    <!-- Lost Item Details Table -->
+    <!-- 🟣 FrameLayout: Image Section -->
+    <FrameLayout
+        android:id="@+id/frameItemImage"
+        android:layout_width="161dp"
+        android:layout_height="145dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="#D5C5C5"
+        app:layout_constraintBottom_toTopOf="@+id/tableLostDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView18">
+
+        <ImageView
+            android:id="@+id/ivItemImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Item Image"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/ivPlaceholder"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:contentDescription="No Image"
+            android:src="@drawable/plus_placeholder"
+            app:tint="#FFFFFF" />
+    </FrameLayout>
+
+    <!-- 🟣 Lost Item Details Table -->
     <TableLayout
         android:id="@+id/tableLostDetails"
         android:layout_width="388dp"
         android:layout_height="247dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:background="#000000"
         android:padding="0.5dp"
         android:stretchColumns="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintTop_toBottomOf="@id/frameItemImage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView18"
-        app:layout_constraintVertical_bias="0.441">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Rows 1–7 same as before -->
         <TableRow>
             <TextView
                 android:background="@drawable/cell_border"
@@ -132,6 +158,7 @@
                 android:text="Item Name:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvItemName"
                 android:background="@drawable/cell_border"
@@ -145,6 +172,7 @@
                 android:text="Description:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvDescription"
                 android:background="@drawable/cell_border"
@@ -158,6 +186,7 @@
                 android:text="Category:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvCategory"
                 android:background="@drawable/cell_border"
@@ -171,6 +200,7 @@
                 android:text="Owner:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvOwner"
                 android:background="@drawable/cell_border"
@@ -210,6 +240,7 @@
                 android:text="Location of Loss:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvLocationLoss"
                 android:background="@drawable/cell_border"
@@ -218,22 +249,20 @@
 
     </TableLayout>
 
-    <!-- 🟣 NEW SECTION: "Claims" header and 3-column table -->
+    <!-- 🟣 Claims Section -->
 
     <TextView
         android:id="@+id/textViewClaimsHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="sans-serif-medium"
         android:text="Claims"
         android:textColor="#000000"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.045"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.815" />
+        app:layout_constraintTop_toBottomOf="@id/tableLostDetails" />
 
     <TableLayout
         android:id="@+id/tableClaims"
@@ -243,16 +272,11 @@
         android:background="#000000"
         android:padding="0.5dp"
         android:stretchColumns="*"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewClaimsHeader"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Header Row -->
         <TableRow>
-
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
@@ -266,7 +290,6 @@
                 android:text="Status"
                 android:textColor="#000000"
                 android:textStyle="bold" />
-
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
@@ -275,9 +298,7 @@
                 android:textStyle="bold" />
         </TableRow>
 
-        <!-- Data Row -->
         <TableRow>
-
             <TextView
                 android:id="@+id/tvClaimant"
                 android:background="@drawable/cell_border"
@@ -295,6 +316,7 @@
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:textColor="#000000" />
+
         </TableRow>
     </TableLayout>
 
