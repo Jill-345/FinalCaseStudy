@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:drawable/editbox_background"
     tools:context=".LostReportActivity">
 
     <TextView
@@ -102,7 +103,7 @@
         app:layout_constraintVertical_bias="0.77">
 
         <LinearLayout
-            android:layout_width="150dp"
+            android:layout_width="135dp"
             android:layout_height="335dp"
             android:orientation="vertical">
 
@@ -178,21 +179,25 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="253dp"
-            android:layout_height="335dp"
+            android:layout_width="262dp"
+            android:layout_height="336dp"
             android:orientation="vertical">
 
             <Spinner
                 android:id="@+id/spinner5"
                 android:layout_width="match_parent"
-                android:layout_height="48dp" />
+                android:layout_height="48dp"
+                android:background="@android:drawable/editbox_background"
+                android:dropDownWidth="wrap_content"
+                android:spinnerMode="dropdown" />
 
             <EditText
                 android:id="@+id/editTextTextMultiLine2"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:background="@android:drawable/editbox_background_normal"
                 android:ems="10"
-                android:gravity="start|top"
+                android:gravity="center|start"
                 android:hint="Item Name"
                 android:inputType="textMultiLine" />
 
@@ -200,8 +205,9 @@
                 android:id="@+id/editTextTextMultiLine3"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:background="@android:drawable/editbox_background"
                 android:ems="10"
-                android:gravity="start|top"
+                android:gravity="center|start"
                 android:hint="Description"
                 android:inputType="textMultiLine" />
 
@@ -209,8 +215,9 @@
                 android:id="@+id/editTextTextMultiLine4"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:background="@android:drawable/editbox_background"
                 android:ems="10"
-                android:gravity="start|top"
+                android:gravity="center|start"
                 android:hint="Finder Name"
                 android:inputType="textMultiLine" />
 
@@ -218,8 +225,9 @@
                 android:id="@+id/editTextTextMultiLine5"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:background="@android:drawable/editbox_background"
                 android:ems="10"
-                android:gravity="start|top"
+                android:gravity="center|start"
                 android:hint="Contact Number"
                 android:inputType="textMultiLine" />
 
@@ -227,8 +235,9 @@
                 android:id="@+id/editTextTextMultiLine6"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:background="@android:drawable/editbox_background"
                 android:ems="10"
-                android:gravity="start|top"
+                android:gravity="center|start"
                 android:hint="Date Found"
                 android:inputType="textMultiLine" />
 
@@ -236,8 +245,9 @@
                 android:id="@+id/editTextTextMultiLine7"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:background="@android:drawable/editbox_background"
                 android:ems="10"
-                android:gravity="start|top"
+                android:gravity="center|start"
                 android:hint="Location Found"
                 android:inputType="textMultiLine" />
         </LinearLayout>
