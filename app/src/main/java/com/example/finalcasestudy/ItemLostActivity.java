@@ -24,7 +24,7 @@ public class ItemLostActivity extends AppCompatActivity {
             return insets;
         });
 
-        FloatingActionButton fabAddLost = findViewById(R.id.fabAdd);
+        FloatingActionButton fabAddLost = findViewById(R.id.floatingActionButton2);
 
         fabAddLost.setOnClickListener(v -> {
             startActivity(new Intent(this, LostReportActivity.class));
