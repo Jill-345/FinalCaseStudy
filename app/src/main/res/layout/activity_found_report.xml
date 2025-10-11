@@ -80,7 +80,7 @@
         android:layout_height="50dp"
         android:backgroundTint="#940202"
         android:backgroundTintMode="add"
-        android:text="Report Lost Item"
+        android:text="Report Found Item"
         android:textSize="18sp"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
