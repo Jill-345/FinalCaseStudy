@@ -13,10 +13,10 @@
         android:theme="@style/Theme.FinalCaseStudy"
         tools:replace="android:allowBackup">
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".FoundDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".FoundDetailsActivity"
+            android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".LostDetailsActivity"

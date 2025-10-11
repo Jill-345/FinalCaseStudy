@@ -5,4 +5,231 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LostDetailsActivity"/>
+    tools:context=".LostDetailsActivity">
+
+    <TextView
+        android:id="@+id/textViewHeader"
+        android:layout_width="284dp"
+        android:layout_height="35dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Lost Item Details"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.165" />
+
+    <TextView
+        android:id="@+id/textViewBanner"
+        android:layout_width="417dp"
+        android:layout_height="101dp"
+        android:layout_marginBottom="5dp"
+        android:background="#e7dedc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/imageViewLogo"
+        android:layout_width="44dp"
+        android:layout_height="85dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.043"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/bataan_peninsula_state_university_logo" />
+
+    <TextView
+        android:id="@+id/textViewUniversity"
+        android:layout_width="279dp"
+        android:layout_height="28dp"
+        android:fontFamily="@font/times_new_roman"
+        android:text="Bataan Peninsula State University"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.045" />
+
+    <Spinner
+        android:id="@+id/spinnerFilter"
+        android:layout_width="98dp"
+        android:layout_height="55dp"
+        android:scrollbarSize="4dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.996"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
+
+    <!-- Lost Item Details Table -->
+    <TableLayout
+        android:id="@+id/tableLostDetails"
+        android:layout_width="388dp"
+        android:layout_height="247dp"
+        android:layout_marginTop="24dp"
+        android:background="#000000"
+        android:padding="0.5dp"
+        android:stretchColumns="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewHeader"
+        app:layout_constraintVertical_bias="0.441">
+
+        <!-- Row 1 -->
+        <TableRow>
+            <TextView
+                android:id="@+id/textViewItemNameLabel"
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Item Name:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textViewItemName"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+
+        <!-- Row 2 -->
+        <TableRow>
+            <TextView
+                android:id="@+id/textViewDescriptionLabel"
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Description:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textViewDescription"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+
+        <!-- Row 3 -->
+        <TableRow>
+            <TextView
+                android:id="@+id/textViewCategoryLabel"
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Category:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textViewCategory"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+
+        <!-- Row 4 -->
+        <TableRow>
+            <TextView
+                android:id="@+id/textViewOwnerLabel"
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Owner:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textViewOwner"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+
+        <!-- Row 5 -->
+        <TableRow>
+            <TextView
+                android:id="@+id/textViewContactLabel"
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Contact Number:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textViewContact"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+
+        <!-- Row 6 -->
+        <TableRow>
+            <TextView
+                android:id="@+id/textViewDateLossLabel"
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Date of Loss:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textViewDateLoss"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+
+        <!-- Row 7 -->
+        <TableRow>
+            <TextView
+                android:id="@+id/textViewLocationLossLabel"
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Location of Loss:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textViewLocationLoss"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+    </TableLayout>
+
+    <!-- RadioGroup -->
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tableLostDetails"
+        app:layout_constraintVertical_bias="0.663">
+
+        <RadioButton
+            android:id="@+id/radioFound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
+            android:scaleX="0.9"
+            android:scaleY="0.9"
+            android:text="Found"
+            android:textColor="#000000"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/radioNotFound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="0.9"
+            android:scaleY="0.9"
+            android:text="Not Found"
+            android:textColor="#000000"
+            android:textSize="13sp" />
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

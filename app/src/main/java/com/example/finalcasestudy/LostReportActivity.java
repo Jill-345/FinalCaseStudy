@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class LostReportActivity extends AppCompatActivity {
 
     private Button reportLostBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
