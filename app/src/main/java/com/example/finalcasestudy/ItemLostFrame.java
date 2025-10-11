@@ -7,35 +7,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import android.content.Intent;
-
-
-public class ItemLostActivity extends AppCompatActivity {
+public class ItemLostFrame extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_item_lost);
+        setContentView(R.layout.activity_item_lost_frame);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        FloatingActionButton fabAddLost = findViewById(R.id.floatingActionButton2);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-
-        fabAddLost.setOnClickListener(v -> {
-            startActivity(new Intent(this, LostReportActivity.class));
-        });
-
-
     }
 }
