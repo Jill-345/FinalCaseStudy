@@ -90,7 +90,7 @@ public class FoundReportActivity extends AppCompatActivity {
 
     private void uploadImage() {
         MediaManager.get().upload(imagePath)
-                .option("folder", "cloudinarysample") // 👈 Folder name in Cloudinary
+                .option("folder", "Found Items Report") // 👈 Folder name in Cloudinary
                 .option("public_id", "image_" + System.currentTimeMillis())
                 .callback(new UploadCallback() {
                     @Override
