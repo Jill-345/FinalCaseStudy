@@ -9,7 +9,7 @@
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp"
     android:backgroundTint="#FFFFFF"
-    tools:context=".MatchingResultLostFrame">
+    tools:context=".MatchingResultFoundFrame">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,13 +1,13 @@
 package com.example.finalcasestudy;
 
-public class MatchingResultLostData{
+public class MatchingResultFoundData{
     private String name;
     private String date;
 
-    public MatchingResultLostData() {
+    public MatchingResultFoundData() {
     }
 
-    public MatchingResultLostData(String name, String date) {
+    public MatchingResultFoundData(String name, String date) {
         this.name = name;
         this.date = date;
     }

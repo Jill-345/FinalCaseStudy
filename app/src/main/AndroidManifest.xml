@@ -13,6 +13,12 @@
         android:theme="@style/Theme.FinalCaseStudy"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".MatchingResultFoundFrame"
+            android:exported="false" />
+        <activity
+            android:name=".MatchingResultFound"
+            android:exported="false" />
+        <activity
             android:name=".MatchingResultLostFrame"
             android:exported="false" />
         <activity

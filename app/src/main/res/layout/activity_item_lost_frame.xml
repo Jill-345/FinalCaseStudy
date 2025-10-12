@@ -21,22 +21,16 @@
             android:layout_height="200dp"
             android:background="#D5C5C5">
 
+            <!-- Plus Icon for empty state -->
             <ImageView
                 android:id="@+id/imageview2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:contentDescription="Item Image"/>
-
-            <!-- Plus Icon for empty state -->
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
                 android:src="@drawable/plus_placeholder"
-                android:contentDescription="No Image"
-                app:tint="#FFFFFF" />
+                android:contentDescription="Item Image"
+                android:scaleType="centerCrop" />
+
+
 
         </FrameLayout>
 

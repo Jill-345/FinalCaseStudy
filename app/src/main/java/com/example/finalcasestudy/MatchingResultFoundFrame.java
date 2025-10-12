@@ -1,8 +1,6 @@
 package com.example.finalcasestudy;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,26 +8,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class LostReportActivity extends AppCompatActivity {
-
-    private Button reportLostBtn;
+public class MatchingResultFoundFrame extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_lost_report);
+        setContentView(R.layout.activity_matching_result_found_frame);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
-        });
-
-        reportLostBtn = findViewById(R.id.button9);
-
-        reportLostBtn.setOnClickListener (view -> {
-            Intent intent = new Intent(this, MatchingResultLost.class);
-            startActivity(intent);
         });
     }
 }

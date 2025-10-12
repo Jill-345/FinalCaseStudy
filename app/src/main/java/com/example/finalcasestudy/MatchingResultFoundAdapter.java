@@ -11,26 +11,26 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-//MatchingResultLostAdapter
-public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.ViewHolder> {
+
+public class MatchingResultFoundAdapter extends RecyclerView.Adapter<MatchingResultFoundAdapter.ViewHolder> {
 
     private Context context;
-    private List<ItemFoundData> itemList;
+    private List<MatchingResultFoundData> itemList;
 
-    public ItemFoundAdapter(Context context, List<ItemFoundData> itemList) {
+    public MatchingResultFoundAdapter(Context context, List<MatchingResultFoundData> itemList) {
         this.itemList = itemList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.activity_item_found_frame, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_matching_result_found_frame, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ItemFoundData item = itemList.get(position);
+        MatchingResultFoundData item = itemList.get(position);
         holder.tvItemName.setText(item.getName());
         holder.tvDate.setText(item.getDate());
     }
