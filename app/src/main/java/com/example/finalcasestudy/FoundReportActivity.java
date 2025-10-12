@@ -65,16 +65,16 @@ public class FoundReportActivity extends AppCompatActivity {
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
 
+        // Select image
         imageView.setOnClickListener(v -> requestPermissions());
 
+        // Report button
         reportFoundBtn.setOnClickListener(v -> {
             if (imagePath != null) {
                 uploadImage();
             } else {
                 Toast.makeText(this, "Please select an image first!", Toast.LENGTH_SHORT).show();
             }
-            Intent intent = new Intent(this, MatchingResultFound.class);
-            startActivity(intent);
         });
     }
 
@@ -91,14 +91,14 @@ public class FoundReportActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
+        Toast.makeText(this, "Uploading image...", Toast.LENGTH_SHORT).show();
+
         MediaManager.get().upload(imagePath)
                 .option("folder", "Found Items Report")
                 .option("public_id", "image_" + System.currentTimeMillis())
                 .callback(new UploadCallback() {
                     @Override
-                    public void onStart(String requestId) {
-                        Toast.makeText(FoundReportActivity.this, "Uploading image...", Toast.LENGTH_SHORT).show();
-                    }
+                    public void onStart(String requestId) { }
 
                     @Override
                     public void onProgress(String requestId, long bytes, long totalBytes) { }
@@ -125,9 +125,12 @@ public class FoundReportActivity extends AppCompatActivity {
         String itemName = itemNameInput.getText().toString().trim();
         String description = descInput.getText().toString().trim();
         String location = locationFoundInput.getText().toString().trim();
+        String finderName = finderInput.getText().toString().trim();
+        String phoneNumber = numberInput.getText().toString().trim();
+        String dateFound = dateFoundInput.getText().toString().trim();
 
         if (itemName.isEmpty() || description.isEmpty() || location.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -135,6 +138,9 @@ public class FoundReportActivity extends AppCompatActivity {
         itemData.put("itemName", itemName);
         itemData.put("description", description);
         itemData.put("location", location);
+        itemData.put("finderName", finderName);
+        itemData.put("phoneNumber", phoneNumber);
+        itemData.put("dateFound", dateFound);
         itemData.put("imageUrl", imageUrl);
         itemData.put("timestamp", System.currentTimeMillis());
 
@@ -142,10 +148,21 @@ public class FoundReportActivity extends AppCompatActivity {
                 .add(itemData)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(FoundReportActivity.this, "Item saved to Firestore!", Toast.LENGTH_SHORT).show();
+
+                    // Clear inputs
                     itemNameInput.setText("");
                     descInput.setText("");
+                    finderInput.setText("");
+                    numberInput.setText("");
+                    dateFoundInput.setText("");
                     locationFoundInput.setText("");
                     imageView.setImageResource(0);
+
+                    // Go to MatchingResultFound Activity
+                    Intent intent = new Intent(FoundReportActivity.this, MatchingResultFound.class);
+                    intent.putExtra("imageUrl", imageUrl); // Pass uploaded image URL
+                    startActivity(intent);
+                    finish(); // Optional: close this activity
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(FoundReportActivity.this, "Failed to save data: " + e.getMessage(), Toast.LENGTH_LONG).show();
