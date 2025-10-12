@@ -89,6 +89,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.957" />
 
+
+    <ImageView
+        android:id="@+id/ivItemImage"
+        android:layout_width="161dp"
+        android:layout_height="145dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Item Image"
+        android:scaleType="centerCrop"
+        android:src="@drawable/plus_placeholder"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.246"
+        app:tint="#9E1111" />
+
     <LinearLayout
         android:layout_width="377dp"
         android:layout_height="352dp"
@@ -106,16 +124,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView41"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center|start"
-                android:text="Item Name:"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/textView48"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -126,6 +134,16 @@
                 android:textStyle="bold"
                 tools:layout_editor_absoluteX="30dp"
                 tools:layout_editor_absoluteY="458dp" />
+
+            <TextView
+                android:id="@+id/textView41"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center|start"
+                android:text="Item Name:"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView42"
