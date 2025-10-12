@@ -73,6 +73,8 @@ public class FoundReportActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Please select an image first!", Toast.LENGTH_SHORT).show();
             }
+            Intent intent = new Intent(this, MatchingResultFound.class);
+            startActivity(intent);
         });
     }
 
@@ -90,7 +92,7 @@ public class FoundReportActivity extends AppCompatActivity {
 
     private void uploadImage() {
         MediaManager.get().upload(imagePath)
-                .option("folder", "Found Items Report") // 👈 Folder name in Cloudinary
+                .option("folder", "Found Items Report")
                 .option("public_id", "image_" + System.currentTimeMillis())
                 .callback(new UploadCallback() {
                     @Override
