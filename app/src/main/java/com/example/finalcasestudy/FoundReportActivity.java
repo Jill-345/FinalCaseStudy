@@ -28,7 +28,7 @@ public class FoundReportActivity extends AppCompatActivity {
         reportFoundBtn = findViewById(R.id.button11);
 
         reportFoundBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(this, MatchingResultsActivity.class);
+            Intent intent = new Intent(this, MatchingResultLost.class);//Found dapat to
             startActivity(intent);
         });
 

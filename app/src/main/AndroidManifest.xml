@@ -13,6 +13,9 @@
         android:theme="@style/Theme.FinalCaseStudy"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".MatchingResultLostFrame"
+            android:exported="false" />
+        <activity
             android:name=".ItemFoundFrame"
             android:exported="false" />
         <activity
@@ -34,13 +37,13 @@
             android:name=".ItemFoundActivity"
             android:exported="false" />
         <activity
-            android:name=".MatchingResultsActivity"
-            android:exported="false" />
-        <activity
             android:name=".FoundReportActivity"
             android:exported="false" />
         <activity
             android:name=".LostReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MatchingResultLost"
             android:exported="false" />
         <activity
             android:name=".SummariesActivity"
