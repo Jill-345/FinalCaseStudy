@@ -7,6 +7,21 @@
     android:layout_height="match_parent"
     tools:context=".FoundReportActivity">
 
+    <Button
+        android:id="@+id/button10"
+        android:layout_width="174dp"
+        android:layout_height="42dp"
+        android:backgroundTint="#940202"
+        android:backgroundTintMode="add"
+        android:text="Upload Image"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.417" />
+
     <TextView
         android:id="@+id/textView24"
         android:layout_width="wrap_content"
@@ -73,6 +88,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.027" />
 
+
     <Button
         android:id="@+id/button11"
         android:layout_width="224dp"
@@ -84,16 +100,15 @@
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.957" />
-
+        app:layout_constraintVertical_bias="0.998" />
 
     <ImageView
         android:id="@+id/ivItemImage"
-        android:layout_width="161dp"
-        android:layout_height="145dp"
+        android:layout_width="149dp"
+        android:layout_height="129dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="Item Image"
@@ -113,9 +128,10 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.791">
+        app:layout_constraintVertical_bias="0.887">
 
         <LinearLayout
             android:id="@+id/linearLayout2"

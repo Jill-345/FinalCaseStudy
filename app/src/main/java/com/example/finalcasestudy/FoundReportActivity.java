@@ -33,7 +33,9 @@ public class FoundReportActivity extends AppCompatActivity {
 
     private static final int IMAGE_REQ = 1;
     private Uri imagePath;
-    private Button reportFoundBtn;
+    private String uploadedImageUrl = null;
+
+    private Button uploadImageBtn, reportFoundBtn;
     private ImageView imageView;
     private EditText itemNameInput, descInput, finderInput, numberInput, dateFoundInput, locationFoundInput;
 
@@ -44,13 +46,16 @@ public class FoundReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_found_report);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        reportFoundBtn = findViewById(R.id.button11);
+        // UI initialization
+        uploadImageBtn = findViewById(R.id.button10); // Upload to Cloudinary
+        reportFoundBtn = findViewById(R.id.button11); // Save details + go to MatchingResultFound
         imageView = findViewById(R.id.ivItemImage);
         itemNameInput = findViewById(R.id.editTextTextMultiLine);
         descInput = findViewById(R.id.editTextTextMultiLine8);
@@ -62,22 +67,49 @@ public class FoundReportActivity extends AppCompatActivity {
         // Initialize Cloudinary
         initConfig();
 
-        // Initialize Firebase
+        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Select image
+        // ImageView click → select image
         imageView.setOnClickListener(v -> requestPermissions());
 
-        // Report button
-        reportFoundBtn.setOnClickListener(v -> {
-            if (imagePath != null) {
-                uploadImage();
+        // Button 10 → Upload to Cloudinary only
+        uploadImageBtn.setOnClickListener(v -> {
+            if (imagePath == null) {
+                Toast.makeText(this, "Please select an image first.", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Please select an image first!", Toast.LENGTH_SHORT).show();
+                uploadImageToCloudinary();
             }
+        });
+
+        // Button 11 → Save to Firestore (only if image uploaded + all details complete)
+        reportFoundBtn.setOnClickListener(v -> {
+            if (uploadedImageUrl == null) {
+                Toast.makeText(this, "Please upload the image first.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String itemName = itemNameInput.getText().toString().trim();
+            String description = descInput.getText().toString().trim();
+            String finder = finderInput.getText().toString().trim();
+            String number = numberInput.getText().toString().trim();
+            String dateFound = dateFoundInput.getText().toString().trim();
+            String location = locationFoundInput.getText().toString().trim();
+
+            if (itemName.isEmpty() || description.isEmpty() || finder.isEmpty()
+                    || number.isEmpty() || dateFound.isEmpty() || location.isEmpty()) {
+                Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Save details
+            saveItemDetails(itemName, description, finder, number, dateFound, location, uploadedImageUrl);
         });
     }
 
+    // ===============================
+    // Initialize Cloudinary
+    // ===============================
     private void initConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put("cloud_name", "dylvri8g8");
@@ -90,8 +122,11 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImage() {
-        Toast.makeText(this, "Uploading image...", Toast.LENGTH_SHORT).show();
+    // ===============================
+    // Upload Image to Cloudinary
+    // ===============================
+    private void uploadImageToCloudinary() {
+        Toast.makeText(this, "Uploading image to Cloudinary...", Toast.LENGTH_SHORT).show();
 
         MediaManager.get().upload(imagePath)
                 .option("folder", "Found Items Report")
@@ -105,9 +140,9 @@ public class FoundReportActivity extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(String requestId, Map resultData) {
-                        String uploadedUrl = resultData.get("secure_url").toString();
+                        uploadedImageUrl = resultData.get("secure_url").toString();
                         Toast.makeText(FoundReportActivity.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
-                        saveImageToFirebase(uploadedUrl);
+                        saveImageUrlToFirebase(uploadedImageUrl); // optional
                     }
 
                     @Override
@@ -121,33 +156,42 @@ public class FoundReportActivity extends AppCompatActivity {
                 .dispatch();
     }
 
-    private void saveImageToFirebase(String imageUrl) {
-        String itemName = itemNameInput.getText().toString().trim();
-        String description = descInput.getText().toString().trim();
-        String location = locationFoundInput.getText().toString().trim();
-        String finderName = finderInput.getText().toString().trim();
-        String phoneNumber = numberInput.getText().toString().trim();
-        String dateFound = dateFoundInput.getText().toString().trim();
+    // Optional: Save image URL only
+    private void saveImageUrlToFirebase(String imageUrl) {
+        Map<String, Object> imageData = new HashMap<>();
+        imageData.put("imageUrl", imageUrl);
+        imageData.put("timestamp", System.currentTimeMillis());
 
-        if (itemName.isEmpty() || description.isEmpty() || location.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        db.collection("uploaded_images")
+                .add(imageData)
+                .addOnSuccessListener(documentReference ->
+                        Toast.makeText(FoundReportActivity.this, "Image URL saved to Firestore.", Toast.LENGTH_SHORT).show()
+                )
+                .addOnFailureListener(e ->
+                        Toast.makeText(FoundReportActivity.this, "Failed to save image URL: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    // ===============================
+    // Save full item details
+    // ===============================
+    private void saveItemDetails(String itemName, String description, String finder, String number,
+                                 String dateFound, String location, String imageUrl) {
 
         Map<String, Object> itemData = new HashMap<>();
         itemData.put("itemName", itemName);
         itemData.put("description", description);
-        itemData.put("location", location);
-        itemData.put("finderName", finderName);
-        itemData.put("phoneNumber", phoneNumber);
+        itemData.put("finder", finder);
+        itemData.put("contactNumber", number);
         itemData.put("dateFound", dateFound);
+        itemData.put("location", location);
         itemData.put("imageUrl", imageUrl);
         itemData.put("timestamp", System.currentTimeMillis());
 
         db.collection("reported_items")
                 .add(itemData)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(FoundReportActivity.this, "Item saved to Firestore!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FoundReportActivity.this, "Item reported successfully!", Toast.LENGTH_SHORT).show();
 
                     // Clear inputs
                     itemNameInput.setText("");
@@ -157,18 +201,22 @@ public class FoundReportActivity extends AppCompatActivity {
                     dateFoundInput.setText("");
                     locationFoundInput.setText("");
                     imageView.setImageResource(0);
+                    uploadedImageUrl = null;
 
-                    // Go to MatchingResultFound Activity
+                    // Move to MatchingResultFound activity
                     Intent intent = new Intent(FoundReportActivity.this, MatchingResultFound.class);
-                    intent.putExtra("imageUrl", imageUrl); // Pass uploaded image URL
+                    intent.putExtra("location", location);
                     startActivity(intent);
-                    finish(); // Optional: close this activity
+                    finish();
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(FoundReportActivity.this, "Failed to save data: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                .addOnFailureListener(e ->
+                        Toast.makeText(FoundReportActivity.this, "Failed to save data: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
     }
 
+    // ===============================
+    // Image Selection Permissions
+    // ===============================
     public void requestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
