@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ✅ Permissions -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Android 13+ -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" /> <!-- Android 12 and below -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,72 +19,42 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalCaseStudy"
         tools:replace="android:allowBackup">
-        <activity
-            android:name=".MatchingResultFoundFrame"
-            android:exported="false" />
-        <activity
-            android:name=".MatchingResultFound"
-            android:exported="false" />
-        <activity
-            android:name=".MatchingResultLostFrame"
-            android:exported="false" />
-        <activity
-            android:name=".ItemFoundFrame"
-            android:exported="false" />
-        <activity
-            android:name=".ItemLostFrame"
-            android:exported="false" />
-        <activity
-            android:name=".FoundDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ForgotPasswordActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LostDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ItemLostActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ItemFoundActivity"
-            android:exported="false" />
-        <activity
-            android:name=".FoundReportActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LostReportActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MatchingResultLost"
-            android:exported="false" />
-        <activity
-            android:name=".SummariesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ReportItemActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false" /> <!-- ✅ Firebase initialization -->
+
+        <activity android:name=".MatchingResultFoundFrame" android:exported="false" />
+        <activity android:name=".MatchingResultFound" android:exported="false" />
+        <activity android:name=".MatchingResultLostFrame" android:exported="false" />
+        <activity android:name=".ItemFoundFrame" android:exported="false" />
+        <activity android:name=".ItemLostFrame" android:exported="false" />
+        <activity android:name=".FoundDetailsActivity" android:exported="false" />
+        <activity android:name=".ForgotPasswordActivity" android:exported="false" />
+        <activity android:name=".LostDetailsActivity" android:exported="false" />
+        <activity android:name=".ItemLostActivity" android:exported="false" />
+        <activity android:name=".ItemFoundActivity" android:exported="false" />
+        <activity android:name=".FoundReportActivity" android:exported="false" />
+        <activity android:name=".LostReportActivity" android:exported="false" />
+        <activity android:name=".MatchingResultLost" android:exported="false" />
+        <activity android:name=".SummariesActivity" android:exported="false" />
+        <activity android:name=".ReportItemActivity" android:exported="false" />
+        <activity android:name=".LoginActivity" android:exported="false" />
+
+        <!-- Firebase default notification icon -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher" /> <!-- ✅ Activities -->
-        <activity
-            android:name=".SignupActivity"
-            android:exported="true" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:resource="@mipmap/ic_launcher" />
+
+        <activity android:name=".SignupActivity" android:exported="true" />
+
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- ✅ Fonts and other meta -->
+        </activity>
+
+        <!-- Preloaded fonts -->
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-    </application>
 
+    </application>
 </manifest>

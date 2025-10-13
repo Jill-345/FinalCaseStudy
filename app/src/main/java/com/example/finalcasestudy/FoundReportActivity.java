@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -53,9 +54,9 @@ public class FoundReportActivity extends AppCompatActivity {
             return insets;
         });
 
-        // UI initialization
-        uploadImageBtn = findViewById(R.id.button10); // Upload to Cloudinary
-        reportFoundBtn = findViewById(R.id.button11); // Save details + go to MatchingResultFound
+        // UI Initialization
+        uploadImageBtn = findViewById(R.id.button10);
+        reportFoundBtn = findViewById(R.id.button11);
         imageView = findViewById(R.id.ivItemImage);
         itemNameInput = findViewById(R.id.editTextTextMultiLine);
         descInput = findViewById(R.id.editTextTextMultiLine8);
@@ -64,16 +65,13 @@ public class FoundReportActivity extends AppCompatActivity {
         dateFoundInput = findViewById(R.id.editTextTextMultiLine13);
         locationFoundInput = findViewById(R.id.editTextTextMultiLine12);
 
-        // Initialize Cloudinary
-        initConfig();
-
-        // Initialize Firestore
+        initConfig(); // Initialize Cloudinary
         db = FirebaseFirestore.getInstance();
 
-        // ImageView click → select image
+        // ImageView click → request permission or open gallery
         imageView.setOnClickListener(v -> requestPermissions());
 
-        // Button 10 → Upload to Cloudinary only (parang baliktad ata ung if and else)
+        // Upload image to Cloudinary
         uploadImageBtn.setOnClickListener(v -> {
             if (imagePath == null) {
                 Toast.makeText(this, "Please select an image first.", Toast.LENGTH_SHORT).show();
@@ -82,7 +80,7 @@ public class FoundReportActivity extends AppCompatActivity {
             }
         });
 
-        // Button 11 → Save to Firestore (only if image uploaded + all details complete)
+        // Save item details + go to MatchingResultFound
         reportFoundBtn.setOnClickListener(v -> {
             if (uploadedImageUrl == null) {
                 Toast.makeText(this, "Please upload the image first.", Toast.LENGTH_SHORT).show();
@@ -102,19 +100,17 @@ public class FoundReportActivity extends AppCompatActivity {
                 return;
             }
 
-            // Save details
             saveItemDetails(itemName, description, finder, number, dateFound, location, uploadedImageUrl);
         });
     }
 
-    // ===============================
     // Initialize Cloudinary
-    // ===============================
     private void initConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put("cloud_name", "dylvri8g8");
         config.put("api_key", "317749255636612");
         config.put("api_secret", "QuFDsxxrABtIs8WT3TpEWp5fOUU");
+
         try {
             MediaManager.init(this, config);
         } catch (IllegalStateException e) {
@@ -122,9 +118,7 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
-    // ===============================
     // Upload Image to Cloudinary
-    // ===============================
     private void uploadImageToCloudinary() {
         Toast.makeText(this, "Uploading image to Cloudinary...", Toast.LENGTH_SHORT).show();
 
@@ -142,7 +136,6 @@ public class FoundReportActivity extends AppCompatActivity {
                     public void onSuccess(String requestId, Map resultData) {
                         uploadedImageUrl = resultData.get("secure_url").toString();
                         Toast.makeText(FoundReportActivity.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
-                        saveImageUrlToFirebase(uploadedImageUrl); // optional (pero meron din nito sa sample)
                     }
 
                     @Override
@@ -156,25 +149,7 @@ public class FoundReportActivity extends AppCompatActivity {
                 .dispatch();
     }
 
-    // Optional: Save image URL only
-    private void saveImageUrlToFirebase(String imageUrl) {
-        Map<String, Object> imageData = new HashMap<>();
-        imageData.put("imageUrl", imageUrl);
-        imageData.put("timestamp", System.currentTimeMillis());
-
-        db.collection("uploaded_images")
-                .add(imageData)
-                .addOnSuccessListener(documentReference ->
-                        Toast.makeText(FoundReportActivity.this, "Image URL saved to Firestore.", Toast.LENGTH_SHORT).show()
-                )
-                .addOnFailureListener(e ->
-                        Toast.makeText(FoundReportActivity.this, "Failed to save image URL: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
-    }
-
-    // ===============================
-    // Save full item details
-    // ===============================
+    // Save Full Item Details to Firestore
     private void saveItemDetails(String itemName, String description, String finder, String number,
                                  String dateFound, String location, String imageUrl) {
 
@@ -193,7 +168,7 @@ public class FoundReportActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(FoundReportActivity.this, "Item reported successfully!", Toast.LENGTH_SHORT).show();
 
-                    // Clear inputs
+                    // Clear form
                     itemNameInput.setText("");
                     descInput.setText("");
                     finderInput.setText("");
@@ -203,7 +178,7 @@ public class FoundReportActivity extends AppCompatActivity {
                     imageView.setImageResource(0);
                     uploadedImageUrl = null;
 
-                    // Move to MatchingResultFound activity
+                    // Go to MatchingResultFound
                     Intent intent = new Intent(FoundReportActivity.this, MatchingResultFound.class);
                     intent.putExtra("location", location);
                     startActivity(intent);
@@ -214,39 +189,45 @@ public class FoundReportActivity extends AppCompatActivity {
                 );
     }
 
-    // ===============================
-    // Image Selection Permissions
-    // ===============================
+    // Request Permission to Pick Image
     public void requestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
                     == PackageManager.PERMISSION_GRANTED) {
                 selectImage();
             } else {
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{Manifest.permission.READ_MEDIA_IMAGES},
-                        IMAGE_REQ
-                );
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES}, IMAGE_REQ);
             }
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 selectImage();
             } else {
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        IMAGE_REQ
-                );
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, IMAGE_REQ);
             }
         }
     }
 
+    // ✅ Handle Permission Result
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == IMAGE_REQ) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                selectImage();
+            } else {
+                Toast.makeText(this, "Permission denied to access images.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // ✅ Open Gallery to Pick Image
     private void selectImage() {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, IMAGE_REQ);
     }
 
