@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SummariesActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private Spinner spinner;
     boolean spinnerInitialized;
 
