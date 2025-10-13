@@ -73,7 +73,7 @@ public class FoundReportActivity extends AppCompatActivity {
         // ImageView click → select image
         imageView.setOnClickListener(v -> requestPermissions());
 
-        // Button 10 → Upload to Cloudinary only
+        // Button 10 → Upload to Cloudinary only (parang baliktad ata ung if and else)
         uploadImageBtn.setOnClickListener(v -> {
             if (imagePath == null) {
                 Toast.makeText(this, "Please select an image first.", Toast.LENGTH_SHORT).show();
@@ -142,7 +142,7 @@ public class FoundReportActivity extends AppCompatActivity {
                     public void onSuccess(String requestId, Map resultData) {
                         uploadedImageUrl = resultData.get("secure_url").toString();
                         Toast.makeText(FoundReportActivity.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
-                        saveImageUrlToFirebase(uploadedImageUrl); // optional
+                        saveImageUrlToFirebase(uploadedImageUrl); // optional (pero meron din nito sa sample)
                     }
 
                     @Override
