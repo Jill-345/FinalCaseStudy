@@ -2,11 +2,14 @@ package com.example.finalcasestudy;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,12 +30,15 @@ import com.cloudinary.android.callback.UploadCallback;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FoundReportActivity extends AppCompatActivity {
 
     private static final int IMAGE_REQ = 1;
+    private static final int CAMERA_REQ = 2;
+
     private Uri imagePath;
     private String uploadedImageUrl = null;
 
@@ -68,13 +74,13 @@ public class FoundReportActivity extends AppCompatActivity {
         initConfig(); // Initialize Cloudinary
         db = FirebaseFirestore.getInstance();
 
-        // ImageView click → request permission or open gallery
-        imageView.setOnClickListener(v -> requestPermissions());
+        // ImageView click → choose photo source
+        imageView.setOnClickListener(v -> showImageSourceDialog());
 
         // Upload image to Cloudinary
         uploadImageBtn.setOnClickListener(v -> {
             if (imagePath == null) {
-                Toast.makeText(this, "Please select an image first.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please select or take an image first.", Toast.LENGTH_SHORT).show();
             } else {
                 uploadImageToCloudinary();
             }
@@ -189,12 +195,27 @@ public class FoundReportActivity extends AppCompatActivity {
                 );
     }
 
-    // Request Permission to Pick Image
-    public void requestPermissions() {
+    // Dialog to choose camera or gallery
+    private void showImageSourceDialog() {
+        String[] options = {"Take Photo", "Choose from Gallery"};
+        new AlertDialog.Builder(this)
+                .setTitle("Select Image Source")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        requestCameraPermission();
+                    } else {
+                        requestGalleryPermission();
+                    }
+                })
+                .show();
+    }
+
+    // Request gallery permission
+    private void requestGalleryPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
                     == PackageManager.PERMISSION_GRANTED) {
-                selectImage();
+                selectImageFromGallery();
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_MEDIA_IMAGES}, IMAGE_REQ);
@@ -202,7 +223,7 @@ public class FoundReportActivity extends AppCompatActivity {
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                selectImage();
+                selectImageFromGallery();
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, IMAGE_REQ);
@@ -210,34 +231,82 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
-    // ✅ Handle Permission Result
+    // Request camera permission
+    private void requestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            openCamera();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, CAMERA_REQ);
+        }
+    }
+
+    // Handle permission results
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == IMAGE_REQ) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectImage();
+                selectImageFromGallery();
             } else {
-                Toast.makeText(this, "Permission denied to access images.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permission denied to access gallery.", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == CAMERA_REQ) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                Toast.makeText(this, "Permission denied to use camera.", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    // ✅ Open Gallery to Pick Image
-    private void selectImage() {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    // Open gallery
+    private void selectImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         startActivityForResult(intent, IMAGE_REQ);
     }
 
+    // Open camera
+    private void openCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(cameraIntent, CAMERA_REQ);
+        } else {
+            Toast.makeText(this, "No camera app found.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Handle results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_REQ && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-            imagePath = data.getData();
-            Picasso.get().load(imagePath).into(imageView);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == IMAGE_REQ && data != null && data.getData() != null) {
+                imagePath = data.getData();
+                Picasso.get().load(imagePath).into(imageView);
+            } else if (requestCode == CAMERA_REQ && data != null) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+                // Convert bitmap to URI
+                Uri tempUri = getImageUri(imageBitmap);
+                imagePath = tempUri;
+
+                imageView.setImageBitmap(imageBitmap);
+            }
         }
+    }
+
+    // Convert bitmap to Uri
+    private Uri getImageUri(Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(
+                getContentResolver(), bitmap, "CapturedImage_" + System.currentTimeMillis(), null);
+        return Uri.parse(path);
     }
 }
