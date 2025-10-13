@@ -9,23 +9,6 @@
 
     <!-- App Bar -->
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:contentDescription="Add"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#A00606"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.978"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.97"
-        app:tint="@android:color/white" />
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -104,7 +87,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="5dp"
-            android:background="#A00606">
+            android:background="#940202">
 
             <TextView
                 android:id="@+id/textview2"
