@@ -24,7 +24,7 @@
         android:layout_width="224dp"
         android:layout_height="50dp"
         android:backgroundTint="#940202"
-        android:text="SIGN IN"
+        android:text="LOG IN"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
