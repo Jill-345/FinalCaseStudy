@@ -249,6 +249,7 @@
                 android:layout_width="135dp"
                 android:layout_height="25dp"
                 android:layout_weight="1"
+                android:background="@drawable/edittext_border"
                 android:text="Total Number of Claimed Items:"
                 android:textColor="@color/black"
                 android:textCursorDrawable="@drawable/edittext_border"
