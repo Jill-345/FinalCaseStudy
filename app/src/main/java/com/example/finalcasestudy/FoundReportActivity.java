@@ -184,9 +184,8 @@ public class FoundReportActivity extends AppCompatActivity {
                     imageView.setImageResource(0);
                     uploadedImageUrl = null;
 
-                    // Go to MatchingResultFound
-                    Intent intent = new Intent(FoundReportActivity.this, MatchingResultFound.class);
-                    intent.putExtra("location", location);
+                    // Go to ItemFoundActivity
+                    Intent intent = new Intent(FoundReportActivity.this, ItemFoundActivity.class);
                     startActivity(intent);
                     finish();
                 })
