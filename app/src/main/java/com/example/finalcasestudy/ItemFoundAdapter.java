@@ -1,6 +1,5 @@
 package com.example.finalcasestudy;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-//MatchingResultLostAdapter
+
 public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.ViewHolder> {
 
-    private Context context;
     private List<ItemFoundData> itemList;
 
-    public ItemFoundAdapter(Context context, List<ItemFoundData> itemList) {
+    // Constructor
+    public ItemFoundAdapter(List<ItemFoundData> itemList) {
         this.itemList = itemList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.activity_item_found_frame, parent, false);
+        // Use your existing XML layout here
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.activity_item_found_frame, parent, false); // keep your layout
         return new ViewHolder(view);
     }
 
@@ -33,6 +34,12 @@ public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.View
         ItemFoundData item = itemList.get(position);
         holder.tvItemName.setText(item.getName());
         holder.tvDate.setText(item.getDate());
+
+        // If you have image URLs, you can load them like this (optional):
+        // Glide.with(holder.ivItemImage.getContext())
+        //      .load(item.getImageUrl())
+        //      .placeholder(R.drawable.plus_placeholder)
+        //      .into(holder.ivItemImage);
     }
 
     @Override

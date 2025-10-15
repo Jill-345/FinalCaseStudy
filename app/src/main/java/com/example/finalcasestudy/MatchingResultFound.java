@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +27,7 @@ public class MatchingResultFound extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private Spinner spinner;
-    private boolean spinnerInitialized;
+    private boolean spinnerInitialized = false;
     private FirebaseFirestore db;
     private ItemFoundAdapter adapter;
     private List<ItemFoundData> itemList;
@@ -36,6 +37,7 @@ public class MatchingResultFound extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_matching_result_found);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -48,16 +50,18 @@ public class MatchingResultFound extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
-        adapter = new ItemFoundAdapter(this, itemList);
+        adapter = new ItemFoundAdapter(itemList);
         recyclerView.setAdapter(adapter);
 
-        // 🔎 Get the search keyword from the intent
+        // 🔎 Get the search keyword from the previous activity
         String searchQuery = getIntent().getStringExtra("searchQuery");
         if (searchQuery != null && !searchQuery.isEmpty()) {
             loadMatchingResults(searchQuery);
+        } else {
+            Toast.makeText(this, "No search term provided.", Toast.LENGTH_SHORT).show();
         }
 
-        // 📋 Spinner setup
+        // 📋 Spinner setup (same as in ItemFoundActivity)
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.menu_items,
@@ -66,7 +70,7 @@ public class MatchingResultFound extends AppCompatActivity {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
 
-        String current = "Home";
+        String current = "Found Items";
         int index = spinnerAdapter.getPosition(current);
         spinner.setSelection(index);
 
@@ -77,13 +81,30 @@ public class MatchingResultFound extends AppCompatActivity {
                     spinnerInitialized = true;
                     return;
                 }
+
                 String selected = parent.getItemAtPosition(position).toString();
                 switch (selected) {
                     case "Home":
+                        startActivity(new Intent(MatchingResultFound.this, ReportItemActivity.class));
+                        finish();
+                        break;
+                    case "Lost Items":
+                        startActivity(new Intent(MatchingResultFound.this, ItemLostActivity.class));
+                        finish();
+                        break;
+                    case "Found Items":
                         startActivity(new Intent(MatchingResultFound.this, ItemFoundActivity.class));
                         finish();
                         break;
+                    case "Summary":
+                        startActivity(new Intent(MatchingResultFound.this, SummariesActivity.class));
+                        finish();
+                        break;
+                    case "Logout":
+                        finish();
+                        break;
                 }
+
                 spinner.post(() -> spinner.setSelection(spinnerAdapter.getPosition(current)));
             }
 
@@ -92,31 +113,48 @@ public class MatchingResultFound extends AppCompatActivity {
         });
     }
 
-    // 🔥 Firestore query to load results based on search, latest first
+    // 🔥 Firestore query to load results based on search term
     private void loadMatchingResults(String query) {
         db.collection("reported_items")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     itemList.clear();
+
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String itemName = doc.getString("itemName");
+                        String description = doc.getString("description");
+                        String location = doc.getString("location");
+                        String finder = doc.getString("finder");
+                        String date = doc.getString("dateFound");
+                        String imageUrl = doc.getString("imageUrl");
 
-                        // 🔍 Match by name (case-insensitive)
-                        if (itemName != null && itemName.toLowerCase().contains(query.toLowerCase())) {
-                            String date = doc.getString("date");
-                            String imageUrl = doc.getString("imageUrl"); // optional if you have images
-
-                            // Create your model object
+                        // 🔍 Check if search term matches any field (case-insensitive)
+                        if (matchesQuery(query, itemName, description, location, finder, date)) {
                             ItemFoundData item = new ItemFoundData(itemName, date, imageUrl);
                             itemList.add(item);
                         }
                     }
+
+                    if (itemList.isEmpty()) {
+                        Toast.makeText(this, "No matching results found.", Toast.LENGTH_SHORT).show();
+                    }
+
                     adapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> {
-                    // You can show a Toast if loading fails
-                    // Toast.makeText(this, "Error loading data", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error loading data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    // ✅ Helper: check if query matches any of the text fields
+    private boolean matchesQuery(String query, String... fields) {
+        String lowerQuery = query.toLowerCase();
+        for (String field : fields) {
+            if (field != null && field.toLowerCase().contains(lowerQuery)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
