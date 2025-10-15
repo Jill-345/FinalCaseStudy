@@ -2,12 +2,11 @@ package com.example.finalcasestudy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -36,6 +35,7 @@ public class ItemFoundActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Spinner spinner;
     private EditText searchBar;
+    private ImageButton buttonSearch;
     private boolean spinnerInitialized;
     private ItemFoundAdapter adapter;
     private List<ItemFoundData> itemList;
@@ -59,13 +59,7 @@ public class ItemFoundActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         spinner = findViewById(R.id.spinner);
         searchBar = findViewById(R.id.editTextText);
-
-        // ✅ Make sure search bar is interactive
-        searchBar.setFocusable(true);
-        searchBar.setFocusableInTouchMode(true);
-        searchBar.setClickable(true);
-        searchBar.setEnabled(true);
-        searchBar.bringToFront(); // 👈 this ensures it’s not hidden under spinner or layout
+        buttonSearch = findViewById(R.id.buttonSearch);
 
         // ✅ Initialize Firestore
         db = FirebaseFirestore.getInstance();
@@ -81,20 +75,16 @@ public class ItemFoundActivity extends AppCompatActivity {
             startActivity(new Intent(this, FoundReportActivity.class));
         });
 
-        // 🔍 ENTER key triggers search
-        searchBar.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-                String query = searchBar.getText().toString().trim();
-                if (!query.isEmpty()) {
-                    Intent intent = new Intent(ItemFoundActivity.this, MatchingResultFound.class);
-                    intent.putExtra("searchQuery", query);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "Please enter something to search.", Toast.LENGTH_SHORT).show();
-                }
-                return true;
+        // 🔍 Search button click
+        buttonSearch.setOnClickListener(v -> {
+            String query = searchBar.getText().toString().trim();
+            if (!query.isEmpty()) {
+                Intent intent = new Intent(ItemFoundActivity.this, MatchingResultFound.class);
+                intent.putExtra("searchQuery", query);
+                startActivity(intent);
+            } else {
+                Toast.makeText(ItemFoundActivity.this, "Please enter something to search.", Toast.LENGTH_SHORT).show();
             }
-            return false;
         });
 
         // 🧭 Spinner setup

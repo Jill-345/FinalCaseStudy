@@ -92,9 +92,21 @@
             android:textColor="#000000"
             android:textColorHint="#888888"
             android:inputType="text"
-            android:imeOptions="actionSearch"
             android:importantForAccessibility="yes" />
+
+        <!-- 🔍 Search Button -->
+        <ImageButton
+            android:id="@+id/buttonSearch"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_search"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Search"
+            android:layout_marginStart="8dp"
+            app:tint="#ffffff" />
+
     </LinearLayout>
+
 
     <!-- 📂 Tabs -->
     <com.google.android.material.tabs.TabLayout

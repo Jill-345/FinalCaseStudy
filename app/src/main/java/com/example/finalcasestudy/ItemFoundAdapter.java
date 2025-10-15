@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.ViewHolder> {
@@ -23,9 +25,9 @@ public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Use your existing XML layout here
+        // Use your existing XML layout
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_item_found_frame, parent, false); // keep your layout
+                .inflate(R.layout.activity_item_found_frame, parent, false);
         return new ViewHolder(view);
     }
 
@@ -35,11 +37,18 @@ public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.View
         holder.tvItemName.setText(item.getName());
         holder.tvDate.setText(item.getDate());
 
-        // If you have image URLs, you can load them like this (optional):
-        // Glide.with(holder.ivItemImage.getContext())
-        //      .load(item.getImageUrl())
-        //      .placeholder(R.drawable.plus_placeholder)
-        //      .into(holder.ivItemImage);
+        // Load image with Picasso
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Picasso.get()
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.plus_placeholder)
+                    .error(R.drawable.plus_placeholder)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.ivItemImage);
+        } else {
+            holder.ivItemImage.setImageResource(R.drawable.plus_placeholder);
+        }
     }
 
     @Override
