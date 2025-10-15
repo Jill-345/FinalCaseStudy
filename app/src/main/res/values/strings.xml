@@ -7,4 +7,12 @@
         <item>Summary</item>
         <item>Logout</item>
     </string-array>
+
+    <string-array name="category_items">
+        <item>Electronics</item>
+        <item>Clothing</item>
+        <item>Accessories</item>
+        <item>Documents</item>
+        <item>Others</item>
+    </string-array>
 </resources>

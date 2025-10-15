@@ -3,6 +3,7 @@ package com.example.finalcasestudy;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -31,7 +32,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class FoundReportActivity extends AppCompatActivity {
@@ -45,6 +49,8 @@ public class FoundReportActivity extends AppCompatActivity {
     private Button uploadImageBtn, reportFoundBtn;
     private ImageView imageView;
     private EditText itemNameInput, descInput, finderInput, numberInput, dateFoundInput, locationFoundInput;
+
+    private Calendar calendar;
 
     private FirebaseFirestore db;
 
@@ -67,9 +73,11 @@ public class FoundReportActivity extends AppCompatActivity {
         itemNameInput = findViewById(R.id.editTextTextMultiLine);
         descInput = findViewById(R.id.editTextTextMultiLine8);
         finderInput = findViewById(R.id.editTextTextMultiLine9);
-        numberInput = findViewById(R.id.editTextTextMultiLine10);
-        dateFoundInput = findViewById(R.id.editTextTextMultiLine13);
+        numberInput = findViewById(R.id.editTextContactNumber);
+        dateFoundInput = findViewById(R.id.editTextDateFound);
         locationFoundInput = findViewById(R.id.editTextTextMultiLine12);
+
+        setupDatePicker();
 
         initConfig(); // Initialize Cloudinary
         db = FirebaseFirestore.getInstance();
@@ -154,6 +162,43 @@ public class FoundReportActivity extends AppCompatActivity {
                 })
                 .dispatch();
     }
+
+
+
+    private void setupDatePicker() {
+        calendar = Calendar.getInstance();
+
+        // Allow typing AND clicking
+        dateFoundInput.setFocusable(true);
+        dateFoundInput.setFocusableInTouchMode(true);
+        dateFoundInput.setClickable(true);
+
+        // When clicked, open the date picker
+        dateFoundInput.setOnClickListener(v -> {
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    FoundReportActivity.this,
+                    (view, year1, month1, dayOfMonth) -> {
+                        calendar.set(Calendar.YEAR, year1);
+                        calendar.set(Calendar.MONTH, month1);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        updateDateField();
+                    },
+                    year, month, day
+            );
+            datePickerDialog.show();
+        });
+    }
+
+
+    private void updateDateField() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        dateFoundInput.setText(sdf.format(calendar.getTime()));
+    }
+
 
     // Save Full Item Details to Firestore
     private void saveItemDetails(String itemName, String description, String finder, String number,
