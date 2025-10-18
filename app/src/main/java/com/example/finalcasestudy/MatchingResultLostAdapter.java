@@ -1,6 +1,7 @@
 package com.example.finalcasestudy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class MatchingResultLostAdapter extends RecyclerView.Adapter<MatchingResultLostAdapter.ViewHolder> {
@@ -18,6 +21,7 @@ public class MatchingResultLostAdapter extends RecyclerView.Adapter<MatchingResu
     private List<MatchingResultLostData> itemList;
 
     public MatchingResultLostAdapter(Context context, List<MatchingResultLostData> itemList) {
+        this.context = context;
         this.itemList = itemList;
     }
 
@@ -31,8 +35,29 @@ public class MatchingResultLostAdapter extends RecyclerView.Adapter<MatchingResu
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MatchingResultLostData item = itemList.get(position);
-        holder.tvItemName.setText(item.getName());
+
+        holder.tvItemName.setText(item.getItemName());
         holder.tvDate.setText(item.getDate());
+
+        // ✅ Load image
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Picasso.get()
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.plus_placeholder)
+                    .error(R.drawable.plus_placeholder)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.ivItemImage);
+        } else {
+            holder.ivItemImage.setImageResource(R.drawable.plus_placeholder);
+        }
+
+        // ✅ Open LostDetailsActivity when "More Details" is clicked
+        holder.tvMoreDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(context, LostDetailsActivity.class);
+            intent.putExtra("documentId", item.getDocumentId());
+            context.startActivity(intent);
+        });
     }
 
     @Override

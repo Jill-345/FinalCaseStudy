@@ -1,6 +1,7 @@
 package com.example.finalcasestudy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHolder> {
@@ -18,6 +21,7 @@ public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHo
     private List<ItemLostData> itemList;
 
     public ItemLostAdapter(Context context, List<ItemLostData> itemList) {
+        this.context = context;
         this.itemList = itemList;
     }
 
@@ -33,6 +37,25 @@ public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHo
         ItemLostData item = itemList.get(position);
         holder.tvItemName.setText(item.getName());
         holder.tvDate.setText(item.getDate());
+
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Picasso.get()
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.plus_placeholder)
+                    .error(R.drawable.plus_placeholder)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.ivItemImage);
+        } else {
+            holder.ivItemImage.setImageResource(R.drawable.plus_placeholder);
+        }
+
+        // ✅ Click “More Details” to open LostDetailsActivity
+        holder.tvMoreDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(context, LostDetailsActivity.class);
+            intent.putExtra("documentId", item.getDocumentId());
+            context.startActivity(intent);
+        });
     }
 
     @Override

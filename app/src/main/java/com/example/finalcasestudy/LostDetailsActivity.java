@@ -5,7 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,25 +18,41 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
+
 public class LostDetailsActivity extends AppCompatActivity {
 
     private Spinner spinner;
-    boolean spinnerInitialized;
+    private boolean spinnerInitialized;
+
+    private ImageView ivItemImage;
+    private TextView tvItemName, tvDescription, tvCategory, tvOwner, tvContact, tvDateLoss, tvLocationLoss;
+    private RadioGroup radioGroup;
+    private RadioButton radioFound, radioNotFound;
+
+    private FirebaseFirestore db;
+    private String documentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_lost_details);
+
+        // ✅ Window Insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
-
         });
 
-        spinner = findViewById(R.id.spinner8);
+        // ✅ Initialize Firebase
+        db = FirebaseFirestore.getInstance();
 
+        // ✅ Spinner setup
+        spinner = findViewById(R.id.spinner8);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.menu_items,
@@ -39,11 +60,7 @@ public class LostDetailsActivity extends AppCompatActivity {
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
-// ✅ Mark current screen
-        String current = "Home";
-        int index = adapter.getPosition(current);
-        spinner.setSelection(index);
+        spinner.setSelection(adapter.getPosition("Home"));
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -54,7 +71,6 @@ public class LostDetailsActivity extends AppCompatActivity {
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
-
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
@@ -73,27 +89,79 @@ public class LostDetailsActivity extends AppCompatActivity {
                         break;
                 }
 
-                // ✅ Optional: visually reset spinner back to current
-                spinner.post(() -> spinner.setSelection(adapter.getPosition(current)));
+                spinner.post(() -> spinner.setSelection(adapter.getPosition("Home")));
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
+
+        // ✅ Initialize UI elements
+        ivItemImage = findViewById(R.id.ivItemImage);
+        tvItemName = findViewById(R.id.textViewItemName);
+        tvDescription = findViewById(R.id.textViewDescription);
+        tvCategory = findViewById(R.id.textViewCategory);
+        tvOwner = findViewById(R.id.textViewOwner);
+        tvContact = findViewById(R.id.textViewContact);
+        tvDateLoss = findViewById(R.id.textViewDateLoss);
+        tvLocationLoss = findViewById(R.id.textViewLocationLoss);
+        radioGroup = findViewById(R.id.radioGroup);
+        radioFound = findViewById(R.id.radioFound);
+        radioNotFound = findViewById(R.id.radioNotFound);
+
+        // ✅ Get document ID from intent
+        documentId = getIntent().getStringExtra("documentId");
+        if (documentId != null && !documentId.isEmpty()) {
+            loadItemDetails(documentId);
+        } else {
+            Toast.makeText(this, "No document ID received.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
-    // Start target Activity only if it's not the current one
+    // 🔹 Load Lost Item Details from Firestore
+    private void loadItemDetails(String documentId) {
+        db.collection("lost_items").document(documentId)
+                .get()
+                .addOnSuccessListener(this::displayItemDetails)
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error loading item: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    // 🔹 Display data to screen
+    private void displayItemDetails(DocumentSnapshot doc) {
+        if (doc.exists()) {
+            tvItemName.setText(doc.getString("itemName"));
+            tvDescription.setText(doc.getString("description"));
+            tvCategory.setText(doc.getString("category"));
+            tvOwner.setText(doc.getString("owner"));
+            tvContact.setText(doc.getString("contactNumber"));
+            tvDateLoss.setText(doc.getString("dateLost"));
+            tvLocationLoss.setText(doc.getString("locationLost"));
+
+            String imageUrl = doc.getString("imageUrl");
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Picasso.get().load(imageUrl).into(ivItemImage);
+            }
+
+            // Set radio buttons based on item status
+            String status = doc.getString("status");
+            if ("Found".equalsIgnoreCase(status)) {
+                radioFound.setChecked(true);
+            } else {
+                radioNotFound.setChecked(true);
+            }
+        }
+    }
+
+    // 🔹 Spinner Navigation Helper
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
-            // These flags prevent duplicate screens from stacking
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             overridePendingTransition(0, 0);
         }
     }
 }
-
-
-

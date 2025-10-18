@@ -8,6 +8,39 @@
     android:background="@android:drawable/editbox_background"
     tools:context=".LostReportActivity">
 
+    <Button
+        android:id="@+id/button13"
+        android:layout_width="174dp"
+        android:layout_height="42dp"
+        android:backgroundTint="#940202"
+        android:backgroundTintMode="add"
+        android:text="Upload Image"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.42" />
+
+    <ImageView
+        android:id="@+id/ivItemImage2"
+        android:layout_width="149dp"
+        android:layout_height="129dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Item Image"
+        android:scaleType="centerCrop"
+        android:src="@drawable/plus_placeholder"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.246"
+        app:tint="#9E1111" />
+
     <TextView
         android:id="@+id/textView23"
         android:layout_width="wrap_content"
@@ -87,10 +120,10 @@
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.957" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
         android:layout_width="396dp"
@@ -98,10 +131,10 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView21"
-        app:layout_constraintVertical_bias="0.77">
+        app:layout_constraintVertical_bias="0.896">
 
         <LinearLayout
             android:layout_width="135dp"
@@ -143,7 +176,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center|start"
-                android:text="Finder:"
+                android:text="Owner:"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -219,7 +252,7 @@
                 android:background="@android:drawable/editbox_background"
                 android:ems="10"
                 android:gravity="center|start"
-                android:hint="Finder Name"
+                android:hint="Owner Name"
                 android:inputType="textMultiLine" />
 
             <EditText
@@ -227,11 +260,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@android:drawable/editbox_background"
-                android:hint="Contact Number"
+                android:ems="10"
                 android:gravity="center|start"
+                android:hint="Contact Number"
                 android:inputType="phone"
                 android:maxLength="11"
-                android:ems="10"
                 android:padding="10dp" />
 
             <EditText
@@ -239,10 +272,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@android:drawable/editbox_background"
+                android:clickable="true"
+                android:focusable="false"
                 android:gravity="center|start"
                 android:hint="Date Found"
-                android:focusable="false"
-                android:clickable="true"
                 android:inputType="date"
                 android:padding="10dp" />
 
