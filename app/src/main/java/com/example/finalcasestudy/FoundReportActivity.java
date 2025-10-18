@@ -11,9 +11,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -50,8 +53,10 @@ public class FoundReportActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText itemNameInput, descInput, finderInput, numberInput, dateFoundInput, locationFoundInput;
 
-    private Calendar calendar;
+    private Spinner spinner;
+    private boolean spinnerInitialized;
 
+    private Calendar calendar;
     private FirebaseFirestore db;
 
     @Override
@@ -66,7 +71,8 @@ public class FoundReportActivity extends AppCompatActivity {
             return insets;
         });
 
-        // UI Initialization
+        // 🔹 Initialize UI components
+        spinner = findViewById(R.id.spinner6);
         uploadImageBtn = findViewById(R.id.button10);
         reportFoundBtn = findViewById(R.id.button11);
         imageView = findViewById(R.id.ivItemImage);
@@ -79,13 +85,11 @@ public class FoundReportActivity extends AppCompatActivity {
 
         setupDatePicker();
 
-        initConfig(); // Initialize Cloudinary
+        initConfig();
         db = FirebaseFirestore.getInstance();
 
-        // ImageView click → choose photo source
+        // 🔹 Image actions
         imageView.setOnClickListener(v -> showImageSourceDialog());
-
-        // Upload image to Cloudinary
         uploadImageBtn.setOnClickListener(v -> {
             if (imagePath == null) {
                 Toast.makeText(this, "Please select or take an image first.", Toast.LENGTH_SHORT).show();
@@ -94,7 +98,7 @@ public class FoundReportActivity extends AppCompatActivity {
             }
         });
 
-        // Save item details + go to MatchingResultFound
+        // 🔹 Report found item
         reportFoundBtn.setOnClickListener(v -> {
             if (uploadedImageUrl == null) {
                 Toast.makeText(this, "Please upload the image first.", Toast.LENGTH_SHORT).show();
@@ -116,15 +120,76 @@ public class FoundReportActivity extends AppCompatActivity {
 
             saveItemDetails(itemName, description, finder, number, dateFound, location, uploadedImageUrl);
         });
+
+        // 🔹 Spinner setup
+        setupSpinner();
     }
 
-    // Initialize Cloudinary
+    // 🔹 Spinner navigation like LostReportActivity
+    private void setupSpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.menu_items,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        String current = "Home";
+        int index = adapter.getPosition(current);
+        spinner.setSelection(index);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+                if (!spinnerInitialized) {
+                    spinnerInitialized = true;
+                    return;
+                }
+
+                String selected = parent.getItemAtPosition(position).toString();
+
+                switch (selected) {
+                    case "Home":
+                        openIfNotCurrent(ReportItemActivity.class);
+                        break;
+                    case "Lost Items":
+                        openIfNotCurrent(ItemLostActivity.class);
+                        break;
+                    case "Found Items":
+                        openIfNotCurrent(ItemFoundActivity.class);
+                        break;
+                    case "Summary":
+                        openIfNotCurrent(SummariesActivity.class);
+                        break;
+                    case "Logout":
+                        finish();
+                        break;
+                }
+
+                spinner.post(() -> spinner.setSelection(adapter.getPosition(current)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void openIfNotCurrent(Class<?> targetActivity) {
+        if (!getClass().equals(targetActivity)) {
+            Intent intent = new Intent(this, targetActivity);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        }
+    }
+
+    // 🔹 Cloudinary setup
     private void initConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put("cloud_name", "dylvri8g8");
         config.put("api_key", "317749255636612");
         config.put("api_secret", "QuFDsxxrABtIs8WT3TpEWp5fOUU");
-
         try {
             MediaManager.init(this, config);
         } catch (IllegalStateException e) {
@@ -132,7 +197,7 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
-    // Upload Image to Cloudinary
+    // 🔹 Upload Image
     private void uploadImageToCloudinary() {
         Toast.makeText(this, "Uploading image to Cloudinary...", Toast.LENGTH_SHORT).show();
 
@@ -140,70 +205,50 @@ public class FoundReportActivity extends AppCompatActivity {
                 .option("folder", "Found Items Report")
                 .option("public_id", "image_" + System.currentTimeMillis())
                 .callback(new UploadCallback() {
-                    @Override
-                    public void onStart(String requestId) { }
-
-                    @Override
-                    public void onProgress(String requestId, long bytes, long totalBytes) { }
-
-                    @Override
-                    public void onSuccess(String requestId, Map resultData) {
+                    @Override public void onStart(String requestId) {}
+                    @Override public void onProgress(String requestId, long bytes, long totalBytes) {}
+                    @Override public void onSuccess(String requestId, Map resultData) {
                         uploadedImageUrl = resultData.get("secure_url").toString();
                         Toast.makeText(FoundReportActivity.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
                     }
-
-                    @Override
-                    public void onError(String requestId, ErrorInfo error) {
+                    @Override public void onError(String requestId, ErrorInfo error) {
                         Toast.makeText(FoundReportActivity.this, "Upload failed: " + error.getDescription(), Toast.LENGTH_LONG).show();
                     }
-
-                    @Override
-                    public void onReschedule(String requestId, ErrorInfo error) { }
+                    @Override public void onReschedule(String requestId, ErrorInfo error) {}
                 })
                 .dispatch();
     }
 
-
-
+    // 🔹 Date picker setup
     private void setupDatePicker() {
         calendar = Calendar.getInstance();
-
-        // Allow typing AND clicking
         dateFoundInput.setFocusable(true);
         dateFoundInput.setFocusableInTouchMode(true);
         dateFoundInput.setClickable(true);
 
-        // When clicked, open the date picker
         dateFoundInput.setOnClickListener(v -> {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
+            DatePickerDialog dialog = new DatePickerDialog(
                     FoundReportActivity.this,
-                    (view, year1, month1, dayOfMonth) -> {
-                        calendar.set(Calendar.YEAR, year1);
-                        calendar.set(Calendar.MONTH, month1);
-                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    (view, y, m, d) -> {
+                        calendar.set(y, m, d);
                         updateDateField();
-                    },
-                    year, month, day
-            );
-            datePickerDialog.show();
+                    }, year, month, day);
+            dialog.show();
         });
     }
-
 
     private void updateDateField() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         dateFoundInput.setText(sdf.format(calendar.getTime()));
     }
 
-
-    // Save Full Item Details to Firestore
+    // 🔹 Save to Firestore
     private void saveItemDetails(String itemName, String description, String finder, String number,
                                  String dateFound, String location, String imageUrl) {
-
         Map<String, Object> itemData = new HashMap<>();
         itemData.put("itemName", itemName);
         itemData.put("description", description);
@@ -216,10 +261,10 @@ public class FoundReportActivity extends AppCompatActivity {
 
         db.collection("reported_items")
                 .add(itemData)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(FoundReportActivity.this, "Item reported successfully!", Toast.LENGTH_SHORT).show();
+                .addOnSuccessListener(doc -> {
+                    Toast.makeText(this, "Item reported successfully!", Toast.LENGTH_SHORT).show();
 
-                    // Clear form
+                    // Reset form
                     itemNameInput.setText("");
                     descInput.setText("");
                     finderInput.setText("");
@@ -230,100 +275,73 @@ public class FoundReportActivity extends AppCompatActivity {
                     uploadedImageUrl = null;
 
                     // Go to ItemFoundActivity
-                    Intent intent = new Intent(FoundReportActivity.this, ItemFoundActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(this, ItemFoundActivity.class));
                     finish();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(FoundReportActivity.this, "Failed to save data: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
+                        Toast.makeText(this, "Failed to save data: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
-    // Dialog to choose camera or gallery
+    // 🔹 Image picker and camera
     private void showImageSourceDialog() {
         String[] options = {"Take Photo", "Choose from Gallery"};
         new AlertDialog.Builder(this)
                 .setTitle("Select Image Source")
                 .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        requestCameraPermission();
-                    } else {
-                        requestGalleryPermission();
-                    }
-                })
-                .show();
+                    if (which == 0) requestCameraPermission();
+                    else requestGalleryPermission();
+                }).show();
     }
 
-    // Request gallery permission
     private void requestGalleryPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
-                    == PackageManager.PERMISSION_GRANTED) {
-                selectImageFromGallery();
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_MEDIA_IMAGES}, IMAGE_REQ);
-            }
+                    == PackageManager.PERMISSION_GRANTED) selectImageFromGallery();
+            else ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_MEDIA_IMAGES}, IMAGE_REQ);
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                selectImageFromGallery();
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, IMAGE_REQ);
-            }
+                    == PackageManager.PERMISSION_GRANTED) selectImageFromGallery();
+            else ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, IMAGE_REQ);
         }
     }
 
-    // Request camera permission
     private void requestCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED) {
-            openCamera();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA}, CAMERA_REQ);
-        }
+                == PackageManager.PERMISSION_GRANTED) openCamera();
+        else ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA}, CAMERA_REQ);
     }
 
-    // Handle permission results
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == IMAGE_REQ) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectImageFromGallery();
-            } else {
-                Toast.makeText(this, "Permission denied to access gallery.", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == CAMERA_REQ) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openCamera();
-            } else {
-                Toast.makeText(this, "Permission denied to use camera.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    // Open gallery
-    private void selectImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, IMAGE_REQ);
-    }
-
-    // Open camera
-    private void openCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(cameraIntent, CAMERA_REQ);
+        if (requestCode == IMAGE_REQ && grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            selectImageFromGallery();
+        } else if (requestCode == CAMERA_REQ && grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openCamera();
         } else {
-            Toast.makeText(this, "No camera app found.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Permission denied.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Handle results
+    private void selectImageFromGallery() {
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        i.setType("image/*");
+        startActivityForResult(i, IMAGE_REQ);
+    }
+
+    private void openCamera() {
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (i.resolveActivity(getPackageManager()) != null) startActivityForResult(i, CAMERA_REQ);
+        else Toast.makeText(this, "No camera app found.", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -333,24 +351,18 @@ public class FoundReportActivity extends AppCompatActivity {
                 imagePath = data.getData();
                 Picasso.get().load(imagePath).into(imageView);
             } else if (requestCode == CAMERA_REQ && data != null) {
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-                // Convert bitmap to URI
-                Uri tempUri = getImageUri(imageBitmap);
-                imagePath = tempUri;
-
-                imageView.setImageBitmap(imageBitmap);
+                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                imagePath = getImageUri(bitmap);
+                imageView.setImageBitmap(bitmap);
             }
         }
     }
 
-    // Convert bitmap to Uri
     private Uri getImageUri(Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(
-                getContentResolver(), bitmap, "CapturedImage_" + System.currentTimeMillis(), null);
+                getContentResolver(), bitmap, "Captured_" + System.currentTimeMillis(), null);
         return Uri.parse(path);
     }
 }

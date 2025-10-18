@@ -1,6 +1,7 @@
 package com.example.finalcasestudy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class MatchingResultFoundAdapter extends RecyclerView.Adapter<MatchingResultFoundAdapter.ViewHolder> {
@@ -18,6 +21,7 @@ public class MatchingResultFoundAdapter extends RecyclerView.Adapter<MatchingRes
     private List<MatchingResultFoundData> itemList;
 
     public MatchingResultFoundAdapter(Context context, List<MatchingResultFoundData> itemList) {
+        this.context = context;
         this.itemList = itemList;
     }
 
@@ -31,8 +35,20 @@ public class MatchingResultFoundAdapter extends RecyclerView.Adapter<MatchingRes
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MatchingResultFoundData item = itemList.get(position);
-        holder.tvItemName.setText(item.getName());
+
+        holder.tvItemName.setText(item.getItemName());
         holder.tvDate.setText(item.getDate());
+
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Picasso.get().load(item.getImageUrl()).into(holder.ivItemImage);
+        }
+
+        // ✅ Open FoundDetailsActivity when "More Details" is clicked
+        holder.tvMoreDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(context, FoundDetailsActivity.class);
+            intent.putExtra("documentId", item.getDocumentId()); // ✅ fixed key
+            context.startActivity(intent);
+        });
     }
 
     @Override

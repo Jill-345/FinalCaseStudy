@@ -30,14 +30,6 @@
                 android:contentDescription="Item Image"/>
 
             <!-- Plus Icon for empty state -->
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:src="@drawable/plus_placeholder"
-                android:contentDescription="No Image"
-                app:tint="#FFFFFF" />
 
         </FrameLayout>
 

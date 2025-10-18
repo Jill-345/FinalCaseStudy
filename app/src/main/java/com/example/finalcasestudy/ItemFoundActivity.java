@@ -47,7 +47,7 @@ public class ItemFoundActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_item_found);
 
-        // ✅ Fix for full-screen layout
+        // ✅ Full screen fix
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -61,21 +61,21 @@ public class ItemFoundActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.editTextText);
         buttonSearch = findViewById(R.id.buttonSearch);
 
-        // ✅ Initialize Firestore
+        // ✅ Firestore setup
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
-        adapter = new ItemFoundAdapter(itemList);
+        adapter = new ItemFoundAdapter(this, itemList);
         recyclerView.setAdapter(adapter);
 
-        // 🔥 Load data from Firestore
+        // 🔥 Load all found items
         loadFoundItems();
 
-        // ➕ FAB to add found item
+        // ➕ FAB Add new found item
         fabAddFound.setOnClickListener(v -> {
             startActivity(new Intent(this, FoundReportActivity.class));
         });
 
-        // 🔍 Search button click
+        // 🔍 Search button
         buttonSearch.setOnClickListener(v -> {
             String query = searchBar.getText().toString().trim();
             if (!query.isEmpty()) {
@@ -87,7 +87,7 @@ public class ItemFoundActivity extends AppCompatActivity {
             }
         });
 
-        // 🧭 Spinner setup
+        // 🧭 Spinner menu
         ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(
                 this,
                 R.array.menu_items,
@@ -100,7 +100,6 @@ public class ItemFoundActivity extends AppCompatActivity {
         int index = adapterSpinner.getPosition(current);
         spinner.setSelection(index);
 
-        // ✅ Prevent spinner from blocking search bar clicks
         spinner.setOnTouchListener((v, event) -> {
             spinnerInitialized = true;
             return false;
@@ -134,7 +133,6 @@ public class ItemFoundActivity extends AppCompatActivity {
                         break;
                 }
 
-                // Keep spinner highlighting on current
                 spinner.post(() -> spinner.setSelection(adapterSpinner.getPosition(current)));
             }
 
@@ -154,25 +152,23 @@ public class ItemFoundActivity extends AppCompatActivity {
 
     private void loadFoundItems() {
         db.collection("reported_items")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Toast.makeText(ItemFoundActivity.this, "Error loading data", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(ItemFoundActivity.this, "Error loading data", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                        itemList.clear();
-                        if (value != null) {
-                            for (QueryDocumentSnapshot doc : value) {
-                                String name = doc.getString("itemName");
-                                String date = doc.getString("dateFound");
-                                String imageUrl = doc.getString("imageUrl");
+                    itemList.clear();
+                    if (value != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            String documentId = doc.getId();
+                            String name = doc.getString("itemName");
+                            String date = doc.getString("dateFound");
+                            String imageUrl = doc.getString("imageUrl");
 
-                                itemList.add(new ItemFoundData(name, date, imageUrl));
-                            }
-                            adapter.notifyDataSetChanged();
+                            itemList.add(new ItemFoundData(documentId, name, date, imageUrl));
                         }
+                        adapter.notifyDataSetChanged();
                     }
                 });
     }

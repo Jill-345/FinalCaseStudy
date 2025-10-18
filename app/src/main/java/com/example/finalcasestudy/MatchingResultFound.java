@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -29,8 +30,8 @@ public class MatchingResultFound extends AppCompatActivity {
     private Spinner spinner;
     private boolean spinnerInitialized = false;
     private FirebaseFirestore db;
-    private ItemFoundAdapter adapter;
-    private List<ItemFoundData> itemList;
+    private MatchingResultFoundAdapter adapter;
+    private List<MatchingResultFoundData> itemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +51,10 @@ public class MatchingResultFound extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
-        adapter = new ItemFoundAdapter(itemList);
+        adapter = new MatchingResultFoundAdapter(this, itemList);
         recyclerView.setAdapter(adapter);
 
-        // 🔎 Get the search keyword from the previous activity
+        // Get search query from previous activity
         String searchQuery = getIntent().getStringExtra("searchQuery");
         if (searchQuery != null && !searchQuery.isEmpty()) {
             loadMatchingResults(searchQuery);
@@ -61,7 +62,7 @@ public class MatchingResultFound extends AppCompatActivity {
             Toast.makeText(this, "No search term provided.", Toast.LENGTH_SHORT).show();
         }
 
-        // 📋 Spinner setup (same as in ItemFoundActivity)
+        // Spinner setup
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.menu_items,
@@ -113,7 +114,7 @@ public class MatchingResultFound extends AppCompatActivity {
         });
     }
 
-    // 🔥 Firestore query to load results based on search term
+    // Load Firestore data
     private void loadMatchingResults(String query) {
         db.collection("reported_items")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -129,9 +130,14 @@ public class MatchingResultFound extends AppCompatActivity {
                         String date = doc.getString("dateFound");
                         String imageUrl = doc.getString("imageUrl");
 
-                        // 🔍 Check if search term matches any field (case-insensitive)
+                        // Check if query matches any field
                         if (matchesQuery(query, itemName, description, location, finder, date)) {
-                            ItemFoundData item = new ItemFoundData(itemName, date, imageUrl);
+                            MatchingResultFoundData item = new MatchingResultFoundData(
+                                    doc.getId(), // important: send Firestore ID
+                                    itemName,
+                                    date,
+                                    imageUrl
+                            );
                             itemList.add(item);
                         }
                     }
@@ -147,7 +153,6 @@ public class MatchingResultFound extends AppCompatActivity {
                 );
     }
 
-    // ✅ Helper: check if query matches any of the text fields
     private boolean matchesQuery(String query, String... fields) {
         String lowerQuery = query.toLowerCase();
         for (String field : fields) {

@@ -13,11 +13,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tableLostDetails"
-        app:layout_constraintVertical_bias="0.982">
+        app:layout_constraintBottom_toTopOf="@id/button12"
+        app:layout_constraintVertical_bias="0.9">
 
         <RadioButton
             android:id="@+id/radioClaimed"
@@ -41,6 +41,20 @@
             android:textSize="13sp" />
     </RadioGroup>
 
+    <Button
+        android:id="@+id/button12"
+        android:layout_width="143dp"
+        android:layout_height="41dp"
+        android:layout_marginBottom="4dp"
+        android:backgroundTint="#940202"
+        android:backgroundTintMode="add"
+        android:text="Save Info"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/textView18"
         android:layout_width="284dp"
@@ -54,7 +68,7 @@
         app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.168" />
+        app:layout_constraintVertical_bias="0.145" />
 
     <TextView
         android:id="@+id/textView19"
@@ -108,7 +122,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
 
-    <!-- 🟣 FrameLayout: Image Section -->
     <FrameLayout
         android:id="@+id/frameItemImage"
         android:layout_width="161dp"
@@ -128,17 +141,8 @@
             android:contentDescription="Item Image"
             android:scaleType="centerCrop" />
 
-        <ImageView
-            android:id="@+id/ivPlaceholder"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:contentDescription="No Image"
-            android:src="@drawable/plus_placeholder"
-            app:tint="#FFFFFF" />
     </FrameLayout>
 
-    <!-- 🟣 Lost Item Details Table -->
     <TableLayout
         android:id="@+id/tableLostDetails"
         android:layout_width="388dp"
@@ -158,7 +162,6 @@
                 android:text="Item Name:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/tvItemName"
                 android:background="@drawable/cell_border"
@@ -172,7 +175,6 @@
                 android:text="Description:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/tvDescription"
                 android:background="@drawable/cell_border"
@@ -186,7 +188,6 @@
                 android:text="Category:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/tvCategory"
                 android:background="@drawable/cell_border"
@@ -197,10 +198,9 @@
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
-                android:text="Owner:"
+                android:text="Finder:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/tvOwner"
                 android:background="@drawable/cell_border"
@@ -208,11 +208,13 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Contact Number:"
                 android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/tvContact"
@@ -240,7 +242,6 @@
                 android:text="Location of Loss:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/tvLocationLoss"
                 android:background="@drawable/cell_border"
@@ -255,8 +256,8 @@
         android:id="@+id/textViewClaimsHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="sans-serif-medium"
         android:text="Claims"
         android:textColor="#000000"
@@ -283,14 +284,15 @@
                 android:text="Claimant"
                 android:textColor="#000000"
                 android:textStyle="bold" />
-
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Status"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
+                android:id="@+id/size"
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Submission Date"
@@ -298,25 +300,32 @@
                 android:textStyle="bold" />
         </TableRow>
 
+        <!-- Editable row -->
         <TableRow>
-            <TextView
-                android:id="@+id/tvClaimant"
-                android:background="@drawable/cell_border"
-                android:padding="8dp"
-                android:textColor="#000000" />
 
-            <TextView
-                android:id="@+id/tvStatus"
+            <EditText
+                android:id="@+id/etClaimant"
                 android:background="@drawable/cell_border"
+                android:hint="Enter name"
                 android:padding="8dp"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/tvSubmissionDate"
+            <EditText
+                android:id="@+id/etStatus"
                 android:background="@drawable/cell_border"
+                android:hint="Enter status"
                 android:padding="8dp"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="14sp" />
 
+            <EditText
+                android:id="@+id/etSubmissionDate"
+                android:background="@drawable/cell_border"
+                android:hint="MM/DD/YYYY"
+                android:padding="8dp"
+                android:textColor="#000000"
+                android:textSize="14sp" />
         </TableRow>
     </TableLayout>
 

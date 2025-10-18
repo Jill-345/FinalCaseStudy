@@ -1,5 +1,7 @@
 package com.example.finalcasestudy;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +17,18 @@ import java.util.List;
 
 public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.ViewHolder> {
 
+    private Context context;
     private List<ItemFoundData> itemList;
 
-    // Constructor
-    public ItemFoundAdapter(List<ItemFoundData> itemList) {
+    public ItemFoundAdapter(Context context, List<ItemFoundData> itemList) {
+        this.context = context;
         this.itemList = itemList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Use your existing XML layout
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_item_found_frame, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_item_found_frame, parent, false);
         return new ViewHolder(view);
     }
 
@@ -37,7 +38,6 @@ public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.View
         holder.tvItemName.setText(item.getName());
         holder.tvDate.setText(item.getDate());
 
-        // Load image with Picasso
         if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
             Picasso.get()
                     .load(item.getImageUrl())
@@ -49,6 +49,13 @@ public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.View
         } else {
             holder.ivItemImage.setImageResource(R.drawable.plus_placeholder);
         }
+
+        // ✅ Click “More Details” to open FoundDetailsActivity
+        holder.tvMoreDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(context, FoundDetailsActivity.class);
+            intent.putExtra("documentId", item.getDocumentId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -64,7 +71,7 @@ public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.View
             super(itemView);
             tvItemName = itemView.findViewById(R.id.textview3);
             tvDate = itemView.findViewById(R.id.textview4);
-            tvMoreDetails = itemView.findViewById(R.id.textview5);
+            tvMoreDetails = itemView.findViewById(R.id.textview5); // make sure exists in layout
             ivItemImage = itemView.findViewById(R.id.imageview2);
         }
     }
