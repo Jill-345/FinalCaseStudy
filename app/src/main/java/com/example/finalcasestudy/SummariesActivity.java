@@ -6,25 +6,38 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class SummariesActivity extends AppCompatActivity {
 
     private Spinner spinner;
-    boolean spinnerInitialized;
+    private boolean spinnerInitialized;
+    private FirebaseFirestore db;
+
+    // 🔹 TextViews for displaying counts
+    private TextView tvLostReports, tvFoundFromLost, tvUnfoundItems;
+    private TextView tvFoundReports, tvClaimedItems, tvUnclaimedItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_summaries);
+
+        // Handle insets for fullscreen layout
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -33,6 +46,7 @@ public class SummariesActivity extends AppCompatActivity {
 
         spinner = findViewById(R.id.spinner4);
 
+        // 🔹 Spinner setup for navigation
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.menu_items,
@@ -41,7 +55,6 @@ public class SummariesActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-// ✅ Mark current screen
         String current = "Summary";
         int index = adapter.getPosition(current);
         spinner.setSelection(index);
@@ -74,25 +87,101 @@ public class SummariesActivity extends AppCompatActivity {
                         break;
                 }
 
-                // ✅ Optional: visually reset spinner back to current
                 spinner.post(() -> spinner.setSelection(adapter.getPosition(current)));
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // 🔹 Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // 🔹 Initialize TextViews (make sure IDs match in your XML)
+        tvLostReports = findViewById(R.id.textView26);
+        tvFoundFromLost = findViewById(R.id.textView28);
+        tvUnfoundItems = findViewById(R.id.textView30);
+
+        tvFoundReports = findViewById(R.id.textView33);
+        tvClaimedItems = findViewById(R.id.textView35);
+        tvUnclaimedItems = findViewById(R.id.textView37);
+
+        // 🔹 Start real-time listeners
+        startLostItemListener();
+        startFoundItemListener();
+    }
+
+    // 🔸 Real-time listener for Lost Items
+    private void startLostItemListener() {
+        db.collection("lost_items").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot querySnapshot, FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(SummariesActivity.this, "Error loading lost items: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (querySnapshot != null) {
+                    int totalLost = querySnapshot.size();
+                    int foundCount = 0;
+                    int unfoundCount = 0;
+
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        String status = doc.getString("status");
+                        if ("Found".equalsIgnoreCase(status)) {
+                            foundCount++;
+                        } else {
+                            unfoundCount++;
+                        }
+                    }
+
+                    tvLostReports.setText(String.valueOf(totalLost));
+                    tvFoundFromLost.setText(String.valueOf(foundCount));
+                    tvUnfoundItems.setText(String.valueOf(unfoundCount));
+                }
             }
         });
     }
 
-    // Start target Activity only if it's not the current one
+    // 🔸 Real-time listener for Found Items
+    private void startFoundItemListener() {
+        db.collection("reported_items").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot querySnapshot, FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(SummariesActivity.this, "Error loading found items: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (querySnapshot != null) {
+                    int totalFound = querySnapshot.size();
+                    int claimed = 0;
+                    int unclaimed = 0;
+
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        String claimStatus = doc.getString("claimStatus");
+                        if ("Claimed".equalsIgnoreCase(claimStatus)) {
+                            claimed++;
+                        } else {
+                            unclaimed++;
+                        }
+                    }
+
+                    tvFoundReports.setText(String.valueOf(totalFound));
+                    tvClaimedItems.setText(String.valueOf(claimed));
+                    tvUnclaimedItems.setText(String.valueOf(unclaimed));
+                }
+            }
+        });
+    }
+
+    // 🔹 Helper for screen navigation
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
-            // These flags prevent duplicate screens from stacking
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             overridePendingTransition(0, 0);
         }
     }
 }
-

@@ -26,7 +26,7 @@
             android:paddingEnd="16dp"
             android:scaleX="0.9"
             android:scaleY="0.9"
-            android:text="Found"
+            android:text="Claimed"
             android:textColor="#000000"
             android:textSize="13sp" />
 

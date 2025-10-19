@@ -41,8 +41,9 @@ public class LostDetailsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_lost_details);
 
-        // ✅ Window Insets
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        // ✅ Handle window insets (fixed)
+        View mainView = findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -93,7 +94,8 @@ public class LostDetailsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // ✅ Initialize UI elements
@@ -117,6 +119,30 @@ public class LostDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, "No document ID received.", Toast.LENGTH_SHORT).show();
             finish();
         }
+
+        // ✅ Update Firestore when radio button changes (fixed lambda issue)
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                final String newStatus; // must be final for inner usage
+                if (checkedId == R.id.radioFound) {
+                    newStatus = "Found";
+                } else if (checkedId == R.id.radioNotFound) {
+                    newStatus = "Not Found";
+                } else {
+                    newStatus = "";
+                }
+
+                if (!newStatus.isEmpty() && documentId != null) {
+                    db.collection("lost_items").document(documentId)
+                            .update("status", newStatus)
+                            .addOnSuccessListener(aVoid ->
+                                    Toast.makeText(LostDetailsActivity.this, "Status updated to " + newStatus, Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(LostDetailsActivity.this, "Failed to update status: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
     }
 
     // 🔹 Load Lost Item Details from Firestore
@@ -138,14 +164,13 @@ public class LostDetailsActivity extends AppCompatActivity {
             tvOwner.setText(doc.getString("owner"));
             tvContact.setText(doc.getString("contactNumber"));
             tvDateLoss.setText(doc.getString("dateLost"));
-            tvLocationLoss.setText(doc.getString("location"));
+            tvLocationLoss.setText(doc.getString("locationLost"));
 
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Picasso.get().load(imageUrl).into(ivItemImage);
             }
 
-            // Set radio buttons based on item status
             String status = doc.getString("status");
             if ("Found".equalsIgnoreCase(status)) {
                 radioFound.setChecked(true);
