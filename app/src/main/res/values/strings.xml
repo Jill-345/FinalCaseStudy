@@ -10,9 +10,15 @@
 
     <string-array name="category_items">
         <item>Electronics</item>
+        <item>Documents</item>
+        <item>Cash</item>
+        <item>Cards and IDs</item>
+        <item>Keys</item>
+        <item>Personal Items</item>
         <item>Clothing</item>
         <item>Accessories</item>
-        <item>Documents</item>
+        <item>School Supplies</item>
         <item>Others</item>
     </string-array>
+
 </resources>

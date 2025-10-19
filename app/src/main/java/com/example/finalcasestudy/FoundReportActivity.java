@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -108,6 +109,9 @@ public class FoundReportActivity extends AppCompatActivity {
 
             String itemName = itemNameInput.getText().toString().trim();
             String description = descInput.getText().toString().trim();
+            String category = (categorySpinner.getSelectedItem() != null)
+                    ? categorySpinner.getSelectedItem().toString().trim()
+                    : "";
             String finder = finderInput.getText().toString().trim();
             String number = numberInput.getText().toString().trim();
             String dateFound = dateFoundInput.getText().toString().trim();
@@ -119,10 +123,18 @@ public class FoundReportActivity extends AppCompatActivity {
                 return;
             }
 
-            saveItemDetails(itemName, description, finder, number, dateFound, location, uploadedImageUrl);
+            saveItemDetails(itemName, description, category, finder, number, dateFound, location, uploadedImageUrl);
         });
 
-        categorySpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // optional: do something when category changes
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
 
         ArrayAdapter<CharSequence> adapter =
                 ArrayAdapter.createFromResource(this, R.array.category_items,
@@ -261,11 +273,12 @@ public class FoundReportActivity extends AppCompatActivity {
     }
 
     // 🔹 Save to Firestore
-    private void saveItemDetails(String itemName, String description, String finder, String number,
+    private void saveItemDetails(String itemName, String category, String description, String finder, String number,
                                  String dateFound, String location, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
         itemData.put("itemName", itemName);
         itemData.put("description", description);
+        itemData.put("category", category);
         itemData.put("finder", finder);
         itemData.put("contactNumber", number);
         itemData.put("dateFound", dateFound);
