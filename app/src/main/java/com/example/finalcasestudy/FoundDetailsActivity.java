@@ -11,8 +11,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,16 +33,15 @@ public class FoundDetailsActivity extends AppCompatActivity {
     private boolean spinnerInitialized;
 
     private ImageView ivItemImage;
-    private TextView tvItemName, tvDescription, tvCategory, tvOwner, tvContact, tvDateLoss, tvLocationLoss;
+    private TextView tvItemName, tvDescription, tvCategory, tvOwner, tvContact, tvDateFound, tvLocation;
     private FirebaseFirestore db;
 
-    // 🔹 Editable claim fields
     private EditText etClaimant, etStatus, etSubmissionDate;
     private RadioGroup radioGroup;
     private RadioButton radioClaimed, radioUnclaimed;
     private Button btnSaveClaim;
 
-    private String documentId; // store document ID for updates
+    private String documentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +49,18 @@ public class FoundDetailsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_found_details);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        // ✅ Handle window insets
+        View mainView = findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // 🔹 Firebase
+        // ✅ Initialize Firebase
         db = FirebaseFirestore.getInstance();
 
-        // 🔹 Spinner setup
+        // ✅ Spinner setup
         spinner = findViewById(R.id.spinner3);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
@@ -106,15 +105,15 @@ public class FoundDetailsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // 🔹 Initialize UI fields
+        // ✅ Initialize UI elements
         ivItemImage = findViewById(R.id.ivItemImage);
         tvItemName = findViewById(R.id.tvItemName);
         tvDescription = findViewById(R.id.tvDescription);
         tvCategory = findViewById(R.id.tvCategory);
         tvOwner = findViewById(R.id.tvOwner);
         tvContact = findViewById(R.id.tvContact);
-        tvDateLoss = findViewById(R.id.tvDateLoss);
-        tvLocationLoss = findViewById(R.id.tvLocationLoss);
+        tvDateFound = findViewById(R.id.tvDateLoss);
+        tvLocation = findViewById(R.id.tvLocationLoss);
 
         etClaimant = findViewById(R.id.etClaimant);
         etStatus = findViewById(R.id.etStatus);
@@ -124,7 +123,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
         radioUnclaimed = findViewById(R.id.radioUnclaimed);
         btnSaveClaim = findViewById(R.id.button12);
 
-        // 🔹 Get Document ID from Intent
+        // ✅ Get document ID from intent
         documentId = getIntent().getStringExtra("documentId");
         if (documentId != null && !documentId.isEmpty()) {
             loadItemDetails(documentId);
@@ -133,10 +132,20 @@ public class FoundDetailsActivity extends AppCompatActivity {
             finish();
         }
 
-        // 🔹 Save Claim button logic
+        // ✅ Sync radio buttons with status field
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.radioClaimed) {
+                etStatus.setText("Claimed");
+            } else if (checkedId == R.id.radioUnclaimed) {
+                etStatus.setText("Unclaimed");
+            }
+        });
+
+        // ✅ Save claim info
         btnSaveClaim.setOnClickListener(v -> saveClaimToFirestore());
     }
 
+    // 🔹 Load data from Firestore
     private void loadItemDetails(String documentId) {
         db.collection("reported_items").document(documentId)
                 .get()
@@ -146,6 +155,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
                 );
     }
 
+    // 🔹 Display item details
     private void displayItemDetails(DocumentSnapshot doc) {
         if (doc.exists()) {
             tvItemName.setText(doc.getString("itemName"));
@@ -153,22 +163,34 @@ public class FoundDetailsActivity extends AppCompatActivity {
             tvCategory.setText(doc.getString("category"));
             tvOwner.setText(doc.getString("finder"));
             tvContact.setText(doc.getString("contactNumber"));
-            tvDateLoss.setText(doc.getString("dateFound"));
-            tvLocationLoss.setText(doc.getString("location"));
+            tvDateFound.setText(doc.getString("dateFound"));
+            tvLocation.setText(doc.getString("location"));
 
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Picasso.get().load(imageUrl).into(ivItemImage);
             }
 
-            // Load existing claim data if present
+            // Load claim details
             etClaimant.setText(doc.getString("claimant"));
             etStatus.setText(doc.getString("claimStatus"));
             etSubmissionDate.setText(doc.getString("submissionDate"));
+
+            // ✅ Set radio buttons according to claimStatus
+            String claimStatus = doc.getString("claimStatus");
+            if (claimStatus != null) {
+                if (claimStatus.equalsIgnoreCase("Claimed")) {
+                    radioClaimed.setChecked(true);
+                } else if (claimStatus.equalsIgnoreCase("Unclaimed")) {
+                    radioUnclaimed.setChecked(true);
+                } else {
+                    radioGroup.clearCheck();
+                }
+            }
         }
     }
 
-    // 🟢 Save Claim to Firestore
+    // 🔹 Save claim info to Firestore
     private void saveClaimToFirestore() {
         if (documentId == null) return;
 
@@ -189,13 +211,12 @@ public class FoundDetailsActivity extends AppCompatActivity {
         db.collection("reported_items").document(documentId)
                 .update(claimData)
                 .addOnSuccessListener(aVoid ->
-                        Toast.makeText(this, "Claim information saved successfully!", Toast.LENGTH_SHORT).show()
-                )
+                        Toast.makeText(this, "Claim information saved successfully!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error saving claim: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
+                        Toast.makeText(this, "Error saving claim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+    // 🔹 Spinner Navigation Helper
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
