@@ -53,7 +53,7 @@ public class FoundReportActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText itemNameInput, descInput, finderInput, numberInput, dateFoundInput, locationFoundInput;
 
-    private Spinner spinner;
+    private Spinner spinner, categorySpinner;
     private boolean spinnerInitialized;
 
     private Calendar calendar;
@@ -73,6 +73,7 @@ public class FoundReportActivity extends AppCompatActivity {
 
         // 🔹 Initialize UI components
         spinner = findViewById(R.id.spinner6);
+        categorySpinner = findViewById(R.id.spinner7);
         uploadImageBtn = findViewById(R.id.button10);
         reportFoundBtn = findViewById(R.id.button11);
         imageView = findViewById(R.id.ivItemImage);
@@ -120,6 +121,17 @@ public class FoundReportActivity extends AppCompatActivity {
 
             saveItemDetails(itemName, description, finder, number, dateFound, location, uploadedImageUrl);
         });
+
+        categorySpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
+
+        ArrayAdapter<CharSequence> adapter =
+                ArrayAdapter.createFromResource(this, R.array.category_items,
+                        android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item
+        );
+
+        categorySpinner.setAdapter(adapter);
+
 
         // 🔹 Spinner setup
         setupSpinner();
@@ -183,6 +195,8 @@ public class FoundReportActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
         }
     }
+
+
 
     // 🔹 Cloudinary setup
     private void initConfig() {

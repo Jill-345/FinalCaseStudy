@@ -138,7 +138,7 @@ public class LostDetailsActivity extends AppCompatActivity {
             tvOwner.setText(doc.getString("owner"));
             tvContact.setText(doc.getString("contactNumber"));
             tvDateLoss.setText(doc.getString("dateLost"));
-            tvLocationLoss.setText(doc.getString("locationLost"));
+            tvLocationLoss.setText(doc.getString("location"));
 
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {

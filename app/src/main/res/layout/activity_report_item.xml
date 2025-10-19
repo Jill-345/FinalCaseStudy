@@ -43,7 +43,7 @@
         android:layout_height="35dp"
         android:fontFamily="@font/times_new_roman"
         android:text="Lost and Found Online System"
-        android:textColor="#000000"
+        android:textColor="#ffffff"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +54,7 @@
 
     <TextView
         android:id="@+id/textView10"
-        android:layout_width="417dp"
+        android:layout_width="408dp"
         android:layout_height="101dp"
         android:layout_marginBottom="5dp"
         android:background="#A00606"
