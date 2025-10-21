@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -53,7 +54,7 @@ public class LostReportActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText itemNameInput2, descInput2, ownerInput2, numberInput2, dateLostInput, locationLostInput;
 
-    private Spinner spinner;
+    private Spinner spinner, categorySpinner;
     private boolean spinnerInitialized;
 
     private Calendar calendar;
@@ -73,6 +74,7 @@ public class LostReportActivity extends AppCompatActivity {
 
         // 🔹 Initialize UI
         spinner = findViewById(R.id.spinner2);
+        categorySpinner = findViewById(R.id.spinner5);
         uploadImageBtn = findViewById(R.id.button13);
         reportLostBtn = findViewById(R.id.button9);
         imageView = findViewById(R.id.ivItemImage2);
@@ -107,6 +109,9 @@ public class LostReportActivity extends AppCompatActivity {
 
             String itemName = itemNameInput2.getText().toString().trim();
             String description = descInput2.getText().toString().trim();
+            String category = (categorySpinner.getSelectedItem() != null)
+                    ? categorySpinner.getSelectedItem().toString().trim()
+                    : "";
             String owner = ownerInput2.getText().toString().trim();
             String number = numberInput2.getText().toString().trim();
             String dateLost = dateLostInput.getText().toString().trim();
@@ -118,8 +123,26 @@ public class LostReportActivity extends AppCompatActivity {
                 return;
             }
 
-            saveItemDetails(itemName, description, owner, number, dateLost, location, uploadedImageUrl);
+            saveItemDetails(itemName, description, category, owner, number, dateLost, location, uploadedImageUrl);
         });
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // optional: do something when category changes
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+
+        ArrayAdapter<CharSequence> adapter =
+                ArrayAdapter.createFromResource(this, R.array.category_items,
+                        android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item
+        );
+
+        categorySpinner.setAdapter(adapter);
 
         // 🔹 Spinner navigation
         setupSpinner();
@@ -242,11 +265,12 @@ public class LostReportActivity extends AppCompatActivity {
     }
 
     // 🔹 Save to Firestore
-    private void saveItemDetails(String itemName, String description, String owner, String number,
+    private void saveItemDetails(String itemName, String description, String category, String owner, String number,
                                  String dateLost, String location, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
         itemData.put("itemName", itemName);
         itemData.put("description", description);
+        itemData.put("category", category);
         itemData.put("owner", owner);
         itemData.put("contactNumber", number);
         itemData.put("dateLost", dateLost);

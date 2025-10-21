@@ -175,10 +175,11 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
-                android:text="Location of Loss:"
+                android:text="Location Loss:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
             <TextView
