@@ -123,39 +123,29 @@ public class FoundReportActivity extends AppCompatActivity {
                 return;
             }
 
-            saveItemDetails(itemName, category, description, finder, number, dateFound, location, uploadedImageUrl);
+            // ✅ Fixed order: description before category
+            saveItemDetails(itemName, description, category, finder, number, dateFound, location, uploadedImageUrl);
         });
+
+        // 🔹 Setup category spinner
+        ArrayAdapter<CharSequence> categoryAdapter =
+                ArrayAdapter.createFromResource(this, R.array.category_items, android.R.layout.simple_spinner_item);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(categoryAdapter);
 
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // optional: do something when category changes
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {}
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-
-        ArrayAdapter<CharSequence> adapter =
-                ArrayAdapter.createFromResource(this, R.array.category_items,
-                        android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item
-        );
-
-        categorySpinner.setAdapter(adapter);
-
-
-        // 🔹 Spinner setup
+        // 🔹 Setup navigation spinner
         setupSpinner();
     }
 
-    // 🔹 Spinner navigation like LostReportActivity
+    // 🔹 Spinner navigation setup
     private void setupSpinner() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.menu_items,
-                android.R.layout.simple_spinner_item
-        );
+                this, R.array.menu_items, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -165,14 +155,13 @@ public class FoundReportActivity extends AppCompatActivity {
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (!spinnerInitialized) {
                     spinnerInitialized = true;
                     return;
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
-
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
@@ -194,8 +183,7 @@ public class FoundReportActivity extends AppCompatActivity {
                 spinner.post(() -> spinner.setSelection(adapter.getPosition(current)));
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
@@ -207,8 +195,6 @@ public class FoundReportActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
         }
     }
-
-
 
     // 🔹 Cloudinary setup
     private void initConfig() {
@@ -223,7 +209,7 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
-    // 🔹 Upload Image
+    // 🔹 Upload image to Cloudinary
     private void uploadImageToCloudinary() {
         Toast.makeText(this, "Uploading image to Cloudinary...", Toast.LENGTH_SHORT).show();
 
@@ -248,10 +234,6 @@ public class FoundReportActivity extends AppCompatActivity {
     // 🔹 Date picker setup
     private void setupDatePicker() {
         calendar = Calendar.getInstance();
-        dateFoundInput.setFocusable(true);
-        dateFoundInput.setFocusableInTouchMode(true);
-        dateFoundInput.setClickable(true);
-
         dateFoundInput.setOnClickListener(v -> {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
@@ -272,7 +254,7 @@ public class FoundReportActivity extends AppCompatActivity {
         dateFoundInput.setText(sdf.format(calendar.getTime()));
     }
 
-    // 🔹 Save to Firestore
+    // 🔹 Save to Firestore (fixed order)
     private void saveItemDetails(String itemName, String description, String category, String finder, String number,
                                  String dateFound, String location, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
@@ -301,7 +283,6 @@ public class FoundReportActivity extends AppCompatActivity {
                     imageView.setImageResource(0);
                     uploadedImageUrl = null;
 
-                    // Go to ItemFoundActivity
                     startActivity(new Intent(this, ItemFoundActivity.class));
                     finish();
                 })
