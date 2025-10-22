@@ -11,7 +11,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,11 +19,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.EventListener;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +37,8 @@ public class ItemFoundActivity extends AppCompatActivity {
     private ItemFoundAdapter adapter;
     private List<ItemFoundData> itemList;
     private FirebaseFirestore db;
+    private TabLayout tabLayout;
+    private String currentCategory = "All"; // Track selected category
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +53,14 @@ public class ItemFoundActivity extends AppCompatActivity {
             return insets;
         });
 
+        // 🔧 Initialize Views
         fabAddFound = findViewById(R.id.floatingActionButton2);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         spinner = findViewById(R.id.spinner);
         searchBar = findViewById(R.id.editTextText);
         buttonSearch = findViewById(R.id.buttonSearch);
+        tabLayout = findViewById(R.id.tabLayout);
 
         // ✅ Firestore setup
         db = FirebaseFirestore.getInstance();
@@ -67,7 +68,7 @@ public class ItemFoundActivity extends AppCompatActivity {
         adapter = new ItemFoundAdapter(this, itemList);
         recyclerView.setAdapter(adapter);
 
-        // 🔥 Load all found items
+        // 🔥 Load all found items by default
         loadFoundItems();
 
         // ➕ FAB Add new found item
@@ -139,6 +140,24 @@ public class ItemFoundActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+
+        // 🏷️ TabLayout Category Filter
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                currentCategory = tab.getText().toString();
+                filterByCategory(currentCategory);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                currentCategory = tab.getText().toString();
+                filterByCategory(currentCategory);
+            }
+        });
     }
 
     private void openIfNotCurrent(Class<?> targetActivity) {
@@ -150,11 +169,42 @@ public class ItemFoundActivity extends AppCompatActivity {
         }
     }
 
+    // 🧠 Load all found items
     private void loadFoundItems() {
         db.collection("reported_items")
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
                         Toast.makeText(ItemFoundActivity.this, "Error loading data", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    itemList.clear();
+                    if (value != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            String documentId = doc.getId();
+                            String name = doc.getString("itemName");
+                            String date = doc.getString("dateFound");
+                            String imageUrl = doc.getString("imageUrl");
+
+                            itemList.add(new ItemFoundData(documentId, name, date, imageUrl));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
+    // 🏷️ Filter by category from tabs
+    private void filterByCategory(String category) {
+        if (category.equals("All")) {
+            loadFoundItems();
+            return;
+        }
+
+        db.collection("reported_items")
+                .whereEqualTo("category", category)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(ItemFoundActivity.this, "Error loading category data", Toast.LENGTH_SHORT).show();
                         return;
                     }
 

@@ -123,7 +123,7 @@ public class FoundReportActivity extends AppCompatActivity {
                 return;
             }
 
-            saveItemDetails(itemName, description, category, finder, number, dateFound, location, uploadedImageUrl);
+            saveItemDetails(itemName, category, description, finder, number, dateFound, location, uploadedImageUrl);
         });
 
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -273,7 +273,7 @@ public class FoundReportActivity extends AppCompatActivity {
     }
 
     // 🔹 Save to Firestore
-    private void saveItemDetails(String itemName, String category, String description, String finder, String number,
+    private void saveItemDetails(String itemName, String description, String category, String finder, String number,
                                  String dateFound, String location, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
         itemData.put("itemName", itemName);

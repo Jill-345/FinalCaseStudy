@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -32,8 +33,9 @@ public class ItemLostActivity extends AppCompatActivity {
     private Spinner spinner;
     private EditText searchBar;
     private ImageButton buttonSearch;
-    private boolean spinnerInitialized;
+    private TabLayout tabLayout;
 
+    private boolean spinnerInitialized;
     private FirebaseFirestore db;
     private List<ItemLostData> itemList;
     private ItemLostAdapter adapter;
@@ -50,29 +52,30 @@ public class ItemLostActivity extends AppCompatActivity {
             return insets;
         });
 
+        // 🔹 Initialize UI components
         fabAddLost = findViewById(R.id.floatingActionButton2);
         recyclerView = findViewById(R.id.recyclerView);
         spinner = findViewById(R.id.spinner);
         searchBar = findViewById(R.id.editTextText);
         buttonSearch = findViewById(R.id.buttonSearch);
+        tabLayout = findViewById(R.id.tabLayout);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // 🔥 Firestore setup
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
         adapter = new ItemLostAdapter(this, itemList);
         recyclerView.setAdapter(adapter);
 
-        // Load lost items
+        // Load all lost items initially
         loadLostItems();
 
-        // ➕ FAB Add new lost item
+        // ➕ FAB for adding new lost item
         fabAddLost.setOnClickListener(v -> {
             startActivity(new Intent(this, LostReportActivity.class));
         });
 
-        // 🔍 Search button
+        // 🔍 Search Button
         buttonSearch.setOnClickListener(v -> {
             String query = searchBar.getText().toString().trim();
             if (!query.isEmpty()) {
@@ -80,11 +83,88 @@ public class ItemLostActivity extends AppCompatActivity {
                 intent.putExtra("searchQuery", query);
                 startActivity(intent);
             } else {
-                Toast.makeText(ItemLostActivity.this, "Please enter something to search.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter something to search.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // 🧭 Spinner setup
+        // 🧭 Spinner Navigation
+        setupSpinner();
+
+        // 🏷 Tab Filtering
+        setupTabs();
+    }
+
+    private void setupTabs() {
+        // Listen for tab selection and filter by category
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                String selectedCategory = tab.getText().toString();
+                if (selectedCategory.equals("All")) {
+                    loadLostItems();
+                } else {
+                    filterByCategory(selectedCategory);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
+    }
+
+    // 🔹 Load all items (default)
+    private void loadLostItems() {
+        db.collection("lost_items")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(ItemLostActivity.this, "Error loading data", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    itemList.clear();
+                    if (value != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            String documentId = doc.getId();
+                            String name = doc.getString("itemName");
+                            String date = doc.getString("dateLost");
+                            String imageUrl = doc.getString("imageUrl");
+
+                            itemList.add(new ItemLostData(documentId, name, date, imageUrl));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
+    // 🔹 Filter by category tab
+    private void filterByCategory(String category) {
+        db.collection("lost_items")
+                .whereEqualTo("category", category)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(ItemLostActivity.this, "Error filtering data", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    itemList.clear();
+                    if (value != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            String documentId = doc.getId();
+                            String name = doc.getString("itemName");
+                            String date = doc.getString("dateLost");
+                            String imageUrl = doc.getString("imageUrl");
+
+                            itemList.add(new ItemLostData(documentId, name, date, imageUrl));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
+    // 🔹 Spinner for Navigation
+    private void setupSpinner() {
         ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(
                 this,
                 R.array.menu_items,
@@ -145,28 +225,5 @@ public class ItemLostActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(0, 0);
         }
-    }
-
-    private void loadLostItems() {
-        db.collection("lost_items")
-                .addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        Toast.makeText(ItemLostActivity.this, "Error loading data", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    itemList.clear();
-                    if (value != null) {
-                        for (QueryDocumentSnapshot doc : value) {
-                            String documentId = doc.getId();
-                            String name = doc.getString("itemName");
-                            String date = doc.getString("dateLost");
-                            String imageUrl = doc.getString("imageUrl");
-
-                            itemList.add(new ItemLostData(documentId, name, date, imageUrl));
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                });
     }
 }
