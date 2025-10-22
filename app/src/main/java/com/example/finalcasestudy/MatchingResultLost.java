@@ -16,12 +16,15 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class MatchingResultLost extends AppCompatActivity {
 
@@ -31,6 +34,7 @@ public class MatchingResultLost extends AppCompatActivity {
     private FirebaseFirestore db;
     private MatchingResultLostAdapter adapter;
     private List<MatchingResultLostData> itemList;
+    private TabLayout tabLayout;//aalisin pag mali
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +51,13 @@ public class MatchingResultLost extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         spinner = findViewById(R.id.spinner);
+        tabLayout = findViewById(R.id.tabLayout);//aalisin
 
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
         adapter = new MatchingResultLostAdapter(this, itemList);
         recyclerView.setAdapter(adapter);
+
 
         // Get search query from previous activity
         String searchQuery = getIntent().getStringExtra("searchQuery");
@@ -60,6 +66,7 @@ public class MatchingResultLost extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No search term provided.", Toast.LENGTH_SHORT).show();
         }
+
 
         // Spinner setup
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
@@ -111,7 +118,35 @@ public class MatchingResultLost extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+
+        setupTabs();//aalisin
+
     }
+
+    private void setupTabs() {
+        // Listen for tab selection and filter by category
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                String selectedCategory = tab.getText().toString();
+                if (selectedCategory.equals("All")) {
+                    // Show search results again without category filter
+                    String searchQuery = getIntent().getStringExtra("searchQuery");
+                    if (searchQuery != null && !searchQuery.isEmpty()) {
+                        loadMatchingResults(searchQuery);
+                    }
+                } else {
+                    filterByCategory(selectedCategory);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
+    }
+
 
     // Load Firestore data
     private void loadMatchingResults(String query) {
@@ -150,6 +185,30 @@ public class MatchingResultLost extends AppCompatActivity {
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error loading data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
+    }
+
+    private void filterByCategory(String category) {
+        db.collection("lost_items")
+                .whereEqualTo("category", category)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(this, "Error filtering data", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    itemList.clear();
+                    if (value != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            String documentId = doc.getId();
+                            String name = doc.getString("itemName");
+                            String date = doc.getString("dateLost");
+                            String imageUrl = doc.getString("imageUrl");
+
+                            itemList.add(new MatchingResultLostData(documentId, name, date, imageUrl));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
     }
 
     private boolean matchesQuery(String query, String... fields) {
