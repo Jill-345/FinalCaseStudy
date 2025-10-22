@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -32,6 +33,7 @@ public class MatchingResultFound extends AppCompatActivity {
     private FirebaseFirestore db;
     private MatchingResultFoundAdapter adapter;
     private List<MatchingResultFoundData> itemList;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class MatchingResultFound extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         spinner = findViewById(R.id.spinner);
+        tabLayout = findViewById(R.id.tabLayout);
 
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
@@ -112,12 +115,41 @@ public class MatchingResultFound extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+
+
+        setupTabs();
+    }
+
+    private void setupTabs() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                String selectedCategory = tab.getText().toString();
+                String searchQuery = getIntent().getStringExtra("searchQuery");
+
+                if (searchQuery == null || searchQuery.isEmpty()) {
+                    Toast.makeText(MatchingResultFound.this, "No search term provided.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (selectedCategory.equals("All")) {
+                    loadMatchingResults(searchQuery);
+                } else {
+                    filterByCategoryAndSearch(selectedCategory, searchQuery);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
     }
 
     // Load Firestore data
     private void loadMatchingResults(String query) {
         db.collection("reported_items")
-                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     itemList.clear();
@@ -127,18 +159,17 @@ public class MatchingResultFound extends AppCompatActivity {
                         String description = doc.getString("description");
                         String location = doc.getString("location");
                         String finder = doc.getString("finder");
+                        String category = doc.getString("category");
                         String date = doc.getString("dateFound");
                         String imageUrl = doc.getString("imageUrl");
 
-                        // Check if query matches any field
-                        if (matchesQuery(query, itemName, description, location, finder, date)) {
-                            MatchingResultFoundData item = new MatchingResultFoundData(
-                                    doc.getId(), // important: send Firestore ID
+                        if (matchesQuery(query, itemName, description, location, finder, category, date)) {
+                            itemList.add(new MatchingResultFoundData(
+                                    doc.getId(),
                                     itemName,
                                     date,
                                     imageUrl
-                            );
-                            itemList.add(item);
+                            ));
                         }
                     }
 
@@ -152,6 +183,43 @@ public class MatchingResultFound extends AppCompatActivity {
                         Toast.makeText(this, "Error loading data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
     }
+
+    private void filterByCategoryAndSearch(String category, String query) {
+        db.collection("reported_items")
+                .whereEqualTo("category", category)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    itemList.clear();
+
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String itemName = doc.getString("itemName");
+                        String description = doc.getString("description");
+                        String location = doc.getString("location");
+                        String finder = doc.getString("finder");
+                        String date = doc.getString("dateFound");
+                        String imageUrl = doc.getString("imageUrl");
+
+                        if (matchesQuery(query, itemName, description, location, finder, date)) {
+                            itemList.add(new MatchingResultFoundData(
+                                    doc.getId(),
+                                    itemName,
+                                    date,
+                                    imageUrl
+                            ));
+                        }
+                    }
+
+                    if (itemList.isEmpty()) {
+                        Toast.makeText(this, "No items found in this category for your search.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error filtering data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
 
     private boolean matchesQuery(String query, String... fields) {
         String lowerQuery = query.trim().toLowerCase();

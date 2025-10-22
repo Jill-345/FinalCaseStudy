@@ -162,7 +162,7 @@ public class MatchingResultLost extends AppCompatActivity {
                         String imageUrl = doc.getString("imageUrl");
 
                         // Match multiple fields for more accurate results
-                        if (matchesQuery(query, itemName, description, location, owner, category)) {
+                        if (matchesQuery(query, itemName, description, location, owner, category, date)) {
                             itemList.add(new MatchingResultLostData(
                                     doc.getId(),
                                     itemName,
@@ -199,7 +199,7 @@ public class MatchingResultLost extends AppCompatActivity {
                         String date = doc.getString("dateLost");
                         String imageUrl = doc.getString("imageUrl");
 
-                        if (matchesQuery(query, itemName, description, location, owner)) {
+                        if (matchesQuery(query, itemName, description, location, owner, date)) {
                             itemList.add(new MatchingResultLostData(
                                     doc.getId(),
                                     itemName,
