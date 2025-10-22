@@ -154,10 +154,13 @@ public class MatchingResultFound extends AppCompatActivity {
     }
 
     private boolean matchesQuery(String query, String... fields) {
-        String lowerQuery = query.toLowerCase();
+        String lowerQuery = query.trim().toLowerCase();
         for (String field : fields) {
-            if (field != null && field.toLowerCase().contains(lowerQuery)) {
-                return true;
+            if (field != null) {
+                String cleanField = field.trim().toLowerCase();
+                if (!cleanField.equals("null") && cleanField.contains(lowerQuery)) {
+                    return true;
+                }
             }
         }
         return false;
