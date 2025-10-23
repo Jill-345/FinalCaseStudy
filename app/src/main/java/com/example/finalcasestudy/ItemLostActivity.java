@@ -164,23 +164,12 @@ public class ItemLostActivity extends AppCompatActivity {
     }
 
     // 🔹 Spinner for Navigation
+
     private void setupSpinner() {
-        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(
-                this,
-                R.array.menu_items,
-                android.R.layout.simple_spinner_item
-        );
-        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapterSpinner);
 
         String current = "Lost Items";
-        int index = adapterSpinner.getPosition(current);
+        int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
         spinner.setSelection(index);
-
-        spinner.setOnTouchListener((v, event) -> {
-            spinnerInitialized = true;
-            return false;
-        });
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -191,7 +180,6 @@ public class ItemLostActivity extends AppCompatActivity {
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
-
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
@@ -210,11 +198,16 @@ public class ItemLostActivity extends AppCompatActivity {
                         break;
                 }
 
-                spinner.post(() -> spinner.setSelection(adapterSpinner.getPosition(current)));
+                // Reset selection to current after navigation
+                spinner.post(() -> {
+                    int currentIndex = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
+                    spinner.setSelection(currentIndex);
+                });
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 

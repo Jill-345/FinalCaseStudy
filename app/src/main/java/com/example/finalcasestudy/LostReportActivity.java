@@ -146,31 +146,23 @@ public class LostReportActivity extends AppCompatActivity {
 
         // 🔹 Spinner navigation
         setupSpinner();
-    }
 
-    // 🔹 Spinner setup
+    }
     private void setupSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.menu_items,
-                android.R.layout.simple_spinner_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
         String current = "Home";
-        spinner.setSelection(adapter.getPosition(current));
+        int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
+        spinner.setSelection(index);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (!spinnerInitialized) {
                     spinnerInitialized = true;
                     return;
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
-
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
@@ -189,11 +181,11 @@ public class LostReportActivity extends AppCompatActivity {
                         break;
                 }
 
-                spinner.post(() -> spinner.setSelection(adapter.getPosition(current)));
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 

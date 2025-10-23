@@ -51,7 +51,9 @@
                     android:layout_width="98dp"
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/menu_items"/>
+
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

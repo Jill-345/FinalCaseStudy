@@ -144,13 +144,9 @@ public class FoundReportActivity extends AppCompatActivity {
 
     // 🔹 Spinner navigation setup
     private void setupSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.menu_items, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
         String current = "Home";
-        int index = adapter.getPosition(current);
+        int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
         spinner.setSelection(index);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -180,10 +176,11 @@ public class FoundReportActivity extends AppCompatActivity {
                         break;
                 }
 
-                spinner.post(() -> spinner.setSelection(adapter.getPosition(current)));
             }
 
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 

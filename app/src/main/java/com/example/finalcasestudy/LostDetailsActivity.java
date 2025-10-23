@@ -54,49 +54,6 @@ public class LostDetailsActivity extends AppCompatActivity {
 
         // ✅ Spinner setup
         spinner = findViewById(R.id.spinner8);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.menu_items,
-                android.R.layout.simple_spinner_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(adapter.getPosition("Home"));
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!spinnerInitialized) {
-                    spinnerInitialized = true;
-                    return;
-                }
-
-                String selected = parent.getItemAtPosition(position).toString();
-                switch (selected) {
-                    case "Home":
-                        openIfNotCurrent(ReportItemActivity.class);
-                        break;
-                    case "Lost Items":
-                        openIfNotCurrent(ItemLostActivity.class);
-                        break;
-                    case "Found Items":
-                        openIfNotCurrent(ItemFoundActivity.class);
-                        break;
-                    case "Summary":
-                        openIfNotCurrent(SummariesActivity.class);
-                        break;
-                    case "Logout":
-                        finish();
-                        break;
-                }
-
-                spinner.post(() -> spinner.setSelection(adapter.getPosition("Home")));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
 
         // ✅ Initialize UI elements
         ivItemImage = findViewById(R.id.ivItemImage);
@@ -141,6 +98,50 @@ public class LostDetailsActivity extends AppCompatActivity {
                             .addOnFailureListener(e ->
                                     Toast.makeText(LostDetailsActivity.this, "Failed to update status: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 }
+            }
+        });
+
+        setupSpinner();
+    }
+
+    // 🔹 Spinner navigation setup
+    private void setupSpinner() {
+
+        String current = "Home";
+        int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
+        spinner.setSelection(index);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!spinnerInitialized) {
+                    spinnerInitialized = true;
+                    return;
+                }
+
+                String selected = parent.getItemAtPosition(position).toString();
+                switch (selected) {
+                    case "Home":
+                        openIfNotCurrent(ReportItemActivity.class);
+                        break;
+                    case "Lost Items":
+                        openIfNotCurrent(ItemLostActivity.class);
+                        break;
+                    case "Found Items":
+                        openIfNotCurrent(ItemFoundActivity.class);
+                        break;
+                    case "Summary":
+                        openIfNotCurrent(SummariesActivity.class);
+                        break;
+                    case "Logout":
+                        finish();
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }

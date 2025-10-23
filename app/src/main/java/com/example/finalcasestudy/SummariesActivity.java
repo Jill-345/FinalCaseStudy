@@ -46,17 +46,29 @@ public class SummariesActivity extends AppCompatActivity {
 
         spinner = findViewById(R.id.spinner4);
 
-        // 🔹 Spinner setup for navigation
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.menu_items,
-                android.R.layout.simple_spinner_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        // 🔹 Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // 🔹 Initialize TextViews (make sure IDs match in your XML)
+        tvLostReports = findViewById(R.id.textView26);
+        tvFoundFromLost = findViewById(R.id.textView28);
+        tvUnfoundItems = findViewById(R.id.textView30);
+
+        tvFoundReports = findViewById(R.id.textView33);
+        tvClaimedItems = findViewById(R.id.textView35);
+        tvUnclaimedItems = findViewById(R.id.textView37);
+
+        // 🔹 Start real-time listeners
+        startLostItemListener();
+        startFoundItemListener();
+
+        setupSpinner();
+    }
+
+    private void setupSpinner() {
 
         String current = "Summary";
-        int index = adapter.getPosition(current);
+        int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
         spinner.setSelection(index);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -68,7 +80,6 @@ public class SummariesActivity extends AppCompatActivity {
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
-
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
@@ -87,28 +98,17 @@ public class SummariesActivity extends AppCompatActivity {
                         break;
                 }
 
-                spinner.post(() -> spinner.setSelection(adapter.getPosition(current)));
+                // Reset selection to current after navigation
+                spinner.post(() -> {
+                    int currentIndex = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
+                    spinner.setSelection(currentIndex);
+                });
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
-
-        // 🔹 Initialize Firestore
-        db = FirebaseFirestore.getInstance();
-
-        // 🔹 Initialize TextViews (make sure IDs match in your XML)
-        tvLostReports = findViewById(R.id.textView26);
-        tvFoundFromLost = findViewById(R.id.textView28);
-        tvUnfoundItems = findViewById(R.id.textView30);
-
-        tvFoundReports = findViewById(R.id.textView33);
-        tvClaimedItems = findViewById(R.id.textView35);
-        tvUnclaimedItems = findViewById(R.id.textView37);
-
-        // 🔹 Start real-time listeners
-        startLostItemListener();
-        startFoundItemListener();
     }
 
     // 🔸 Real-time listener for Lost Items

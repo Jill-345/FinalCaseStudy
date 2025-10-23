@@ -36,14 +36,14 @@ public class ReportItemActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.menu_items,
-                android.R.layout.simple_spinner_item
-        );
+        setupSpinner();
+    }
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+    private void setupSpinner() {
+
+        String current = "Home";
+        int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
+        spinner.setSelection(index);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -54,7 +54,6 @@ public class ReportItemActivity extends AppCompatActivity {
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
-
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
@@ -73,8 +72,11 @@ public class ReportItemActivity extends AppCompatActivity {
                         break;
                 }
 
-                // 👇 reset the spinner to prevent being "stuck"
-                spinner.setSelection(0);
+                // Reset selection to current after navigation
+                spinner.post(() -> {
+                    int currentIndex = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
+                    spinner.setSelection(currentIndex);
+                });
             }
 
             @Override
@@ -82,8 +84,6 @@ public class ReportItemActivity extends AppCompatActivity {
             }
         });
     }
-
-    //cafjimenez24@bpsu.edu.ph
 
     // Start target Activity only if it's not the current one
     private void openIfNotCurrent(Class<?> targetActivity) {

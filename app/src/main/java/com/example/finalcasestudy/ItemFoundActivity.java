@@ -88,23 +88,32 @@ public class ItemFoundActivity extends AppCompatActivity {
             }
         });
 
-        // 🧭 Spinner menu
-        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(
-                this,
-                R.array.menu_items,
-                android.R.layout.simple_spinner_item
-        );
-        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapterSpinner);
+        // 🏷️ TabLayout Category Filter
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                currentCategory = tab.getText().toString();
+                filterByCategory(currentCategory);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                currentCategory = tab.getText().toString();
+                filterByCategory(currentCategory);
+            }
+        });
+
+        setupSpinner();
+    }
+
+    private void setupSpinner() {
 
         String current = "Found Items";
-        int index = adapterSpinner.getPosition(current);
+        int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
         spinner.setSelection(index);
-
-        spinner.setOnTouchListener((v, event) -> {
-            spinnerInitialized = true;
-            return false;
-        });
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -115,7 +124,6 @@ public class ItemFoundActivity extends AppCompatActivity {
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
-
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
@@ -134,31 +142,19 @@ public class ItemFoundActivity extends AppCompatActivity {
                         break;
                 }
 
-                spinner.post(() -> spinner.setSelection(adapterSpinner.getPosition(current)));
+                // Reset selection to current after navigation
+                spinner.post(() -> {
+                    int currentIndex = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
+                    spinner.setSelection(currentIndex);
+                });
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        // 🏷️ TabLayout Category Filter
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                currentCategory = tab.getText().toString();
-                filterByCategory(currentCategory);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                currentCategory = tab.getText().toString();
-                filterByCategory(currentCategory);
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }
+
 
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
