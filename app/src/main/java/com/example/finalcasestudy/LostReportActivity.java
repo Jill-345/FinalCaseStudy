@@ -54,7 +54,7 @@ public class LostReportActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText itemNameInput2, descInput2, ownerInput2, numberInput2, dateLostInput, locationLostInput;
 
-    private Spinner spinner, categorySpinner;
+    private Spinner spinner, categorySpinner, campusSpinner;
     private boolean spinnerInitialized;
 
     private Calendar calendar;
@@ -75,6 +75,7 @@ public class LostReportActivity extends AppCompatActivity {
         // 🔹 Initialize UI
         spinner = findViewById(R.id.spinner2);
         categorySpinner = findViewById(R.id.spinner5);
+        campusSpinner = findViewById(R.id.spinner9);
         uploadImageBtn = findViewById(R.id.button13);
         reportLostBtn = findViewById(R.id.button9);
         imageView = findViewById(R.id.ivItemImage2);
@@ -116,14 +117,17 @@ public class LostReportActivity extends AppCompatActivity {
             String number = numberInput2.getText().toString().trim();
             String dateLost = dateLostInput.getText().toString().trim();
             String location = locationLostInput.getText().toString().trim();
+            String campus = (campusSpinner.getSelectedItem() != null)
+                    ? campusSpinner.getSelectedItem().toString().trim()
+                    : "";
 
             if (itemName.isEmpty() || description.isEmpty() || owner.isEmpty()
-                    || number.isEmpty() || dateLost.isEmpty() || location.isEmpty()) {
+                    || number.isEmpty() || dateLost.isEmpty() || location.isEmpty() || campus.isEmpty()) {
                 Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            saveItemDetails(itemName, description, category, owner, number, dateLost, location, uploadedImageUrl);
+            saveItemDetails(itemName, description, category, owner, number, dateLost, location, campus, uploadedImageUrl);
         });
 
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -258,7 +262,7 @@ public class LostReportActivity extends AppCompatActivity {
 
     // 🔹 Save to Firestore
     private void saveItemDetails(String itemName, String description, String category, String owner, String number,
-                                 String dateLost, String location, String imageUrl) {
+                                 String dateLost, String location, String campus, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
         itemData.put("itemName", itemName);
         itemData.put("description", description);
@@ -267,6 +271,7 @@ public class LostReportActivity extends AppCompatActivity {
         itemData.put("contactNumber", number);
         itemData.put("dateLost", dateLost);
         itemData.put("location", location);
+        itemData.put("campus", campus); // ✅ Added campus field
         itemData.put("imageUrl", imageUrl);
         itemData.put("timestamp", System.currentTimeMillis());
 

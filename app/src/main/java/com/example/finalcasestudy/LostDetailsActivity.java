@@ -28,7 +28,7 @@ public class LostDetailsActivity extends AppCompatActivity {
     private boolean spinnerInitialized;
 
     private ImageView ivItemImage;
-    private TextView tvItemName, tvDescription, tvCategory, tvOwner, tvContact, tvDateLoss, tvLocationLoss;
+    private TextView tvItemName, tvDescription, tvCategory, tvOwner, tvContact, tvDateLoss, tvLocationLoss, tvCampus;
     private RadioGroup radioGroup;
     private RadioButton radioFound, radioNotFound;
 
@@ -64,6 +64,7 @@ public class LostDetailsActivity extends AppCompatActivity {
         tvContact = findViewById(R.id.textViewContact);
         tvDateLoss = findViewById(R.id.textViewDateLoss);
         tvLocationLoss = findViewById(R.id.textViewLocationLoss);
+        tvCampus = findViewById(R.id.textViewCampus); // ✅ new TextView for campus
         radioGroup = findViewById(R.id.radioGroup);
         radioFound = findViewById(R.id.radioFound);
         radioNotFound = findViewById(R.id.radioNotFound);
@@ -166,6 +167,7 @@ public class LostDetailsActivity extends AppCompatActivity {
             tvContact.setText(doc.getString("contactNumber"));
             tvDateLoss.setText(doc.getString("dateLost"));
             tvLocationLoss.setText(doc.getString("location"));
+            tvCampus.setText(doc.getString("campus")); // ✅ show campus name
 
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {

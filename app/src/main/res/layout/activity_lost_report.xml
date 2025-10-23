@@ -196,7 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center|start"
-                android:text="Date Found:"
+                android:text="Date Loss:"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -206,7 +206,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center|start"
-                android:text="Location Found:"
+                android:text="Location Loss:"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -286,7 +286,7 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:gravity="center|start"
-                android:hint="Date Found"
+                android:hint="Date Loss"
                 android:inputType="date"
                 android:padding="10dp" />
 
@@ -297,7 +297,7 @@
                 android:background="@android:drawable/editbox_background"
                 android:ems="10"
                 android:gravity="center|start"
-                android:hint="Location Found"
+                android:hint="Location Loss"
                 android:inputType="textMultiLine" />
 
             <Spinner
