@@ -145,23 +145,25 @@
 
     <TableLayout
         android:id="@+id/tableLostDetails"
-        android:layout_width="388dp"
-        android:layout_height="247dp"
+        android:layout_width="385dp"
+        android:layout_height="282dp"
         android:layout_marginTop="16dp"
         android:background="#000000"
         android:padding="0.5dp"
         android:stretchColumns="1"
-        app:layout_constraintTop_toBottomOf="@id/frameItemImage"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/frameItemImage">
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Item Name:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvItemName"
                 android:background="@drawable/cell_border"
@@ -169,12 +171,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Description:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvDescription"
                 android:background="@drawable/cell_border"
@@ -182,12 +186,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Category:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvCategory"
                 android:background="@drawable/cell_border"
@@ -195,12 +201,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Finder:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvOwner"
                 android:background="@drawable/cell_border"
@@ -216,6 +224,7 @@
                 android:textColor="#000000"
                 android:textSize="14sp"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvContact"
                 android:background="@drawable/cell_border"
@@ -223,12 +232,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Date of Loss:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvDateLoss"
                 android:background="@drawable/cell_border"
@@ -236,14 +247,31 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Location of Loss:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvLocationLoss"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Campus:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCampus"
                 android:background="@drawable/cell_border"
                 android:padding="8dp" />
         </TableRow>
@@ -256,14 +284,14 @@
         android:id="@+id/textViewClaimsHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="640dp"
         android:fontFamily="sans-serif-medium"
         android:text="Claims"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tableLostDetails" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TableLayout
         android:id="@+id/tableClaims"

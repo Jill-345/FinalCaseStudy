@@ -86,23 +86,25 @@
     <!-- 🟢 Lost Item Details Table -->
     <TableLayout
         android:id="@+id/tableLostDetails"
-        android:layout_width="388dp"
-        android:layout_height="247dp"
+        android:layout_width="390dp"
+        android:layout_height="283dp"
         android:layout_marginTop="16dp"
         android:background="#000000"
         android:padding="0.5dp"
         android:stretchColumns="1"
-        app:layout_constraintTop_toBottomOf="@id/frameItemImage"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/frameItemImage">
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Item Name:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textViewItemName"
                 android:background="@drawable/cell_border"
@@ -110,12 +112,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Description:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textViewDescription"
                 android:background="@drawable/cell_border"
@@ -123,12 +127,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Category:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textViewCategory"
                 android:background="@drawable/cell_border"
@@ -136,12 +142,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Owner:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textViewOwner"
                 android:background="@drawable/cell_border"
@@ -149,12 +157,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Contact Number:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textViewContact"
                 android:background="@drawable/cell_border"
@@ -162,12 +172,14 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Date of Loss:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textViewDateLoss"
                 android:background="@drawable/cell_border"
@@ -182,11 +194,28 @@
                 android:text="Location Loss:"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textViewLocationLoss"
                 android:background="@drawable/cell_border"
                 android:padding="8dp" />
         </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:background="@drawable/cell_border"
+                android:padding="8dp"
+                android:text="Campus:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewCampus"
+                android:background="@drawable/cell_border"
+                android:padding="8dp" />
+        </TableRow>
+
     </TableLayout>
 
     <!-- 🟡 Status Section -->
