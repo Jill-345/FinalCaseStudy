@@ -54,7 +54,7 @@ public class FoundReportActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText itemNameInput, descInput, finderInput, numberInput, dateFoundInput, locationFoundInput;
 
-    private Spinner spinner, categorySpinner;
+    private Spinner spinner, categorySpinner, campusSpinner;
     private boolean spinnerInitialized;
 
     private Calendar calendar;
@@ -75,6 +75,7 @@ public class FoundReportActivity extends AppCompatActivity {
         // 🔹 Initialize UI components
         spinner = findViewById(R.id.spinner6);
         categorySpinner = findViewById(R.id.spinner7);
+        campusSpinner = findViewById(R.id.spinner10);
         uploadImageBtn = findViewById(R.id.button10);
         reportFoundBtn = findViewById(R.id.button11);
         imageView = findViewById(R.id.ivItemImage);
@@ -116,15 +117,18 @@ public class FoundReportActivity extends AppCompatActivity {
             String number = numberInput.getText().toString().trim();
             String dateFound = dateFoundInput.getText().toString().trim();
             String location = locationFoundInput.getText().toString().trim();
+            String campus = (campusSpinner.getSelectedItem() != null)
+                    ? campusSpinner.getSelectedItem().toString().trim()
+                    : "";
 
             if (itemName.isEmpty() || description.isEmpty() || finder.isEmpty()
-                    || number.isEmpty() || dateFound.isEmpty() || location.isEmpty()) {
+                    || number.isEmpty() || dateFound.isEmpty() || location.isEmpty() || campus.isEmpty()) {
                 Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // ✅ Fixed order: description before category
-            saveItemDetails(itemName, description, category, finder, number, dateFound, location, uploadedImageUrl);
+            // ✅ Fixed: added campus as parameter
+            saveItemDetails(itemName, description, category, finder, number, dateFound, location, campus, uploadedImageUrl);
         });
 
         // 🔹 Setup category spinner
@@ -144,7 +148,6 @@ public class FoundReportActivity extends AppCompatActivity {
 
     // 🔹 Spinner navigation setup
     private void setupSpinner() {
-
         String current = "Home";
         int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
         spinner.setSelection(index);
@@ -175,12 +178,10 @@ public class FoundReportActivity extends AppCompatActivity {
                         finish();
                         break;
                 }
-
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
@@ -251,9 +252,9 @@ public class FoundReportActivity extends AppCompatActivity {
         dateFoundInput.setText(sdf.format(calendar.getTime()));
     }
 
-    // 🔹 Save to Firestore (fixed order)
+    // 🔹 Save to Firestore (now includes campus)
     private void saveItemDetails(String itemName, String description, String category, String finder, String number,
-                                 String dateFound, String location, String imageUrl) {
+                                 String dateFound, String location, String campus, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
         itemData.put("itemName", itemName);
         itemData.put("description", description);
@@ -262,6 +263,7 @@ public class FoundReportActivity extends AppCompatActivity {
         itemData.put("contactNumber", number);
         itemData.put("dateFound", dateFound);
         itemData.put("location", location);
+        itemData.put("campus", campus); // ✅ Added campus field
         itemData.put("imageUrl", imageUrl);
         itemData.put("timestamp", System.currentTimeMillis());
 

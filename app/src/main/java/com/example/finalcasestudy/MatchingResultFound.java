@@ -1,6 +1,5 @@
 package com.example.finalcasestudy;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,9 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -34,6 +31,7 @@ public class MatchingResultFound extends AppCompatActivity {
     private MatchingResultFoundAdapter adapter;
     private List<MatchingResultFoundData> itemList;
     private TabLayout tabLayout;
+    private String selectedCampus = "All Campuses";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +63,14 @@ public class MatchingResultFound extends AppCompatActivity {
             Toast.makeText(this, "No search term provided.", Toast.LENGTH_SHORT).show();
         }
 
-        // Spinner setup
+        // ✅ Campus Spinner setup (no intents, just filter)
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
-                R.array.menu_items,
+                R.array.campus, // your XML already has android:entries="@array/campus"
                 android.R.layout.simple_spinner_item
         );
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
-
-        String current = "Found Items";
-        int index = spinnerAdapter.getPosition(current);
-        spinner.setSelection(index);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -86,40 +80,28 @@ public class MatchingResultFound extends AppCompatActivity {
                     return;
                 }
 
-                String selected = parent.getItemAtPosition(position).toString();
-                switch (selected) {
-                    case "Home":
-                        startActivity(new Intent(MatchingResultFound.this, ReportItemActivity.class));
-                        finish();
-                        break;
-                    case "Lost Items":
-                        startActivity(new Intent(MatchingResultFound.this, ItemLostActivity.class));
-                        finish();
-                        break;
-                    case "Found Items":
-                        startActivity(new Intent(MatchingResultFound.this, ItemFoundActivity.class));
-                        finish();
-                        break;
-                    case "Summary":
-                        startActivity(new Intent(MatchingResultFound.this, SummariesActivity.class));
-                        finish();
-                        break;
-                    case "Logout":
-                        finish();
-                        break;
+                selectedCampus = parent.getItemAtPosition(position).toString();
+                String searchQuery = getIntent().getStringExtra("searchQuery");
+
+                if (searchQuery != null && !searchQuery.isEmpty()) {
+                    if (selectedCampus.equalsIgnoreCase("All Campuses")) {
+                        loadMatchingResults(searchQuery);
+                    } else {
+                        filterByCampusAndSearch(selectedCampus, searchQuery);
+                    }
                 }
 
-                spinner.post(() -> spinner.setSelection(spinnerAdapter.getPosition(current)));
+                Toast.makeText(MatchingResultFound.this, "Selected: " + selectedCampus, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-
         setupTabs();
     }
 
+    // ✅ Tab setup (still filters by category)
     private void setupTabs() {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -133,23 +115,107 @@ public class MatchingResultFound extends AppCompatActivity {
                 }
 
                 if (selectedCategory.equals("All")) {
-                    loadMatchingResults(searchQuery);
+                    if (selectedCampus.equals("All Campuses")) {
+                        loadMatchingResults(searchQuery);
+                    } else {
+                        filterByCampusAndSearch(selectedCampus, searchQuery);
+                    }
                 } else {
-                    filterByCategoryAndSearch(selectedCategory, searchQuery);
+                    if (selectedCampus.equals("All Campuses")) {
+                        filterByCategoryAndSearch(selectedCategory, searchQuery);
+                    } else {
+                        filterByCategoryCampusAndSearch(selectedCategory, selectedCampus, searchQuery);
+                    }
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {}
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
-    // Load Firestore data
+    // ✅ Load Firestore data
     private void loadMatchingResults(String query) {
         db.collection("reported_items")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    itemList.clear();
+
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String itemName = doc.getString("itemName");
+                        String description = doc.getString("description");
+                        String location = doc.getString("location");
+                        String finder = doc.getString("finder");
+                        String category = doc.getString("category");
+                        String campus = doc.getString("campus");
+                        String date = doc.getString("dateFound");
+                        String imageUrl = doc.getString("imageUrl");
+
+                        if (matchesQuery(query, itemName, description, location, finder, category, campus, date)) {
+                            itemList.add(new MatchingResultFoundData(
+                                    doc.getId(),
+                                    itemName,
+                                    date,
+                                    imageUrl
+                            ));
+                        }
+                    }
+
+                    if (itemList.isEmpty()) {
+                        Toast.makeText(this, "No matching results found.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error loading data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    // ✅ Filter by Category + Search
+    private void filterByCategoryAndSearch(String category, String query) {
+        db.collection("reported_items")
+                .whereEqualTo("category", category)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    itemList.clear();
+
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String itemName = doc.getString("itemName");
+                        String description = doc.getString("description");
+                        String location = doc.getString("location");
+                        String finder = doc.getString("finder");
+                        String campus = doc.getString("campus");
+                        String date = doc.getString("dateFound");
+                        String imageUrl = doc.getString("imageUrl");
+
+                        if (matchesQuery(query, itemName, description, location, finder, campus, date)) {
+                            itemList.add(new MatchingResultFoundData(
+                                    doc.getId(),
+                                    itemName,
+                                    date,
+                                    imageUrl
+                            ));
+                        }
+                    }
+
+                    if (itemList.isEmpty()) {
+                        Toast.makeText(this, "No items found in this category.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error filtering data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    // ✅ Filter by Campus + Search
+    private void filterByCampusAndSearch(String campus, String query) {
+        db.collection("reported_items")
+                .whereEqualTo("campus", campus)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     itemList.clear();
@@ -174,19 +240,21 @@ public class MatchingResultFound extends AppCompatActivity {
                     }
 
                     if (itemList.isEmpty()) {
-                        Toast.makeText(this, "No matching results found.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No results found for " + campus, Toast.LENGTH_SHORT).show();
                     }
 
                     adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error loading data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Error filtering by campus: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
     }
 
-    private void filterByCategoryAndSearch(String category, String query) {
+    // ✅ Filter by Category + Campus + Search
+    private void filterByCategoryCampusAndSearch(String category, String campus, String query) {
         db.collection("reported_items")
                 .whereEqualTo("category", category)
+                .whereEqualTo("campus", campus)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     itemList.clear();
@@ -210,7 +278,7 @@ public class MatchingResultFound extends AppCompatActivity {
                     }
 
                     if (itemList.isEmpty()) {
-                        Toast.makeText(this, "No items found in this category for your search.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No results found for this category and campus.", Toast.LENGTH_SHORT).show();
                     }
 
                     adapter.notifyDataSetChanged();
@@ -220,7 +288,7 @@ public class MatchingResultFound extends AppCompatActivity {
                 );
     }
 
-
+    // ✅ Text matching helper
     private boolean matchesQuery(String query, String... fields) {
         String lowerQuery = query.trim().toLowerCase();
         for (String field : fields) {

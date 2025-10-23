@@ -1,6 +1,5 @@
 package com.example.finalcasestudy;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -33,6 +31,7 @@ public class MatchingResultLost extends AppCompatActivity {
     private MatchingResultLostAdapter adapter;
     private List<MatchingResultLostData> itemList;
     private TabLayout tabLayout;
+    private String selectedCampus = "All Campuses";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,18 +63,14 @@ public class MatchingResultLost extends AppCompatActivity {
             Toast.makeText(this, "No search term provided.", Toast.LENGTH_SHORT).show();
         }
 
-        // Spinner setup
+        // ✅ Campus Spinner setup
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
-                R.array.menu_items,
+                R.array.campus,
                 android.R.layout.simple_spinner_item
         );
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
-
-        String current = "Lost Items";
-        int index = spinnerAdapter.getPosition(current);
-        spinner.setSelection(index);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,30 +80,18 @@ public class MatchingResultLost extends AppCompatActivity {
                     return;
                 }
 
-                String selected = parent.getItemAtPosition(position).toString();
-                switch (selected) {
-                    case "Home":
-                        startActivity(new Intent(MatchingResultLost.this, ReportItemActivity.class));
-                        finish();
-                        break;
-                    case "Lost Items":
-                        startActivity(new Intent(MatchingResultLost.this, ItemLostActivity.class));
-                        finish();
-                        break;
-                    case "Found Items":
-                        startActivity(new Intent(MatchingResultLost.this, ItemFoundActivity.class));
-                        finish();
-                        break;
-                    case "Summary":
-                        startActivity(new Intent(MatchingResultLost.this, SummariesActivity.class));
-                        finish();
-                        break;
-                    case "Logout":
-                        finish();
-                        break;
+                selectedCampus = parent.getItemAtPosition(position).toString();
+                String searchQuery = getIntent().getStringExtra("searchQuery");
+
+                if (searchQuery != null && !searchQuery.isEmpty()) {
+                    if (selectedCampus.equalsIgnoreCase("All Campuses")) {
+                        loadMatchingResults(searchQuery);
+                    } else {
+                        filterByCampusAndSearch(selectedCampus, searchQuery);
+                    }
                 }
 
-                spinner.post(() -> spinner.setSelection(spinnerAdapter.getPosition(current)));
+                Toast.makeText(MatchingResultLost.this, "Selected: " + selectedCampus, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -118,6 +101,7 @@ public class MatchingResultLost extends AppCompatActivity {
         setupTabs();
     }
 
+    // ✅ Tab setup (category filter)
     private void setupTabs() {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -131,21 +115,26 @@ public class MatchingResultLost extends AppCompatActivity {
                 }
 
                 if (selectedCategory.equals("All")) {
-                    loadMatchingResults(searchQuery);
+                    if (selectedCampus.equals("All Campuses")) {
+                        loadMatchingResults(searchQuery);
+                    } else {
+                        filterByCampusAndSearch(selectedCampus, searchQuery);
+                    }
                 } else {
-                    filterByCategoryAndSearch(selectedCategory, searchQuery);
+                    if (selectedCampus.equals("All Campuses")) {
+                        filterByCategoryAndSearch(selectedCategory, searchQuery);
+                    } else {
+                        filterByCategoryCampusAndSearch(selectedCategory, selectedCampus, searchQuery);
+                    }
                 }
             }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            @Override public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
-    // Load Firestore data that matches search query
+    // ✅ Load all lost items matching the search query
     private void loadMatchingResults(String query) {
         db.collection("lost_items")
                 .get()
@@ -158,11 +147,11 @@ public class MatchingResultLost extends AppCompatActivity {
                         String location = doc.getString("location");
                         String owner = doc.getString("owner");
                         String category = doc.getString("category");
+                        String campus = doc.getString("campus");
                         String date = doc.getString("dateLost");
                         String imageUrl = doc.getString("imageUrl");
 
-                        // Match multiple fields for more accurate results
-                        if (matchesQuery(query, itemName, description, location, owner, category, date)) {
+                        if (matchesQuery(query, itemName, description, location, owner, category, campus, date)) {
                             itemList.add(new MatchingResultLostData(
                                     doc.getId(),
                                     itemName,
@@ -183,10 +172,87 @@ public class MatchingResultLost extends AppCompatActivity {
                 );
     }
 
-    // Filter by both category and search term
+    // ✅ Filter by Category + Search
     private void filterByCategoryAndSearch(String category, String query) {
         db.collection("lost_items")
                 .whereEqualTo("category", category)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    itemList.clear();
+
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String itemName = doc.getString("itemName");
+                        String description = doc.getString("description");
+                        String location = doc.getString("location");
+                        String owner = doc.getString("owner");
+                        String campus = doc.getString("campus");
+                        String date = doc.getString("dateLost");
+                        String imageUrl = doc.getString("imageUrl");
+
+                        if (matchesQuery(query, itemName, description, location, owner, campus, date)) {
+                            itemList.add(new MatchingResultLostData(
+                                    doc.getId(),
+                                    itemName,
+                                    date,
+                                    imageUrl
+                            ));
+                        }
+                    }
+
+                    if (itemList.isEmpty()) {
+                        Toast.makeText(this, "No items found in this category.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error filtering data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    // ✅ Filter by Campus + Search
+    private void filterByCampusAndSearch(String campus, String query) {
+        db.collection("lost_items")
+                .whereEqualTo("campus", campus)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    itemList.clear();
+
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String itemName = doc.getString("itemName");
+                        String description = doc.getString("description");
+                        String location = doc.getString("location");
+                        String owner = doc.getString("owner");
+                        String category = doc.getString("category");
+                        String date = doc.getString("dateLost");
+                        String imageUrl = doc.getString("imageUrl");
+
+                        if (matchesQuery(query, itemName, description, location, owner, category, date)) {
+                            itemList.add(new MatchingResultLostData(
+                                    doc.getId(),
+                                    itemName,
+                                    date,
+                                    imageUrl
+                            ));
+                        }
+                    }
+
+                    if (itemList.isEmpty()) {
+                        Toast.makeText(this, "No results found for " + campus, Toast.LENGTH_SHORT).show();
+                    }
+
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error filtering by campus: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    // ✅ Filter by Category + Campus + Search
+    private void filterByCategoryCampusAndSearch(String category, String campus, String query) {
+        db.collection("lost_items")
+                .whereEqualTo("category", category)
+                .whereEqualTo("campus", campus)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     itemList.clear();
@@ -210,7 +276,7 @@ public class MatchingResultLost extends AppCompatActivity {
                     }
 
                     if (itemList.isEmpty()) {
-                        Toast.makeText(this, "No items found in this category for your search.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No results found for this category and campus.", Toast.LENGTH_SHORT).show();
                     }
 
                     adapter.notifyDataSetChanged();
@@ -220,11 +286,13 @@ public class MatchingResultLost extends AppCompatActivity {
                 );
     }
 
+    // ✅ Text match helper
     private boolean matchesQuery(String query, String... fields) {
         String lowerQuery = query.trim().toLowerCase();
         for (String field : fields) {
-            if (field != null && !field.equalsIgnoreCase("null")) {
-                if (field.toLowerCase().contains(lowerQuery)) {
+            if (field != null) {
+                String cleanField = field.trim().toLowerCase();
+                if (!cleanField.equals("null") && cleanField.contains(lowerQuery)) {
                     return true;
                 }
             }

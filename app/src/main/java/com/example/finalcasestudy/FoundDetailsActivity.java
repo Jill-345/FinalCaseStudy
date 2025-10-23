@@ -33,7 +33,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
     private boolean spinnerInitialized;
 
     private ImageView ivItemImage;
-    private TextView tvItemName, tvDescription, tvCategory, tvOwner, tvContact, tvDateFound, tvLocation;
+    private TextView tvItemName, tvDescription, tvCategory, tvOwner, tvContact, tvDateFound, tvLocation, tvCampus;
     private FirebaseFirestore db;
 
     private EditText etClaimant, etStatus, etSubmissionDate;
@@ -60,16 +60,16 @@ public class FoundDetailsActivity extends AppCompatActivity {
         // ✅ Initialize Firebase
         db = FirebaseFirestore.getInstance();
 
-        // ✅ Spinner setup
+        // ✅ Spinner for Menu
         spinner = findViewById(R.id.spinner3);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+        ArrayAdapter<CharSequence> adapterMenu = ArrayAdapter.createFromResource(
                 this,
                 R.array.menu_items,
                 android.R.layout.simple_spinner_item
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(adapter.getPosition("Home"));
+        adapterMenu.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapterMenu);
+        spinner.setSelection(adapterMenu.getPosition("Home"));
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -98,7 +98,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
                         break;
                 }
 
-                spinner.post(() -> spinner.setSelection(adapter.getPosition("Home")));
+                spinner.post(() -> spinner.setSelection(adapterMenu.getPosition("Home")));
             }
 
             @Override
@@ -114,6 +114,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
         tvContact = findViewById(R.id.tvContact);
         tvDateFound = findViewById(R.id.tvDateLoss);
         tvLocation = findViewById(R.id.tvLocationLoss);
+        tvCampus = findViewById(R.id.tvCampus); // ✅ new TextView for campus
 
         etClaimant = findViewById(R.id.etClaimant);
         etStatus = findViewById(R.id.etStatus);
@@ -165,6 +166,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
             tvContact.setText(doc.getString("contactNumber"));
             tvDateFound.setText(doc.getString("dateFound"));
             tvLocation.setText(doc.getString("location"));
+            tvCampus.setText(doc.getString("campus")); // ✅ show campus name
 
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {
