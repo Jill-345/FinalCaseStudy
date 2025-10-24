@@ -19,8 +19,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
+    // Declare input fields and button
     private EditText nameField, emailField, passwordField, confirmField;
     private Button createAccountBtn;
+
+    // Firebase authentication and database references
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
 
@@ -36,66 +39,85 @@ public class SignupActivity extends AppCompatActivity {
             return insets;
         });
 
-        // ✅ Initialize Firebase
+        // Initialize Firebase Authentication and Database
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        // ✅ Link XML components
+        // Link XML components (EditTexts and Button)
         nameField = findViewById(R.id.editTextText);
         emailField = findViewById(R.id.editTextText2);
         passwordField = findViewById(R.id.editTextText3);
         confirmField = findViewById(R.id.editTextText4);
         createAccountBtn = findViewById(R.id.button3);
 
+        // Set listener for the "Create Account" button
         createAccountBtn.setOnClickListener(v -> registerUser());
     }
 
+    // Handles user registration logic including validation and Firebase Authentication.
     private void registerUser() {
+        // Retrieve user input and remove extra spaces
         String name = nameField.getText().toString().trim();
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
         String confirm = confirmField.getText().toString().trim();
 
+        // Check for empty fields
         if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
             Toast.makeText(this, "All fields are required.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // ✅ Restrict to @bpsu.edu.ph email addresses only
+        // Restrict signup to school emails only (@bpsu.edu.ph)
         if (!email.endsWith("@bpsu.edu.ph")) {
             Toast.makeText(this, "Please use your @bpsu.edu.ph email.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Check if password and confirmation match
         if (!password.equals(confirm)) {
             Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // ✅ Create account
+        // Attempt to create a new user account in Firebase Authentication
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        // Account successfully created
                         FirebaseUser user = mAuth.getCurrentUser();
+
                         if (user != null) {
-                            // Save extra info to Firebase Database
+                            // Save additional user information in the Realtime Database
                             usersRef.child(user.getUid()).setValue(new User(name, email, "student"));
+
+                            // Send verification email to the user
                             user.sendEmailVerification();
 
                             Toast.makeText(this, "Registered! Verify your email.", Toast.LENGTH_LONG).show();
+
+                            // Redirect to LoginActivity after successful registration
                             startActivity(new Intent(this, LoginActivity.class));
-                            finish();
+                            finish(); // Close SignupActivity
                         }
                     } else {
+                        // If registration fails, show the error message
                         Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    // Helper model class
+    /**
+     * Helper model class to represent a User in the Firebase Database.
+     * It includes basic user information: name, email, and role.
+     */
     public static class User {
         public String name, email, role;
+
+        // Default constructor required for Firebase
         public User() { }
+
+        // Parameterized constructor for creating a new user entry
         public User(String name, String email, String role) {
             this.name = name;
             this.email = email;

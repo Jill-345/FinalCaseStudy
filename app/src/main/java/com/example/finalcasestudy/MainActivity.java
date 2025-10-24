@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Declare the buttons used for navigation
     private Button loginBtn, signupBtn;
 
     @Override
@@ -26,14 +27,17 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Connect buttons to their XML layout IDs
         loginBtn = findViewById(R.id.button);
         signupBtn = findViewById(R.id.button2);
 
+        // When the Login button is clicked, navigate to LoginActivity
         loginBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         });
 
+        // When the Signup button is clicked, navigate to SignupActivity
         signupBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SignupActivity.class);
             startActivity(intent);

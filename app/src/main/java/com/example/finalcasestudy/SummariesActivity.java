@@ -51,12 +51,12 @@ public class SummariesActivity extends AppCompatActivity {
 
         // 🔹 Initialize TextViews (make sure IDs match in your XML)
         tvLostReports = findViewById(R.id.textView26);
-        tvFoundFromLost = findViewById(R.id.textView28);
-        tvUnfoundItems = findViewById(R.id.textView30);
+        tvFoundFromLost = findViewById(R.id.textView27);
+        tvUnfoundItems = findViewById(R.id.textView29);
 
-        tvFoundReports = findViewById(R.id.textView33);
-        tvClaimedItems = findViewById(R.id.textView35);
-        tvUnclaimedItems = findViewById(R.id.textView37);
+        tvFoundReports = findViewById(R.id.textView32);
+        tvClaimedItems = findViewById(R.id.textView36);
+        tvUnclaimedItems = findViewById(R.id.textView36);
 
         // 🔹 Start real-time listeners
         startLostItemListener();
