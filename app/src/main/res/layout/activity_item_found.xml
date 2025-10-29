@@ -9,78 +9,87 @@
     tools:context=".ItemFoundActivity">
 
     <!-- 🔝 Toolbar -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+
+    <TextView
+        android:id="@+id/textView56"
+        android:layout_width="411dp"
+        android:layout_height="67dp"
+        android:layout_marginBottom="5dp"
         android:background="#A00606"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.420"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#A00606">
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="40dp"
+        android:layout_height="67dp"
+        android:contentDescription="BPSU Logo"
+        android:src="@drawable/bataan_peninsula_state_university_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.043"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:src="@drawable/bataan_peninsula_state_university_logo"
-                    android:contentDescription="BPSU Logo" />
-
-                <TextView
-                    android:id="@+id/textview"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:fontFamily="serif"
-                    android:text="Bataan Peninsula State University"
-                    android:textColor="#ffffff"
-                    android:textSize="14sp" />
-
-                <Spinner
-                    android:id="@+id/spinner"
-                    android:layout_width="98dp"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:spinnerMode="dropdown"
-                    android:entries="@array/menu_items"/>
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+    <TextView
+        android:id="@+id/textview"
+        android:layout_width="245dp"
+        android:layout_height="26dp"
+        android:fontFamily="@font/times_new_roman"
+        android:text="Bataan Peninsula State University"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.420"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.027" />
 
     <!-- 🔎 Search Bar -->
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="95dp"
+        android:layout_height="67dp"
+        android:entries="@array/menu_items"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <LinearLayout
         android:id="@+id/searchContainer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="55dp"
+        android:background="#940202"
         android:gravity="center_vertical"
+        android:minHeight="56dp"
+        android:orientation="horizontal"
         android:paddingHorizontal="12dp"
         android:paddingVertical="8dp"
-        android:minHeight="56dp"
-        android:background="#A00606"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        tools:layout_editor_absoluteY="64dp">
 
         <TextView
             android:id="@+id/textview2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
             android:text="Found Items"
             android:textColor="#ffffff"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginEnd="12dp" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editTextText"
@@ -89,21 +98,21 @@
             android:layout_weight="1"
             android:background="@android:drawable/edit_text"
             android:hint="Search"
+            android:importantForAccessibility="yes"
+            android:inputType="text"
             android:paddingHorizontal="10dp"
             android:textColor="#000000"
-            android:textColorHint="#888888"
-            android:inputType="text"
-            android:importantForAccessibility="yes" />
+            android:textColorHint="#888888" />
 
         <!-- 🔍 Search Button -->
         <ImageButton
             android:id="@+id/buttonSearch"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@android:drawable/ic_menu_search"
+            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Search"
-            android:layout_marginStart="8dp"
+            android:src="@android:drawable/ic_menu_search"
             app:tint="#ffffff" />
 
     </LinearLayout>
@@ -181,29 +190,35 @@
 
 
     <!-- 🗂 RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="8dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout"
-        app:layout_constraintBottom_toTopOf="@id/floatingActionButton2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- ➕ FAB -->
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="52dp"
+        android:contentDescription="Add new found item"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="#A00606"
-        app:tint="@android:color/white"
-        android:contentDescription="Add new found item"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="411dp"
+        android:layout_height="581dp"
+        android:padding="8dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/floatingActionButton2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout"
+        app:layout_constraintVertical_bias="1.0"
+        app:spanCount="2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

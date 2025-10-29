@@ -68,12 +68,12 @@
         app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.145" />
+        app:layout_constraintVertical_bias="0.11" />
 
     <TextView
         android:id="@+id/textView19"
-        android:layout_width="411dp"
-        android:layout_height="82dp"
+        android:layout_width="429dp"
+        android:layout_height="69dp"
         android:layout_marginBottom="5dp"
         android:background="#A00606"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -85,8 +85,8 @@
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="44dp"
-        android:layout_height="85dp"
+        android:layout_width="40dp"
+        android:layout_height="67dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
@@ -97,30 +97,32 @@
 
     <TextView
         android:id="@+id/textView20"
-        android:layout_width="279dp"
-        android:layout_height="28dp"
+        android:layout_width="245dp"
+        android:layout_height="26dp"
         android:fontFamily="@font/times_new_roman"
         android:text="Bataan Peninsula State University"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.420"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.045" />
+        app:layout_constraintVertical_bias="0.027" />
 
     <Spinner
         android:id="@+id/spinner3"
-        android:layout_width="98dp"
-        android:layout_height="55dp"
+        android:layout_width="95dp"
+        android:layout_height="67dp"
         android:scrollbarSize="4dp"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.996"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <FrameLayout
         android:id="@+id/frameItemImage"

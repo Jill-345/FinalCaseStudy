@@ -9,71 +9,77 @@
 
     <!-- App Bar -->
 
+    <TextView
+        android:id="@+id/textView58"
+        android:layout_width="419dp"
+        android:layout_height="69dp"
+        android:layout_marginBottom="5dp"
+        android:background="#A00606"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="40dp"
+        android:layout_height="67dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.043"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/bataan_peninsula_state_university_logo" />
+
+    <TextView
+        android:id="@+id/textview"
+        android:layout_width="245dp"
+        android:layout_height="26dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/times_new_roman"
+        android:text="Bataan Peninsula State University"
+        android:textColor="#ffffffff"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.420"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.027" />
+
+    <!-- RecyclerView for Lost Items Grid -->
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="95dp"
+        android:layout_height="67dp"
+        android:entries="@array/campus"
+        android:scrollbarSize="4dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
-        android:layout_width="410dp"
-        android:layout_height="184dp"
+        android:layout_width="415dp"
+        android:layout_height="121dp"
         android:background="#E5D5D5"
         app:elevation="0dp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.742">
 
         <!-- Toolbar with Logo and Title -->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#A00606">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="44dp"
-                    android:layout_height="85dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.043"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@drawable/bataan_peninsula_state_university_logo" />
-
-                <TextView
-                    android:id="@+id/textview"
-                    android:layout_width="219dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:fontFamily="serif"
-                    android:text="Bataan Peninsula State University"
-                    android:textColor="#ffffffff"
-                    android:textSize="14sp" />
-
-                <Spinner
-                    android:id="@+id/spinner"
-                    android:layout_width="98dp"
-                    android:layout_height="55dp"
-                    android:scrollbarSize="4dp"
-                    android:spinnerMode="dropdown"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.996"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.023"
-                    android:entries="@array/campus"/>
-
-            </LinearLayout>
-
-        </androidx.appcompat.widget.Toolbar>
 
         <!-- Lost Items Title and Search Bar -->
         <View
@@ -82,6 +88,7 @@
             android:layout_height="1dp"
             android:background="?android:attr/listDivider" />
 
+        <!-- Horizontal Divider -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="61dp"
@@ -103,7 +110,6 @@
 
         </LinearLayout>
 
-        <!-- Horizontal Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -178,18 +184,16 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- RecyclerView for Lost Items Grid -->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="366dp"
-        android:layout_height="653dp"
+        android:layout_width="404dp"
+        android:layout_height="633dp"
         android:padding="8dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.644"
+        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"

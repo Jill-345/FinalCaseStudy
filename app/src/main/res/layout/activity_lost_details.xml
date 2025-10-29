@@ -8,10 +8,11 @@
     tools:context=".LostDetailsActivity">
 
     <!-- 🔴 Header Banner -->
+
     <TextView
         android:id="@+id/textViewBanner"
-        android:layout_width="417dp"
-        android:layout_height="101dp"
+        android:layout_width="419dp"
+        android:layout_height="69dp"
         android:layout_marginBottom="5dp"
         android:background="#A00606"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,8 +23,8 @@
 
     <ImageView
         android:id="@+id/imageViewLogo"
-        android:layout_width="44dp"
-        android:layout_height="85dp"
+        android:layout_width="40dp"
+        android:layout_height="67dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
@@ -34,19 +35,23 @@
 
     <TextView
         android:id="@+id/textViewUniversity"
-        android:layout_width="279dp"
-        android:layout_height="28dp"
+        android:layout_width="245dp"
+        android:layout_height="26dp"
         android:fontFamily="@font/times_new_roman"
         android:text="Bataan Peninsula State University"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.420"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.045" />
+        app:layout_constraintVertical_bias="0.027" />
 
     <!-- 🔴 Page Header -->
+
+    <!-- 🟤 Item Image (Same as Found Details) -->
     <TextView
         android:id="@+id/textViewHeader"
         android:layout_width="284dp"
@@ -57,12 +62,11 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.165" />
+        app:layout_constraintVertical_bias="0.133" />
 
-    <!-- 🟤 Item Image (Same as Found Details) -->
     <FrameLayout
         android:id="@+id/frameItemImage"
         android:layout_width="161dp"
@@ -72,6 +76,7 @@
         android:background="#D5C5C5"
         app:layout_constraintBottom_toTopOf="@+id/tableLostDetails"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewHeader">
 
@@ -79,9 +84,9 @@
             android:id="@+id/ivItemImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:adjustViewBounds="true"
             android:contentDescription="Item Image"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true" />
+            android:scaleType="fitCenter" />
 
     </FrameLayout>
 
@@ -256,14 +261,14 @@
     <!-- 🔵 Spinner -->
     <Spinner
         android:id="@+id/spinner8"
-        android:layout_width="86dp"
-        android:layout_height="29dp"
+        android:layout_width="95dp"
+        android:layout_height="67dp"
+        android:entries="@array/menu_items"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.045"
-        android:entries="@array/menu_items"/>
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

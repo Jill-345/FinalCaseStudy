@@ -35,27 +35,29 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.124" />
+        app:layout_constraintVertical_bias="0.08" />
 
     <TextView
         android:id="@+id/textView13"
         android:layout_width="284dp"
         android:layout_height="35dp"
         android:fontFamily="@font/times_new_roman"
+        android:gravity="center"
         android:text="Lost and Found Online System"
         android:textColor="#ffffff"
-        android:textSize="22sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintHorizontal_bias="0.551"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.136" />
+        app:layout_constraintVertical_bias="0.091" />
 
     <TextView
         android:id="@+id/textView10"
-        android:layout_width="408dp"
-        android:layout_height="101dp"
+        android:layout_width="411dp"
+        android:layout_height="68dp"
         android:layout_marginBottom="5dp"
         android:background="#A00606"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -67,8 +69,8 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="44dp"
-        android:layout_height="85dp"
+        android:layout_width="40dp"
+        android:layout_height="67dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
@@ -79,31 +81,33 @@
 
     <TextView
         android:id="@+id/textView11"
-        android:layout_width="279dp"
-        android:layout_height="28dp"
+        android:layout_width="245dp"
+        android:layout_height="26dp"
         android:fontFamily="@font/times_new_roman"
         android:text="Bataan Peninsula State University"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.420"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.045" />
+        app:layout_constraintVertical_bias="0.027" />
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="98dp"
-        android:layout_height="55dp"
+        android:layout_width="95dp"
+        android:layout_height="67dp"
+        android:entries="@array/menu_items"
         android:scrollbarSize="4dp"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.996"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023"
-        android:entries="@array/menu_items"/>
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button5"

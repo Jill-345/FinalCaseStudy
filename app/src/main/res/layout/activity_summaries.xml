@@ -43,7 +43,7 @@
     <TextView
         android:id="@+id/textView18"
         android:layout_width="411dp"
-        android:layout_height="66dp"
+        android:layout_height="55dp"
         android:layout_marginBottom="5dp"
         android:background="#940202"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,25 +51,25 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.101" />
+        app:layout_constraintVertical_bias="0.081" />
 
     <TextView
         android:id="@+id/textView15"
-        android:layout_width="421dp"
-        android:layout_height="87dp"
+        android:layout_width="415dp"
+        android:layout_height="67dp"
         android:layout_marginBottom="5dp"
         android:background="#A00606"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="44dp"
-        android:layout_height="85dp"
+        android:layout_width="40dp"
+        android:layout_height="67dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
@@ -80,18 +80,19 @@
 
     <TextView
         android:id="@+id/textView16"
-        android:layout_width="248dp"
-        android:layout_height="29dp"
+        android:layout_width="245dp"
+        android:layout_height="26dp"
         android:fontFamily="@font/times_new_roman"
         android:text="Bataan Peninsula State University"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.429"
+        app:layout_constraintHorizontal_bias="0.420"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.044" />
+        app:layout_constraintVertical_bias="0.027" />
 
     <TextView
         android:id="@+id/textView19"
@@ -104,41 +105,41 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.135" />
+        app:layout_constraintVertical_bias="0.095" />
 
     <Spinner
         android:id="@+id/spinner4"
-        android:layout_width="90dp"
-        android:layout_height="48dp"
+        android:layout_width="95dp"
+        android:layout_height="67dp"
+        android:entries="@array/menu_items"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.027"
-        android:entries="@array/menu_items"/>
+        app:layout_constraintVertical_bias="0.0" />
 
     <LinearLayout
-        android:layout_width="395dp"
-        android:layout_height="141dp"
+        android:layout_width="391dp"
+        android:layout_height="125dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.688">
+        app:layout_constraintVertical_bias="0.681">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="117dp"
+            android:layout_width="287dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView32"
-                android:layout_width="match_parent"
+                android:layout_width="287dp"
                 android:layout_height="33dp"
                 android:gravity="center|start"
                 android:text="Total Number of Found Item Reports:"
@@ -169,14 +170,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="129dp"
-            android:layout_height="113dp"
+            android:layout_width="104dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView33"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="33dp"
                 android:background="@android:drawable/editbox_background"
                 android:gravity="center|start"
                 android:textColor="@color/black"
@@ -185,7 +186,7 @@
             <TextView
                 android:id="@+id/textView35"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="33dp"
                 android:background="@android:drawable/editbox_background"
                 android:gravity="center|start"
                 android:shadowColor="@color/black"
@@ -195,7 +196,7 @@
             <TextView
                 android:id="@+id/textView37"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="33dp"
                 android:background="@android:drawable/editbox_background"
                 android:gravity="center|start"
                 android:textColor="@color/black"
@@ -207,19 +208,18 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="395dp"
-        android:layout_height="132dp"
+        android:layout_width="392dp"
+        android:layout_height="105dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.393">
+        app:layout_constraintVertical_bias="0.378">
 
         <LinearLayout
-            android:layout_width="266dp"
-            android:layout_height="wrap_content"
+            android:layout_width="289dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -255,14 +255,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="127dp"
-            android:layout_height="wrap_content"
+            android:layout_width="102dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView26"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="33dp"
                 android:background="@android:drawable/editbox_background"
                 android:gravity="center|start"
                 android:textColor="@color/black"
@@ -271,7 +271,7 @@
             <TextView
                 android:id="@+id/textView28"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="33dp"
                 android:background="@android:drawable/editbox_background"
                 android:gravity="center|start"
                 android:textColor="@color/black"
