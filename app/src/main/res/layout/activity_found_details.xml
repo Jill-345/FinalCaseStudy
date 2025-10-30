@@ -113,8 +113,8 @@
 
     <Spinner
         android:id="@+id/spinner3"
-        android:layout_width="18dp"
-        android:layout_height="10dp"
+        android:layout_width="20dp"
+        android:layout_height="15dp"
         android:background="@drawable/pngaaa_com_5204195"
         android:scrollbarSize="4dp"
         android:spinnerMode="dropdown"
@@ -123,7 +123,7 @@
         app:layout_constraintHorizontal_bias="0.930"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.035" />
+        app:layout_constraintVertical_bias="0.032" />
 
     <FrameLayout
         android:id="@+id/frameItemImage"
@@ -141,9 +141,9 @@
             android:id="@+id/ivItemImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:adjustViewBounds="true"
             android:contentDescription="Item Image"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true" />
+            android:scaleType="fitXY" />
 
     </FrameLayout>
 
@@ -152,7 +152,7 @@
         android:layout_width="385dp"
         android:layout_height="282dp"
         android:layout_marginTop="16dp"
-        android:background="#000000"
+        android:background="#ffffff"
         android:padding="0.5dp"
         android:stretchColumns="1"
         app:layout_constraintEnd_toEndOf="parent"

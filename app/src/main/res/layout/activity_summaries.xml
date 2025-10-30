@@ -113,8 +113,8 @@
 
     <Spinner
         android:id="@+id/spinner4"
-        android:layout_width="18dp"
-        android:layout_height="10dp"
+        android:layout_width="20dp"
+        android:layout_height="15dp"
         android:background="@drawable/pngaaa_com_5204195"
         android:entries="@array/menu_items"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -122,7 +122,7 @@
         app:layout_constraintHorizontal_bias="0.930"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.035" />
+        app:layout_constraintVertical_bias="0.032" />
 
     <LinearLayout
         android:layout_width="391dp"
