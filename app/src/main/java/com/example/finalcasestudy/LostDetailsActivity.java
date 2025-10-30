@@ -108,7 +108,7 @@ public class LostDetailsActivity extends AppCompatActivity {
     // 🔹 Spinner navigation setup
     private void setupSpinner() {
 
-        String current = "Home";
+        String current = "Select page";
         int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
         spinner.setSelection(index);
 

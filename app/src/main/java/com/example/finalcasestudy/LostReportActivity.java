@@ -154,7 +154,7 @@ public class LostReportActivity extends AppCompatActivity {
     }
     private void setupSpinner() {
 
-        String current = "Home";
+        String current = "Select page";
         int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
         spinner.setSelection(index);
 

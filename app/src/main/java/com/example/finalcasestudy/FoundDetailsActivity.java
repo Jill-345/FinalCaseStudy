@@ -69,7 +69,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
         );
         adapterMenu.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapterMenu);
-        spinner.setSelection(adapterMenu.getPosition("Home"));
+        spinner.setSelection(adapterMenu.getPosition("Select page"));
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

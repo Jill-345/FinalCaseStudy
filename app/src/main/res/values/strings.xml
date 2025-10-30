@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">FinalCaseStudy</string>
     <string-array name="menu_items">
+        <item>Select page</item>
         <item>Home</item>
         <item>Lost Items</item>
         <item>Found Items</item>
