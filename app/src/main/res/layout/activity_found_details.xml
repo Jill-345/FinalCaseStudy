@@ -141,9 +141,9 @@
             android:id="@+id/ivItemImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:adjustViewBounds="true"
             android:contentDescription="Item Image"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true" />
+            android:scaleType="fitXY" />
 
     </FrameLayout>
 
@@ -152,7 +152,7 @@
         android:layout_width="385dp"
         android:layout_height="282dp"
         android:layout_marginTop="16dp"
-        android:background="#000000"
+        android:background="#ffffff"
         android:padding="0.5dp"
         android:stretchColumns="1"
         app:layout_constraintEnd_toEndOf="parent"
