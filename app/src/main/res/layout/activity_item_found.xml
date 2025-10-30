@@ -108,8 +108,8 @@
 
         <Spinner
             android:id="@+id/spinner"
-            android:layout_width="18dp"
-            android:layout_height="10dp"
+            android:layout_width="20dp"
+            android:layout_height="15dp"
             android:background="@drawable/pngaaa_com_5204195"
             android:backgroundTintMode="add"
             android:entries="@array/menu_items"
