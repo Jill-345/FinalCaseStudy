@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTintMode="add"
     tools:context=".ItemFoundActivity">
 
     <!-- 🔝 Toolbar -->
 
     <TextView
         android:id="@+id/textView56"
-        android:layout_width="411dp"
+        android:layout_width="420dp"
         android:layout_height="67dp"
         android:layout_marginBottom="5dp"
         android:background="#A00606"
@@ -38,37 +38,25 @@
 
     <TextView
         android:id="@+id/textview"
-        android:layout_width="245dp"
+        android:layout_width="280dp"
         android:layout_height="26dp"
-        android:fontFamily="@font/times_new_roman"
+        android:fontFamily="sans-serif"
         android:text="Bataan Peninsula State University"
         android:textColor="#ffffff"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.420"
+        app:layout_constraintHorizontal_bias="0.500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.027" />
 
     <!-- 🔎 Search Bar -->
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="95dp"
-        android:layout_height="67dp"
-        android:entries="@array/menu_items"
-        android:spinnerMode="dropdown"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
 
     <!-- 📂 Tabs -->
+
     <LinearLayout
         android:id="@+id/searchContainer"
         android:layout_width="0dp"
@@ -88,11 +76,13 @@
             android:id="@+id/textview2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="5dp"
             android:text="Found Items"
             android:textColor="#ffffff"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <!-- 🔍 Search Button -->
 
         <EditText
             android:id="@+id/editTextText"
@@ -107,16 +97,23 @@
             android:textColor="#000000"
             android:textColorHint="#888888" />
 
-        <!-- 🔍 Search Button -->
         <ImageButton
             android:id="@+id/buttonSearch"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Search"
             android:src="@android:drawable/ic_menu_search"
             app:tint="#ffffff" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="18dp"
+            android:layout_height="10dp"
+            android:background="@drawable/pngaaa_com_5204195"
+            android:backgroundTintMode="add"
+            android:entries="@array/menu_items"
+            android:spinnerMode="dropdown" />
 
     </LinearLayout>
 
@@ -125,13 +122,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchContainer"
         app:tabIndicatorColor="#000000"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="#000000"
-        app:tabTextColor="#A00606"
-        app:layout_constraintTop_toBottomOf="@id/searchContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:tabTextColor="#A00606">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

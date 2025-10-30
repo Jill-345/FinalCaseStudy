@@ -23,31 +23,32 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="95dp"
-        android:layout_height="67dp"
+        android:layout_width="18dp"
+        android:layout_height="10dp"
+        android:background="@drawable/pngaaa_com_5204195"
         android:entries="@array/campus"
         android:scrollbarSize="4dp"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.930"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.035" />
 
     <TextView
         android:id="@+id/textview"
-        android:layout_width="245dp"
+        android:layout_width="280dp"
         android:layout_height="26dp"
         android:layout_weight="1"
-        android:fontFamily="@font/times_new_roman"
+        android:fontFamily="sans-serif"
         android:text="Bataan Peninsula State University"
         android:textColor="#ffffffff"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.420"
+        app:layout_constraintHorizontal_bias="0.500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.027" />
