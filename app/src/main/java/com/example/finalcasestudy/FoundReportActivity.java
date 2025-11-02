@@ -252,7 +252,7 @@ public class FoundReportActivity extends AppCompatActivity {
         dateFoundInput.setText(sdf.format(calendar.getTime()));
     }
 
-    // 🔹 Save to Firestore (now includes campus)
+    // 🔹 Save to Firestore (now includes campus and default status)
     private void saveItemDetails(String itemName, String description, String category, String finder, String number,
                                  String dateFound, String location, String campus, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
@@ -263,9 +263,12 @@ public class FoundReportActivity extends AppCompatActivity {
         itemData.put("contactNumber", number);
         itemData.put("dateFound", dateFound);
         itemData.put("location", location);
-        itemData.put("campus", campus); // ✅ Added campus field
+        itemData.put("campus", campus);
         itemData.put("imageUrl", imageUrl);
         itemData.put("timestamp", System.currentTimeMillis());
+
+        // ✅ Automatically mark new reports as Unclaimed
+        itemData.put("claimStatus", "Unclaimed");
 
         db.collection("reported_items")
                 .add(itemData)

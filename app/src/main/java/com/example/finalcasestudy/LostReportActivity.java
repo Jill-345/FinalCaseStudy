@@ -271,9 +271,12 @@ public class LostReportActivity extends AppCompatActivity {
         itemData.put("contactNumber", number);
         itemData.put("dateLost", dateLost);
         itemData.put("location", location);
-        itemData.put("campus", campus); // ✅ Added campus field
+        itemData.put("campus", campus);
         itemData.put("imageUrl", imageUrl);
         itemData.put("timestamp", System.currentTimeMillis());
+
+        // ✅ Automatically mark as "Not Found" by default
+        itemData.put("status", "Not Found");
 
         db.collection("lost_items")
                 .add(itemData)
@@ -290,7 +293,7 @@ public class LostReportActivity extends AppCompatActivity {
                     imageView.setImageResource(0);
                     uploadedImageUrl = null;
 
-                    // Redirect
+                    // Redirect to Lost Items list
                     startActivity(new Intent(this, ItemLostActivity.class));
                     finish();
                 })

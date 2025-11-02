@@ -22,6 +22,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class LostDetailsActivity extends AppCompatActivity {
 
     private Spinner spinner;
@@ -41,7 +47,7 @@ public class LostDetailsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_lost_details);
 
-        // ✅ Handle window insets (fixed)
+        // ✅ Handle window insets
         View mainView = findViewById(R.id.main);
         ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -64,7 +70,7 @@ public class LostDetailsActivity extends AppCompatActivity {
         tvContact = findViewById(R.id.textViewContact);
         tvDateLoss = findViewById(R.id.textViewDateLoss);
         tvLocationLoss = findViewById(R.id.textViewLocationLoss);
-        tvCampus = findViewById(R.id.textViewCampus); // ✅ new TextView for campus
+        tvCampus = findViewById(R.id.textViewCampus);
         radioGroup = findViewById(R.id.radioGroup);
         radioFound = findViewById(R.id.radioFound);
         radioNotFound = findViewById(R.id.radioNotFound);
@@ -78,27 +84,28 @@ public class LostDetailsActivity extends AppCompatActivity {
             finish();
         }
 
-        // ✅ Update Firestore when radio button changes (fixed lambda issue)
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                final String newStatus; // must be final for inner usage
-                if (checkedId == R.id.radioFound) {
-                    newStatus = "Found";
-                } else if (checkedId == R.id.radioNotFound) {
-                    newStatus = "Not Found";
-                } else {
-                    newStatus = "";
-                }
+        // ✅ Update Firestore when radio button changes (with auto-date)
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            final String newStatus;
+            if (checkedId == R.id.radioFound) {
+                newStatus = "Found";
+            } else if (checkedId == R.id.radioNotFound) {
+                newStatus = "Not Found";
+            } else {
+                newStatus = "";
+            }
 
-                if (!newStatus.isEmpty() && documentId != null) {
-                    db.collection("lost_items").document(documentId)
-                            .update("status", newStatus)
-                            .addOnSuccessListener(aVoid ->
-                                    Toast.makeText(LostDetailsActivity.this, "Status updated to " + newStatus, Toast.LENGTH_SHORT).show())
-                            .addOnFailureListener(e ->
-                                    Toast.makeText(LostDetailsActivity.this, "Failed to update status: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                }
+            if (!newStatus.isEmpty() && documentId != null) {
+                Map<String, Object> updateData = new HashMap<>();
+                updateData.put("status", newStatus);
+
+
+                db.collection("lost_items").document(documentId)
+                        .update(updateData)
+                        .addOnSuccessListener(aVoid ->
+                                Toast.makeText(LostDetailsActivity.this, "Status updated to " + newStatus, Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e ->
+                                Toast.makeText(LostDetailsActivity.this, "Failed to update status: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         });
 
@@ -107,11 +114,6 @@ public class LostDetailsActivity extends AppCompatActivity {
 
     // 🔹 Spinner navigation setup
     private void setupSpinner() {
-
-        String current = "Select page";
-        int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
-        spinner.setSelection(index);
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -138,7 +140,6 @@ public class LostDetailsActivity extends AppCompatActivity {
                         finish();
                         break;
                 }
-
             }
 
             @Override
@@ -167,7 +168,7 @@ public class LostDetailsActivity extends AppCompatActivity {
             tvContact.setText(doc.getString("contactNumber"));
             tvDateLoss.setText(doc.getString("dateLost"));
             tvLocationLoss.setText(doc.getString("location"));
-            tvCampus.setText(doc.getString("campus")); // ✅ show campus name
+            tvCampus.setText(doc.getString("campus"));
 
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {

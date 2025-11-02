@@ -24,7 +24,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class FoundDetailsActivity extends AppCompatActivity {
@@ -114,7 +117,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
         tvContact = findViewById(R.id.tvContact);
         tvDateFound = findViewById(R.id.tvDateLoss);
         tvLocation = findViewById(R.id.tvLocationLoss);
-        tvCampus = findViewById(R.id.tvCampus); // ✅ new TextView for campus
+        tvCampus = findViewById(R.id.tvCampus);
 
         etClaimant = findViewById(R.id.etClaimant);
         etStatus = findViewById(R.id.etStatus);
@@ -133,16 +136,41 @@ public class FoundDetailsActivity extends AppCompatActivity {
             finish();
         }
 
-        // ✅ Sync radio buttons with status field
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            String newStatus;
+
             if (checkedId == R.id.radioClaimed) {
-                etStatus.setText("Claimed");
+                newStatus = "Claimed";
+                // Automatically set submission date to today
+                String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                etSubmissionDate.setText(todayDate);
             } else if (checkedId == R.id.radioUnclaimed) {
-                etStatus.setText("Unclaimed");
+                newStatus = "Unclaimed";
+                etClaimant.setText(""); // clear claimant field
+                etSubmissionDate.setText(""); // clear date
+            } else {
+                newStatus = "";
+            }
+
+            etStatus.setText(newStatus);
+
+
+        // ✅ Auto-update Firestore claim status & submission date
+            if (!newStatus.isEmpty() && documentId != null) {
+                Map<String, Object> updateData = new HashMap<>();
+                updateData.put("claimStatus", newStatus);
+                updateData.put("submissionDate", etSubmissionDate.getText().toString());
+
+                db.collection("reported_items").document(documentId)
+                        .update(updateData)
+                        .addOnSuccessListener(aVoid ->
+                                Toast.makeText(FoundDetailsActivity.this, "Status updated to " + newStatus, Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e ->
+                                Toast.makeText(FoundDetailsActivity.this, "Failed to update status: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         });
 
-        // ✅ Save claim info
+        // ✅ Save claim info manually
         btnSaveClaim.setOnClickListener(v -> saveClaimToFirestore());
     }
 
@@ -166,7 +194,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
             tvContact.setText(doc.getString("contactNumber"));
             tvDateFound.setText(doc.getString("dateFound"));
             tvLocation.setText(doc.getString("location"));
-            tvCampus.setText(doc.getString("campus")); // ✅ show campus name
+            tvCampus.setText(doc.getString("campus"));
 
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -178,7 +206,6 @@ public class FoundDetailsActivity extends AppCompatActivity {
             etStatus.setText(doc.getString("claimStatus"));
             etSubmissionDate.setText(doc.getString("submissionDate"));
 
-            // ✅ Set radio buttons according to claimStatus
             String claimStatus = doc.getString("claimStatus");
             if (claimStatus != null) {
                 if (claimStatus.equalsIgnoreCase("Claimed")) {
