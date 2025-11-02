@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context=".ReportItemActivity">
 
     <TextView
@@ -17,6 +18,7 @@
         android:padding="16dp"
         android:textColor="#000000"
         android:textSize="18sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +37,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.08" />
+        app:layout_constraintVertical_bias="0.083" />
 
     <TextView
         android:id="@+id/textView13"
@@ -52,7 +54,7 @@
         app:layout_constraintHorizontal_bias="0.551"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.091" />
+        app:layout_constraintVertical_bias="0.092" />
 
     <TextView
         android:id="@+id/textView10"
@@ -97,18 +99,18 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="20dp"
-        android:layout_height="15dp"
-        android:background="@drawable/pngaaa_com_5204195"
+        android:layout_width="25dp"
+        android:layout_height="23dp"
+        android:background="@drawable/white_menu_icon_png_18_removebg_preview"
         android:entries="@array/menu_items"
         android:scrollbarSize="4dp"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.930"
+        app:layout_constraintHorizontal_bias="0.960"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.032" />
+        app:layout_constraintVertical_bias="0.029" />
 
     <Button
         android:id="@+id/button5"

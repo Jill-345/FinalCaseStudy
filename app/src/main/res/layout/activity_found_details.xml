@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context=".LostDetailsActivity">
 
     <RadioGroup
@@ -13,10 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/button12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tableLostDetails"
-        app:layout_constraintBottom_toTopOf="@id/button12"
         app:layout_constraintVertical_bias="0.9">
 
         <RadioButton
@@ -113,17 +114,17 @@
 
     <Spinner
         android:id="@+id/spinner3"
-        android:layout_width="20dp"
-        android:layout_height="15dp"
-        android:background="@drawable/pngaaa_com_5204195"
+        android:layout_width="25dp"
+        android:layout_height="23dp"
+        android:background="@drawable/white_menu_icon_png_18_removebg_preview"
         android:scrollbarSize="4dp"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.930"
+        app:layout_constraintHorizontal_bias="0.960"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.032" />
+        app:layout_constraintVertical_bias="0.029" />
 
     <FrameLayout
         android:id="@+id/frameItemImage"
@@ -305,17 +306,19 @@
         android:background="#000000"
         android:padding="0.5dp"
         android:stretchColumns="*"
-        app:layout_constraintTop_toBottomOf="@id/textViewClaimsHeader"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/textViewClaimsHeader">
 
         <TableRow>
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"
                 android:text="Claimant"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
             <TextView
                 android:background="@drawable/cell_border"
                 android:padding="8dp"

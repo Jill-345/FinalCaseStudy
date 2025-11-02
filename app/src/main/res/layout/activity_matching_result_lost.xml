@@ -54,18 +54,18 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="20dp"
-        android:layout_height="15dp"
-        android:background="@drawable/pngaaa_com_5204195"
+        android:layout_width="25dp"
+        android:layout_height="23dp"
+        android:background="@drawable/white_menu_icon_png_18_removebg_preview"
         android:entries="@array/campus"
         android:scrollbarSize="4dp"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.930"
+        app:layout_constraintHorizontal_bias="0.960"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.032" />
+        app:layout_constraintVertical_bias="0.029" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
