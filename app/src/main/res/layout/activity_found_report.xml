@@ -225,7 +225,7 @@
                 android:layout_height="48dp"
                 android:background="@android:drawable/editbox_background"
                 android:dropDownWidth="wrap_content"
-                android:entries="@array/campus"
+                android:entries="@array/campus_name"
                 android:spinnerMode="dropdown" />
 
         </LinearLayout>

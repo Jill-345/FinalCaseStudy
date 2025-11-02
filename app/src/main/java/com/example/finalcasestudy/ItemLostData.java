@@ -6,7 +6,7 @@ public class ItemLostData {
     private String date;
     private String imageUrl;
 
-    public ItemLostData() {} // Required for Firestore
+    public ItemLostData() {}
 
     public ItemLostData(String documentId, String name, String date, String imageUrl) {
         this.documentId = documentId;

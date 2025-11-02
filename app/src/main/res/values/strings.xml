@@ -22,6 +22,15 @@
         <item>Others</item>
     </string-array>
 
+    <string-array name="campus_name">
+        <item>Abucay Campus</item>
+        <item>Bagac Campus</item>
+        <item>Balanga Campus</item>
+        <item>Dinalupihan Campus</item>
+        <item>Main Campus</item>
+        <item>Orani Campus</item>
+    </string-array>
+
     <string-array name="campus">
         <item>BPSU Campus</item>
         <item>Abucay Campus</item>
