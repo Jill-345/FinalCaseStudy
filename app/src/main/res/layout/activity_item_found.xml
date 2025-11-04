@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     android:backgroundTintMode="add"
     tools:context=".ItemFoundActivity">
 
@@ -108,9 +109,9 @@
 
         <Spinner
             android:id="@+id/spinner"
-            android:layout_width="20dp"
-            android:layout_height="15dp"
-            android:background="@drawable/pngaaa_com_5204195"
+            android:layout_width="25dp"
+            android:layout_height="23dp"
+            android:background="@drawable/white_menu_icon_png_18_removebg_preview"
             android:backgroundTintMode="add"
             android:entries="@array/menu_items"
             android:spinnerMode="dropdown" />
