@@ -175,8 +175,12 @@ public class FoundReportActivity extends AppCompatActivity {
                         openIfNotCurrent(SummariesActivity.class);
                         break;
                     case "Logout":
+                        Intent logoutIntent = new Intent(FoundReportActivity.this, MainActivity.class);
+                        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(logoutIntent);
                         finish();
                         break;
+
                 }
             }
 

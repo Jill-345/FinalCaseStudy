@@ -97,6 +97,9 @@ public class FoundDetailsActivity extends AppCompatActivity {
                         openIfNotCurrent(SummariesActivity.class);
                         break;
                     case "Logout":
+                        Intent logoutIntent = new Intent(FoundDetailsActivity.this, MainActivity.class);
+                        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(logoutIntent);
                         finish();
                         break;
                 }
