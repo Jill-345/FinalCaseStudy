@@ -15,28 +15,27 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-// Adapter class used to display the list of found items in a RecyclerView
 public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.ViewHolder> {
 
-    private Context context;            // Context to access app resources and start activities
-    private List<ItemFoundData> itemList; // List of found items to display
+    // Declare context and list of items
+    private Context context;
+    private List<ItemFoundData> itemList;
 
-    // Constructor: Initializes the adapter with the context and list of items
+    // Adapter constructor to initialize context and item list
     public ItemFoundAdapter(Context context, List<ItemFoundData> itemList) {
         this.context = context;
         this.itemList = itemList;
     }
 
-    // Called when RecyclerView needs a new ViewHolder (creates layout for each item)
+    // Inflate the layout for each RecyclerView item
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the layout for each item (activity_item_found_frame.xml)
         View view = LayoutInflater.from(context).inflate(R.layout.activity_item_found_frame, parent, false);
         return new ViewHolder(view);
     }
 
-    // Binds data to each item in the RecyclerView (sets text and image)
+    // Binds data to each item in the RecyclerView
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get the current item from the list
@@ -46,8 +45,7 @@ public class ItemFoundAdapter extends RecyclerView.Adapter<ItemFoundAdapter.View
         holder.tvItemName.setText(item.getName());
         holder.tvDate.setText(item.getDate());
 
-        // Load the item image using Picasso library
-        // If there’s no image, use a default placeholder
+        // Load item image using Picasso if image URL is valid
         if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
             Picasso.get()
                     .load(item.getImageUrl())                     // Load image from URL

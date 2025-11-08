@@ -53,8 +53,6 @@ public class MatchingResultLostAdapter extends RecyclerView.Adapter<MatchingResu
                     .fit()
                     .centerCrop()
                     .into(holder.ivItemImage);
-        } else {
-            holder.ivItemImage.setImageResource(R.drawable.plus_placeholder);
         }
 
         // Handle more details textview

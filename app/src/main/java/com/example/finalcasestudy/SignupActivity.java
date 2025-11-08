@@ -19,11 +19,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
-    // Declare input fields and button
+    // Declare necessary components the UI, Database, and Firebase
     private EditText nameField, emailField, passwordField, confirmField;
     private Button createAccountBtn;
-
-    // Firebase authentication and database references
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
 
@@ -39,11 +37,9 @@ public class SignupActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize Firebase Authentication and Database
+        // Initialize UI, Database, and Firebase
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
-
-        // Link XML components (EditTexts and Button)
         nameField = findViewById(R.id.editTextText);
         emailField = findViewById(R.id.editTextText2);
         passwordField = findViewById(R.id.editTextText3);
@@ -84,11 +80,10 @@ public class SignupActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Account successfully created
                         FirebaseUser user = mAuth.getCurrentUser();
 
+                        // Save additional user information in the Realtime Database
                         if (user != null) {
-                            // Save additional user information in the Realtime Database
                             usersRef.child(user.getUid()).setValue(new User(name, email, "student"));
 
                             // Send verification email to the user
@@ -98,10 +93,9 @@ public class SignupActivity extends AppCompatActivity {
 
                             // Redirect to LoginActivity after successful registration
                             startActivity(new Intent(this, LoginActivity.class));
-                            finish(); // Close SignupActivity
+                            finish();
                         }
                     } else {
-                        // If registration fails, show the error message
                         Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

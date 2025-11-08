@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ReportItemActivity extends AppCompatActivity {
 
+    // Declare necessary components the UI,
     private Button reportLostBtn, reportFoundBtn;
     private Spinner spinner;
 
@@ -22,9 +23,11 @@ public class ReportItemActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_report_item);
 
+        // Initialize all UI components
         spinner = findViewById(R.id.spinner);
         reportLostBtn = findViewById(R.id.button5);
         reportFoundBtn = findViewById(R.id.button6);
+
 
         reportLostBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, LostReportActivity.class);

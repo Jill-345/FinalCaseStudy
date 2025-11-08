@@ -23,11 +23,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class SummariesActivity extends AppCompatActivity {
 
+    // Declare necessary components the UI, and Firebase
     private Spinner spinner;
     private boolean spinnerInitialized;
     private FirebaseFirestore db;
-
-    // 🔹 TextViews for displaying counts
     private TextView tvLostReports, tvFoundFromLost, tvUnfoundItems;
     private TextView tvFoundReports, tvClaimedItems, tvUnclaimedItems;
 
@@ -37,7 +36,6 @@ public class SummariesActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_summaries);
 
-        // Handle insets for fullscreen layout
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -46,10 +44,9 @@ public class SummariesActivity extends AppCompatActivity {
 
         spinner = findViewById(R.id.spinner4);
 
-        // 🔹 Initialize Firestore
+        //  Initialize  and UI
         db = FirebaseFirestore.getInstance();
 
-        // 🔹 Initialize TextViews
         tvLostReports = findViewById(R.id.textView26);
         tvFoundFromLost = findViewById(R.id.textView28);
         tvUnfoundItems = findViewById(R.id.textView30);
@@ -58,16 +55,16 @@ public class SummariesActivity extends AppCompatActivity {
         tvClaimedItems = findViewById(R.id.textView35);
         tvUnclaimedItems = findViewById(R.id.textView37);
 
-        // 🔹 Start real-time listeners
+        //  Start real-time listeners
         startLostItemListener();
         startFoundItemListener();
 
-        // 🔹 Setup spinner (fix added here)
+        // Spinner navigation setup
         setupSpinner();
     }
 
+    // Handles navigation spinner
     private void setupSpinner() {
-        // ✅ Add this adapter setup — it was missing
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.menu_items,
@@ -88,6 +85,7 @@ public class SummariesActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Handle spinner menu selection
                 String selected = parent.getItemAtPosition(position).toString();
                 switch (selected) {
                     case "Home":
@@ -110,6 +108,7 @@ public class SummariesActivity extends AppCompatActivity {
                         break;
                 }
 
+                // Reset selection to current after navigation
                 spinner.post(() -> {
                     int currentIndex = adapter.getPosition(current);
                     spinner.setSelection(currentIndex);
@@ -121,7 +120,17 @@ public class SummariesActivity extends AppCompatActivity {
         });
     }
 
-    // 🔸 Real-time listener for Lost Items
+    // Opens target activity only if it’s not the current one
+    private void openIfNotCurrent(Class<?> targetActivity) {
+        if (!getClass().equals(targetActivity)) {
+            Intent intent = new Intent(this, targetActivity);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        }
+    }
+
+    // Monitors the the changes collection and updates the summary
     private void startLostItemListener() {
         db.collection("lost_items").addSnapshotListener((querySnapshot, e) -> {
             if (e != null) {
@@ -134,6 +143,7 @@ public class SummariesActivity extends AppCompatActivity {
                 int foundCount = 0;
                 int unfoundCount = 0;
 
+                // Count how many items are claimed vs unclaimed
                 for (QueryDocumentSnapshot doc : querySnapshot) {
                     String status = doc.getString("status");
                     if ("Found".equalsIgnoreCase(status)) {
@@ -143,6 +153,7 @@ public class SummariesActivity extends AppCompatActivity {
                     }
                 }
 
+                // Update TextViews with the latest counts
                 tvLostReports.setText(String.valueOf(totalLost));
                 tvFoundFromLost.setText(String.valueOf(foundCount));
                 tvUnfoundItems.setText(String.valueOf(unfoundCount));
@@ -163,6 +174,7 @@ public class SummariesActivity extends AppCompatActivity {
                 int claimed = 0;
                 int unclaimed = 0;
 
+                // Count how many items are claimed vs unclaimed
                 for (QueryDocumentSnapshot doc : querySnapshot) {
                     String claimStatus = doc.getString("claimStatus");
                     if ("Claimed".equalsIgnoreCase(claimStatus)) {
@@ -172,20 +184,11 @@ public class SummariesActivity extends AppCompatActivity {
                     }
                 }
 
+                // Update TextViews with the latest counts
                 tvFoundReports.setText(String.valueOf(totalFound));
                 tvClaimedItems.setText(String.valueOf(claimed));
                 tvUnclaimedItems.setText(String.valueOf(unclaimed));
             }
         });
-    }
-
-    // 🔹 Helper for screen navigation
-    private void openIfNotCurrent(Class<?> targetActivity) {
-        if (!getClass().equals(targetActivity)) {
-            Intent intent = new Intent(this, targetActivity);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-        }
     }
 }

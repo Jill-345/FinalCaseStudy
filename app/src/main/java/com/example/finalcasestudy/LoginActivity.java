@@ -101,9 +101,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Resends a verification email to the currently logged-in user.
-     */
+
+    // Resends a verification email to the currently logged-in user.
     private void resendVerificationEmail() {
         FirebaseUser user = mAuth.getCurrentUser();
 

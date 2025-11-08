@@ -15,10 +15,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Adapter class that connects the list of lost items (data) to the RecyclerView UI.
- * It handles displaying item images, names, dates, and navigation to details.
- */
 public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHolder> {
 
     private Context context;
@@ -51,12 +47,12 @@ public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHo
         // Load the image using Picasso (handles image loading from URLs efficiently)
         if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
             Picasso.get()
-                    .load(item.getImageUrl())                  // Image URL from Firestore
-                    .placeholder(R.drawable.plus_placeholder)  // Default image while loading
-                    .error(R.drawable.plus_placeholder)        // Image to show if loading fails
-                    .fit()                                    // Fit the image within the ImageView
-                    .centerCrop()                             // Crop the image to fill
-                    .into(holder.ivItemImage);                // Display image in the ImageView
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.plus_placeholder)
+                    .error(R.drawable.plus_placeholder)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.ivItemImage);
         } else {
             // If no image URL exists, use the placeholder
             holder.ivItemImage.setImageResource(R.drawable.plus_placeholder);
@@ -65,8 +61,8 @@ public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHo
         // When the "More Details" text is clicked, open the LostDetailsActivity
         holder.tvMoreDetails.setOnClickListener(v -> {
             Intent intent = new Intent(context, LostDetailsActivity.class);
-            intent.putExtra("documentId", item.getDocumentId()); // Pass Firestore document ID
-            context.startActivity(intent); // Launch the details page
+            intent.putExtra("documentId", item.getDocumentId());
+            context.startActivity(intent);
         });
     }
 
@@ -76,10 +72,7 @@ public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHo
         return itemList.size();
     }
 
-    /**
-     * ViewHolder — holds references to the views for each data item.
-     * It prevents repeated calls to findViewById for better performance.
-     */
+    // ViewHolder class to hold item views
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvItemName, tvDate, tvMoreDetails;
         ImageView ivItemImage;
@@ -88,10 +81,10 @@ public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHo
             super(itemView);
 
             // Connect Java variables with their corresponding XML elements
-            tvItemName = itemView.findViewById(R.id.textview3);   // Item name text
-            tvDate = itemView.findViewById(R.id.textview4);       // Date lost text
-            tvMoreDetails = itemView.findViewById(R.id.textview5); // "More details" link
-            ivItemImage = itemView.findViewById(R.id.imageview2);  // Item image
+            tvItemName = itemView.findViewById(R.id.textview3);
+            tvDate = itemView.findViewById(R.id.textview4);
+            tvMoreDetails = itemView.findViewById(R.id.textview5);
+            ivItemImage = itemView.findViewById(R.id.imageview2);
         }
     }
 }

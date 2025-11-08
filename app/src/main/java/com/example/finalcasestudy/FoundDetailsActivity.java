@@ -82,6 +82,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Handle spinner menu selection
                 String selected = parent.getItemAtPosition(position).toString();
                 switch (selected) {
                     case "Home":
