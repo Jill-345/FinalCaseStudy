@@ -150,7 +150,7 @@ public class SummariesActivity extends AppCompatActivity {
         });
     }
 
-    // 🔸 Real-time listener for Found Items
+    // Real-time listener for Found Items
     private void startFoundItemListener() {
         db.collection("reported_items").addSnapshotListener((querySnapshot, e) -> {
             if (e != null) {

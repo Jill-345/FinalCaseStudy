@@ -35,7 +35,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
 
-        // Link UI components with XML layout IDs
+        // Initialize all UI elements
         emailField = findViewById(R.id.editTextText7);
         forgotBtn = findViewById(R.id.button7);
         backLoginBtn = findViewById(R.id.button8);
@@ -44,15 +44,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         forgotBtn.setOnClickListener(v -> sendResetLink());
 
         // Set click listener for "Back to Login" button
-        // Finishes the activity and returns to the previous screen (Login)
         backLoginBtn.setOnClickListener(v -> finish());
     }
 
-    /**
-     * Sends a password reset link to the entered email if valid.
-     */
+    //Sends a password reset link to the entered email if valid
     private void sendResetLink() {
-        String email = emailField.getText().toString().trim(); // Get email input and remove extra spaces
+        String email = emailField.getText().toString().trim();
 
         // Validate that the email field is not empty
         if (email.isEmpty()) {

@@ -32,6 +32,7 @@ import java.util.Map;
 
 public class FoundDetailsActivity extends AppCompatActivity {
 
+    // Declare spinner and UI elements
     private Spinner spinner;
     private boolean spinnerInitialized;
 
@@ -43,7 +44,6 @@ public class FoundDetailsActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     private RadioButton radioClaimed, radioUnclaimed;
     private Button btnSaveClaim;
-
     private String documentId;
 
     @Override
@@ -52,7 +52,6 @@ public class FoundDetailsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_found_details);
 
-        // ✅ Handle window insets
         View mainView = findViewById(R.id.main);
         ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -60,10 +59,10 @@ public class FoundDetailsActivity extends AppCompatActivity {
             return insets;
         });
 
-        // ✅ Initialize Firebase
+        // Initialize Firestore instance
         db = FirebaseFirestore.getInstance();
 
-        // ✅ Spinner for Menu
+        // Setup the dropdown (Spinner) menu
         spinner = findViewById(R.id.spinner3);
         ArrayAdapter<CharSequence> adapterMenu = ArrayAdapter.createFromResource(
                 this,
@@ -74,6 +73,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
         spinner.setAdapter(adapterMenu);
         spinner.setSelection(adapterMenu.getPosition("Select page"));
 
+        // Spinner navigation menu functionality
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -83,6 +83,8 @@ public class FoundDetailsActivity extends AppCompatActivity {
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
+
+                // Handle spinner menu selection
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
@@ -104,6 +106,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
                         break;
                 }
 
+                // Reset spinner selection back to “Home” after navigating
                 spinner.post(() -> spinner.setSelection(adapterMenu.getPosition("Home")));
             }
 
@@ -111,7 +114,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // ✅ Initialize UI elements
+        // Initialize all UI elements
         ivItemImage = findViewById(R.id.ivItemImage);
         tvItemName = findViewById(R.id.tvItemName);
         tvDescription = findViewById(R.id.tvDescription);
@@ -130,8 +133,10 @@ public class FoundDetailsActivity extends AppCompatActivity {
         radioUnclaimed = findViewById(R.id.radioUnclaimed);
         btnSaveClaim = findViewById(R.id.button12);
 
-        // ✅ Get document ID from intent
+        // Get document ID from previous activity
         documentId = getIntent().getStringExtra("documentId");
+
+        // If document ID exists, load the item’s details
         if (documentId != null && !documentId.isEmpty()) {
             loadItemDetails(documentId);
         } else {
@@ -139,26 +144,25 @@ public class FoundDetailsActivity extends AppCompatActivity {
             finish();
         }
 
+        // Handles selection between Claimed and Unclaimed
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             String newStatus;
 
             if (checkedId == R.id.radioClaimed) {
                 newStatus = "Claimed";
-                // Automatically set submission date to today
                 String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                 etSubmissionDate.setText(todayDate);
             } else if (checkedId == R.id.radioUnclaimed) {
                 newStatus = "Unclaimed";
-                etClaimant.setText(""); // clear claimant field
-                etSubmissionDate.setText(""); // clear date
+                etClaimant.setText("");
+                etSubmissionDate.setText("");
             } else {
                 newStatus = "";
             }
 
             etStatus.setText(newStatus);
 
-
-        // ✅ Auto-update Firestore claim status & submission date
+            // Auto-update the claim status in Firestore
             if (!newStatus.isEmpty() && documentId != null) {
                 Map<String, Object> updateData = new HashMap<>();
                 updateData.put("claimStatus", newStatus);
@@ -173,23 +177,23 @@ public class FoundDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // ✅ Save claim info manually
+        // Save claim information when button is clicked
         btnSaveClaim.setOnClickListener(v -> saveClaimToFirestore());
     }
 
-    // 🔹 Load data from Firestore
+    // Loads item details from Firestore using the document ID
     private void loadItemDetails(String documentId) {
         db.collection("reported_items").document(documentId)
                 .get()
                 .addOnSuccessListener(this::displayItemDetails)
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error loading item: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
+                        Toast.makeText(this, "Error loading item: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    // 🔹 Display item details
+    // Displays the item details retrieved from Firestore
     private void displayItemDetails(DocumentSnapshot doc) {
         if (doc.exists()) {
+            // Display basic item information
             tvItemName.setText(doc.getString("itemName"));
             tvDescription.setText(doc.getString("description"));
             tvCategory.setText(doc.getString("category"));
@@ -199,16 +203,18 @@ public class FoundDetailsActivity extends AppCompatActivity {
             tvLocation.setText(doc.getString("location"));
             tvCampus.setText(doc.getString("campus"));
 
+            // Display the uploaded image using Picasso
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Picasso.get().load(imageUrl).into(ivItemImage);
             }
 
-            // Load claim details
+            // Display claim related fields
             etClaimant.setText(doc.getString("claimant"));
             etStatus.setText(doc.getString("claimStatus"));
             etSubmissionDate.setText(doc.getString("submissionDate"));
 
+            // Automatically check the correct radio button
             String claimStatus = doc.getString("claimStatus");
             if (claimStatus != null) {
                 if (claimStatus.equalsIgnoreCase("Claimed")) {
@@ -222,7 +228,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
         }
     }
 
-    // 🔹 Save claim info to Firestore
+    // Saves claim information to Firestore when save button is clicked
     private void saveClaimToFirestore() {
         if (documentId == null) return;
 
@@ -230,16 +236,19 @@ public class FoundDetailsActivity extends AppCompatActivity {
         String status = etStatus.getText().toString().trim();
         String submissionDate = etSubmissionDate.getText().toString().trim();
 
+        // Validate input fields
         if (claimantName.isEmpty() || status.isEmpty() || submissionDate.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Prepare data to update Firestore
         Map<String, Object> claimData = new HashMap<>();
         claimData.put("claimant", claimantName);
         claimData.put("claimStatus", status);
         claimData.put("submissionDate", submissionDate);
 
+        // Update Firestore document
         db.collection("reported_items").document(documentId)
                 .update(claimData)
                 .addOnSuccessListener(aVoid ->
@@ -248,7 +257,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error saving claim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    // 🔹 Spinner Navigation Helper
+    // Handles page navigation when selecting from the spinner menu
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
