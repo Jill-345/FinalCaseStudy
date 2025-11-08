@@ -28,6 +28,7 @@ import java.util.List;
 
 public class ItemLostActivity extends AppCompatActivity {
 
+    // Declare UI elements
     private FloatingActionButton fabAddLost;
     private RecyclerView recyclerView;
     private Spinner spinner;
@@ -52,7 +53,7 @@ public class ItemLostActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 🔹 Initialize UI components
+        // Initialize all UI elements
         fabAddLost = findViewById(R.id.floatingActionButton2);
         recyclerView = findViewById(R.id.recyclerView);
         spinner = findViewById(R.id.spinner);
@@ -60,25 +61,28 @@ public class ItemLostActivity extends AppCompatActivity {
         buttonSearch = findViewById(R.id.buttonSearch);
         tabLayout = findViewById(R.id.tabLayout);
 
+        // Display lost items in 2-column grid layout
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
+        // Initialize Firestore and data list
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
         adapter = new ItemLostAdapter(this, itemList);
         recyclerView.setAdapter(adapter);
 
-        // Load all lost items initially
+        // Load all lost items from Firestore when activity starts
         loadLostItems();
 
-        // ➕ FAB for adding new lost item
+        // Floating button to report a new lost item
         fabAddLost.setOnClickListener(v -> {
             startActivity(new Intent(this, LostReportActivity.class));
         });
 
-        // 🔍 Search Button
+        // Search button action
         buttonSearch.setOnClickListener(v -> {
             String query = searchBar.getText().toString().trim();
             if (!query.isEmpty()) {
+                // Pass the search query to MatchingResultLost activity
                 Intent intent = new Intent(ItemLostActivity.this, MatchingResultLost.class);
                 intent.putExtra("searchQuery", query);
                 startActivity(intent);
@@ -87,10 +91,10 @@ public class ItemLostActivity extends AppCompatActivity {
             }
         });
 
-        // 🧭 Spinner Navigation
+        // Setup navigation spinner
         setupSpinner();
 
-        // 🏷 Tab Filtering
+        // Tab Filtering
         setupTabs();
     }
 
@@ -100,6 +104,7 @@ public class ItemLostActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 String selectedCategory = tab.getText().toString();
+                // Show all items if “All” tab is selected, otherwise filter by category
                 if (selectedCategory.equals("All")) {
                     loadLostItems();
                 } else {
@@ -114,7 +119,7 @@ public class ItemLostActivity extends AppCompatActivity {
         });
     }
 
-    // 🔹 Load all items (default)
+    // Load all lost items from Firestore and display in RecyclerView
     private void loadLostItems() {
         db.collection("lost_items")
                 .addSnapshotListener((value, error) -> {
@@ -131,6 +136,7 @@ public class ItemLostActivity extends AppCompatActivity {
                             String date = doc.getString("dateLost");
                             String imageUrl = doc.getString("imageUrl");
 
+                            // Add each Firestore document as an ItemLostData object
                             itemList.add(new ItemLostData(documentId, name, date, imageUrl));
                         }
                         adapter.notifyDataSetChanged();
@@ -138,7 +144,7 @@ public class ItemLostActivity extends AppCompatActivity {
                 });
     }
 
-    // 🔹 Filter by category tab
+    // Filters Firestore data by the selected category tab
     private void filterByCategory(String category) {
         db.collection("lost_items")
                 .whereEqualTo("category", category)
@@ -163,8 +169,7 @@ public class ItemLostActivity extends AppCompatActivity {
                 });
     }
 
-    // 🔹 Spinner for Navigation
-
+    // Navigation spinner setup
     private void setupSpinner() {
 
         String current = "Lost Items";
@@ -214,6 +219,7 @@ public class ItemLostActivity extends AppCompatActivity {
         });
     }
 
+    // Opens a new activity only if it's not already the current one
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);

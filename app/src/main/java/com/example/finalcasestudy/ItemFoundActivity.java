@@ -28,6 +28,7 @@ import java.util.List;
 
 public class ItemFoundActivity extends AppCompatActivity {
 
+    // Declare UI elements
     private FloatingActionButton fabAddFound;
     private RecyclerView recyclerView;
     private Spinner spinner;
@@ -38,7 +39,8 @@ public class ItemFoundActivity extends AppCompatActivity {
     private List<ItemFoundData> itemList;
     private FirebaseFirestore db;
     private TabLayout tabLayout;
-    private String currentCategory = "All"; // Track selected category
+
+    private String currentCategory = "All";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +48,13 @@ public class ItemFoundActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_item_found);
 
-        // ✅ Full screen fix
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // 🔧 Initialize Views
+        // Initialize all UI elements
         fabAddFound = findViewById(R.id.floatingActionButton2);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -62,24 +63,25 @@ public class ItemFoundActivity extends AppCompatActivity {
         buttonSearch = findViewById(R.id.buttonSearch);
         tabLayout = findViewById(R.id.tabLayout);
 
-        // ✅ Firestore setup
+        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
         adapter = new ItemFoundAdapter(this, itemList);
         recyclerView.setAdapter(adapter);
 
-        // 🔥 Load all found items by default
+        // Load all found items from Firestore when activity starts
         loadFoundItems();
 
-        // ➕ FAB Add new found item
+        // Floating action button to add a new found report
         fabAddFound.setOnClickListener(v -> {
             startActivity(new Intent(this, FoundReportActivity.class));
         });
 
-        // 🔍 Search button
+        // Search button logic
         buttonSearch.setOnClickListener(v -> {
             String query = searchBar.getText().toString().trim();
             if (!query.isEmpty()) {
+                // Send the search query to MatchingResultFound activity
                 Intent intent = new Intent(ItemFoundActivity.this, MatchingResultFound.class);
                 intent.putExtra("searchQuery", query);
                 startActivity(intent);
@@ -88,7 +90,7 @@ public class ItemFoundActivity extends AppCompatActivity {
             }
         });
 
-        // 🏷️ TabLayout Category Filter
+        // Handles category filtering via tabs
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -106,12 +108,13 @@ public class ItemFoundActivity extends AppCompatActivity {
             }
         });
 
+        // Setup navigation spinner
         setupSpinner();
     }
 
+    // Navigation spinner setup
     private void setupSpinner() {
-
-        String current = "Found Items";
+        String current = "Found Items"; // current screen label
         int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
         spinner.setSelection(index);
 
@@ -145,7 +148,7 @@ public class ItemFoundActivity extends AppCompatActivity {
                         break;
                 }
 
-                // Reset selection to current after navigation
+                // Reset spinner selection back to current page after navigating
                 spinner.post(() -> {
                     int currentIndex = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
                     spinner.setSelection(currentIndex);
@@ -153,22 +156,21 @@ public class ItemFoundActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
-
+    // Opens a new activity only if it's not already the current one
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            overridePendingTransition(0, 0);
+            overridePendingTransition(0, 0); // no animation
         }
     }
 
-    // 🧠 Load all found items
+    // Load all found items from Firestore and display in RecyclerView
     private void loadFoundItems() {
         db.collection("reported_items")
                 .addSnapshotListener((value, error) -> {
@@ -185,20 +187,24 @@ public class ItemFoundActivity extends AppCompatActivity {
                             String date = doc.getString("dateFound");
                             String imageUrl = doc.getString("imageUrl");
 
+                            // Add item data to list
                             itemList.add(new ItemFoundData(documentId, name, date, imageUrl));
                         }
+                        // Refresh RecyclerView
                         adapter.notifyDataSetChanged();
                     }
                 });
     }
 
-    // 🏷️ Filter by category from tabs
+    // Filtering displayed items by category using the selected tab
     private void filterByCategory(String category) {
+        // If "All" is selected, it will show everything
         if (category.equals("All")) {
             loadFoundItems();
             return;
         }
 
+        // Otherwise, filter items based on the selected category
         db.collection("reported_items")
                 .whereEqualTo("category", category)
                 .addSnapshotListener((value, error) -> {
@@ -215,8 +221,10 @@ public class ItemFoundActivity extends AppCompatActivity {
                             String date = doc.getString("dateFound");
                             String imageUrl = doc.getString("imageUrl");
 
+                            // Add filtered item data to list
                             itemList.add(new ItemFoundData(documentId, name, date, imageUrl));
                         }
+                        // Refresh RecyclerView with filtered results
                         adapter.notifyDataSetChanged();
                     }
                 });

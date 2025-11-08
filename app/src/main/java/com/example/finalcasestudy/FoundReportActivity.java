@@ -44,12 +44,14 @@ import java.util.Map;
 
 public class FoundReportActivity extends AppCompatActivity {
 
+    // Request codes for image and camera
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
 
     private Uri imagePath;
     private String uploadedImageUrl = null;
 
+    // Declare UI elements
     private Button uploadImageBtn, reportFoundBtn;
     private ImageView imageView;
     private EditText itemNameInput, descInput, finderInput, numberInput, dateFoundInput, locationFoundInput;
@@ -72,7 +74,7 @@ public class FoundReportActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 🔹 Initialize UI components
+        // Initialize all UI elements
         spinner = findViewById(R.id.spinner6);
         categorySpinner = findViewById(R.id.spinner7);
         campusSpinner = findViewById(R.id.spinner10);
@@ -86,12 +88,14 @@ public class FoundReportActivity extends AppCompatActivity {
         dateFoundInput = findViewById(R.id.editTextDateFound);
         locationFoundInput = findViewById(R.id.editTextTextMultiLine12);
 
+        // Setup date picker for date input
         setupDatePicker();
 
+        // Initialize Cloudinary and Firestore
         initConfig();
         db = FirebaseFirestore.getInstance();
 
-        // 🔹 Image actions
+        // Image actions
         imageView.setOnClickListener(v -> showImageSourceDialog());
         uploadImageBtn.setOnClickListener(v -> {
             if (imagePath == null) {
@@ -101,13 +105,14 @@ public class FoundReportActivity extends AppCompatActivity {
             }
         });
 
-        // 🔹 Report found item
+        // Report found item button
         reportFoundBtn.setOnClickListener(v -> {
             if (uploadedImageUrl == null) {
                 Toast.makeText(this, "Please upload the image first.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // Getting input values
             String itemName = itemNameInput.getText().toString().trim();
             String description = descInput.getText().toString().trim();
             String category = (categorySpinner.getSelectedItem() != null)
@@ -121,17 +126,18 @@ public class FoundReportActivity extends AppCompatActivity {
                     ? campusSpinner.getSelectedItem().toString().trim()
                     : "";
 
+            // Checking here if any required field is empty
             if (itemName.isEmpty() || description.isEmpty() || finder.isEmpty()
                     || number.isEmpty() || dateFound.isEmpty() || location.isEmpty() || campus.isEmpty()) {
                 Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // ✅ Fixed: added campus as parameter
+            // Saving item details to Firestore
             saveItemDetails(itemName, description, category, finder, number, dateFound, location, campus, uploadedImageUrl);
         });
 
-        // 🔹 Setup category spinner
+        // Setup category spinner
         ArrayAdapter<CharSequence> categoryAdapter =
                 ArrayAdapter.createFromResource(this, R.array.category_items, android.R.layout.simple_spinner_item);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -142,11 +148,11 @@ public class FoundReportActivity extends AppCompatActivity {
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // 🔹 Setup navigation spinner
+        // Setup navigation spinner
         setupSpinner();
     }
 
-    // 🔹 Spinner navigation setup
+    // Navigation spinner setup
     private void setupSpinner() {
         String current = "Select page";
         int index = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(current);
@@ -180,7 +186,6 @@ public class FoundReportActivity extends AppCompatActivity {
                         startActivity(logoutIntent);
                         finish();
                         break;
-
                 }
             }
 
@@ -189,6 +194,7 @@ public class FoundReportActivity extends AppCompatActivity {
         });
     }
 
+    // Opens a new activity only if it's not already the current one
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
@@ -198,7 +204,7 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
-    // 🔹 Cloudinary setup
+    // Initialize Cloudinary configuration
     private void initConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put("cloud_name", "dylvri8g8");
@@ -207,11 +213,10 @@ public class FoundReportActivity extends AppCompatActivity {
         try {
             MediaManager.init(this, config);
         } catch (IllegalStateException e) {
-            // Already initialized
         }
     }
 
-    // 🔹 Upload image to Cloudinary
+    // Uploading selected image to Cloudinary
     private void uploadImageToCloudinary() {
         Toast.makeText(this, "Uploading image to Cloudinary...", Toast.LENGTH_SHORT).show();
 
@@ -233,7 +238,7 @@ public class FoundReportActivity extends AppCompatActivity {
                 .dispatch();
     }
 
-    // 🔹 Date picker setup
+    // Date picker setup for selecting found date
     private void setupDatePicker() {
         calendar = Calendar.getInstance();
         dateFoundInput.setOnClickListener(v -> {
@@ -251,12 +256,13 @@ public class FoundReportActivity extends AppCompatActivity {
         });
     }
 
+    // Update the date text field after picking a date
     private void updateDateField() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         dateFoundInput.setText(sdf.format(calendar.getTime()));
     }
 
-    // 🔹 Save to Firestore (now includes campus and default status)
+    // Saving found item details to Firestore
     private void saveItemDetails(String itemName, String description, String category, String finder, String number,
                                  String dateFound, String location, String campus, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
@@ -271,7 +277,7 @@ public class FoundReportActivity extends AppCompatActivity {
         itemData.put("imageUrl", imageUrl);
         itemData.put("timestamp", System.currentTimeMillis());
 
-        // ✅ Automatically mark new reports as Unclaimed
+        // Automatically mark new reports as "Unclaimed"
         itemData.put("claimStatus", "Unclaimed");
 
         db.collection("reported_items")
@@ -279,7 +285,7 @@ public class FoundReportActivity extends AppCompatActivity {
                 .addOnSuccessListener(doc -> {
                     Toast.makeText(this, "Item reported successfully!", Toast.LENGTH_SHORT).show();
 
-                    // Reset form
+                    // Clearing input fields after saving
                     itemNameInput.setText("");
                     descInput.setText("");
                     finderInput.setText("");
@@ -289,6 +295,7 @@ public class FoundReportActivity extends AppCompatActivity {
                     imageView.setImageResource(0);
                     uploadedImageUrl = null;
 
+                    // Go to Found Items list after reporting
                     startActivity(new Intent(this, ItemFoundActivity.class));
                     finish();
                 })
@@ -296,7 +303,7 @@ public class FoundReportActivity extends AppCompatActivity {
                         Toast.makeText(this, "Failed to save data: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
-    // 🔹 Image picker and camera
+    // Image picker dialog for choosing between camera or gallery
     private void showImageSourceDialog() {
         String[] options = {"Take Photo", "Choose from Gallery"};
         new AlertDialog.Builder(this)
@@ -307,6 +314,7 @@ public class FoundReportActivity extends AppCompatActivity {
                 }).show();
     }
 
+    // Request permission for accessing gallery
     private void requestGalleryPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
@@ -321,6 +329,7 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
+    // Request permission for camera
     private void requestCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) openCamera();
@@ -328,6 +337,7 @@ public class FoundReportActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.CAMERA}, CAMERA_REQ);
     }
 
+    // Handle permission results
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -344,18 +354,21 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
+    // Selecting image from gallery
     private void selectImageFromGallery() {
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         i.setType("image/*");
         startActivityForResult(i, IMAGE_REQ);
     }
 
+    // Opening camera to capture image
     private void openCamera() {
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (i.resolveActivity(getPackageManager()) != null) startActivityForResult(i, CAMERA_REQ);
         else Toast.makeText(this, "No camera app found.", Toast.LENGTH_SHORT).show();
     }
 
+    // Handle results from camera/gallery
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -372,6 +385,7 @@ public class FoundReportActivity extends AppCompatActivity {
         }
     }
 
+    // Converting captured Bitmap into a URI for upload
     private Uri getImageUri(Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);

@@ -73,7 +73,7 @@ public class FoundDetailsActivity extends AppCompatActivity {
         spinner.setAdapter(adapterMenu);
         spinner.setSelection(adapterMenu.getPosition("Select page"));
 
-        // Spinner navigation menu functionality
+        // Navigation spinner setup
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -83,8 +83,6 @@ public class FoundDetailsActivity extends AppCompatActivity {
                 }
 
                 String selected = parent.getItemAtPosition(position).toString();
-
-                // Handle spinner menu selection
                 switch (selected) {
                     case "Home":
                         openIfNotCurrent(ReportItemActivity.class);
