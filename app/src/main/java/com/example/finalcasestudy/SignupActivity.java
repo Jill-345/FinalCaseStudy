@@ -107,10 +107,7 @@ public class SignupActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Helper model class to represent a User in the Firebase Database.
-     * It includes basic user information: name, email, and role.
-     */
+    // Represents a user with name, email, and role
     public static class User {
         public String name, email, role;
 

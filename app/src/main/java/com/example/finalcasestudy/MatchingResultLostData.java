@@ -1,6 +1,8 @@
 package com.example.finalcasestudy;
 
 public class MatchingResultLostData {
+
+    // Declare string that store the details
     private String documentId;
     private String itemName;
     private String date;
@@ -8,6 +10,7 @@ public class MatchingResultLostData {
 
     public MatchingResultLostData() {}
 
+    // Adapter constructor to initialize all the string
     public MatchingResultLostData(String documentId, String itemName, String date, String imageUrl) {
         this.documentId = documentId;
         this.itemName = itemName;
@@ -15,10 +18,10 @@ public class MatchingResultLostData {
         this.imageUrl = imageUrl;
     }
 
+    // Getter and setter for the details
     public String getDocumentId() {
         return documentId;
     }
-
     public void setDocumentId(String documentId) {
         this.documentId = documentId;
     }
@@ -26,7 +29,6 @@ public class MatchingResultLostData {
     public String getItemName() {
         return itemName;
     }
-
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
@@ -34,7 +36,6 @@ public class MatchingResultLostData {
     public String getDate() {
         return date;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
@@ -42,7 +43,6 @@ public class MatchingResultLostData {
     public String getImageUrl() {
         return imageUrl;
     }
-
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }

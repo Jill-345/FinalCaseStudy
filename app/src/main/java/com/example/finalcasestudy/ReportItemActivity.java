@@ -36,9 +36,11 @@ public class ReportItemActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Spinner navigation setup
         setupSpinner();
     }
 
+    // Handles navigation spinner
     private void setupSpinner() {
 
         String current = "Home";
@@ -53,6 +55,7 @@ public class ReportItemActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Handle spinner menu selection
                 String selected = parent.getItemAtPosition(position).toString();
                 switch (selected) {
                     case "Home":
@@ -85,11 +88,10 @@ public class ReportItemActivity extends AppCompatActivity {
         });
     }
 
-    // Start target Activity only if it's not the current one
+    // Opens target activity only if it’s not the current one
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
-            // These flags prevent duplicate screens from stacking
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             overridePendingTransition(0, 0);

@@ -10,6 +10,7 @@ public class MatchingResultFoundData {
 
     public MatchingResultFoundData() {}
 
+    // Adapter constructor to initialize all the string
     public MatchingResultFoundData(String documentId, String itemName, String date, String imageUrl) {
         this.documentId = documentId;
         this.itemName = itemName;
