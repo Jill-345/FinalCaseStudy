@@ -44,19 +44,16 @@ import java.util.Map;
 
 public class LostReportActivity extends AppCompatActivity {
 
+    // Declare necessary components for Firebase, Cloudinary, UI, and other tools
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
-
     private Uri imagePath;
     private String uploadedImageUrl = null;
-
     private Button uploadImageBtn, reportLostBtn;
     private ImageView imageView;
     private EditText itemNameInput2, descInput2, ownerInput2, numberInput2, dateLostInput, locationLostInput;
-
     private Spinner spinner, categorySpinner, campusSpinner;
     private boolean spinnerInitialized;
-
     private Calendar calendar;
     private FirebaseFirestore db;
 
@@ -72,7 +69,7 @@ public class LostReportActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 🔹 Initialize UI
+        // Initialize all UI components
         spinner = findViewById(R.id.spinner2);
         categorySpinner = findViewById(R.id.spinner5);
         campusSpinner = findViewById(R.id.spinner9);
@@ -81,17 +78,19 @@ public class LostReportActivity extends AppCompatActivity {
         imageView = findViewById(R.id.ivItemImage2);
         itemNameInput2 = findViewById(R.id.editTextTextMultiLine2);
         descInput2 = findViewById(R.id.editTextTextMultiLine3);
-        ownerInput2 = findViewById(R.id.editTextTextMultiLine4); // owner, not finder
+        ownerInput2 = findViewById(R.id.editTextTextMultiLine4);
         numberInput2 = findViewById(R.id.editTextContactNumber);
         dateLostInput = findViewById(R.id.editTextDateFound);
         locationLostInput = findViewById(R.id.editTextTextMultiLine7);
 
+        // Setup date picker for selecting lost date
         setupDatePicker();
 
+        // Initialize Cloudinary configuration and Firestore
         initConfig();
         db = FirebaseFirestore.getInstance();
 
-        // 🔹 Image actions
+        // Set up image interactions
         imageView.setOnClickListener(v -> showImageSourceDialog());
         uploadImageBtn.setOnClickListener(v -> {
             if (imagePath == null) {
@@ -101,13 +100,14 @@ public class LostReportActivity extends AppCompatActivity {
             }
         });
 
-        // 🔹 Report lost item
+        // Report lost item
         reportLostBtn.setOnClickListener(v -> {
             if (uploadedImageUrl == null) {
                 Toast.makeText(this, "Please upload the image first.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // Collects user inputs
             String itemName = itemNameInput2.getText().toString().trim();
             String description = descInput2.getText().toString().trim();
             String category = (categorySpinner.getSelectedItem() != null)
@@ -121,6 +121,7 @@ public class LostReportActivity extends AppCompatActivity {
                     ? campusSpinner.getSelectedItem().toString().trim()
                     : "";
 
+            // Ensures no fields are empty before submission
             if (itemName.isEmpty() || description.isEmpty() || owner.isEmpty()
                     || number.isEmpty() || dateLost.isEmpty() || location.isEmpty() || campus.isEmpty()) {
                 Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
@@ -130,6 +131,7 @@ public class LostReportActivity extends AppCompatActivity {
             saveItemDetails(itemName, description, category, owner, number, dateLost, location, campus, uploadedImageUrl);
         });
 
+        // Saves the report data into Firestore
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -140,6 +142,7 @@ public class LostReportActivity extends AppCompatActivity {
         });
 
 
+        // Category spinner dropdown setup
         ArrayAdapter<CharSequence> adapter =
                 ArrayAdapter.createFromResource(this, R.array.category_items,
                         android.R.layout.simple_spinner_item);
@@ -148,10 +151,12 @@ public class LostReportActivity extends AppCompatActivity {
 
         categorySpinner.setAdapter(adapter);
 
-        // 🔹 Spinner navigation
+        // Spinner navigation setup
         setupSpinner();
 
     }
+
+    // Handles navigation spinner
     private void setupSpinner() {
 
         String current = "Select page";
@@ -166,6 +171,7 @@ public class LostReportActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Handle spinner menu selection
                 String selected = parent.getItemAtPosition(position).toString();
                 switch (selected) {
                     case "Home":
@@ -196,6 +202,7 @@ public class LostReportActivity extends AppCompatActivity {
         });
     }
 
+    // Opens target activity only if it’s not the current one
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);
@@ -205,7 +212,7 @@ public class LostReportActivity extends AppCompatActivity {
         }
     }
 
-    // 🔹 Cloudinary config
+    // Initializes Cloudinary configuration for image upload
     private void initConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put("cloud_name", "dylvri8g8");
@@ -214,11 +221,10 @@ public class LostReportActivity extends AppCompatActivity {
         try {
             MediaManager.init(this, config);
         } catch (IllegalStateException e) {
-            // Already initialized
         }
     }
 
-    // 🔹 Upload to Cloudinary (Lost Items Report folder)
+    // Uploads selected image to Cloudinary
     private void uploadImageToCloudinary() {
         Toast.makeText(this, "Uploading image to Cloudinary...", Toast.LENGTH_SHORT).show();
 
@@ -240,7 +246,7 @@ public class LostReportActivity extends AppCompatActivity {
                 .dispatch();
     }
 
-    // 🔹 Date picker
+    // Sets up a DatePicker for selecting when the item was lost
     private void setupDatePicker() {
         calendar = Calendar.getInstance();
         dateLostInput.setOnClickListener(v -> {
@@ -258,12 +264,13 @@ public class LostReportActivity extends AppCompatActivity {
         });
     }
 
+    // Formats and displays the selected date
     private void updateDateField() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         dateLostInput.setText(sdf.format(calendar.getTime()));
     }
 
-    // 🔹 Save to Firestore
+    //  Saves all form data to Firestore
     private void saveItemDetails(String itemName, String description, String category, String owner, String number,
                                  String dateLost, String location, String campus, String imageUrl) {
         Map<String, Object> itemData = new HashMap<>();
@@ -277,8 +284,6 @@ public class LostReportActivity extends AppCompatActivity {
         itemData.put("campus", campus);
         itemData.put("imageUrl", imageUrl);
         itemData.put("timestamp", System.currentTimeMillis());
-
-        // ✅ Automatically mark as "Not Found" by default
         itemData.put("status", "Not Found");
 
         db.collection("lost_items")
@@ -286,7 +291,7 @@ public class LostReportActivity extends AppCompatActivity {
                 .addOnSuccessListener(doc -> {
                     Toast.makeText(this, "Lost item reported successfully!", Toast.LENGTH_SHORT).show();
 
-                    // Reset form
+                    // Clears form after submission
                     itemNameInput2.setText("");
                     descInput2.setText("");
                     ownerInput2.setText("");
@@ -304,7 +309,7 @@ public class LostReportActivity extends AppCompatActivity {
                         Toast.makeText(this, "Failed to save data: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
-    // 🔹 Image picker / camera
+    // Displays a dialog asking user to choose between camera or gallery
     private void showImageSourceDialog() {
         String[] options = {"Take Photo", "Choose from Gallery"};
         new AlertDialog.Builder(this)
@@ -315,6 +320,7 @@ public class LostReportActivity extends AppCompatActivity {
                 }).show();
     }
 
+    // Request permission to access gallery
     private void requestGalleryPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
@@ -329,6 +335,7 @@ public class LostReportActivity extends AppCompatActivity {
         }
     }
 
+    // Request permission to open the camera
     private void requestCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) openCamera();
@@ -336,6 +343,7 @@ public class LostReportActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.CAMERA}, CAMERA_REQ);
     }
 
+    // Handles user responses to permission dialogs
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -352,18 +360,21 @@ public class LostReportActivity extends AppCompatActivity {
         }
     }
 
+    // Opens the gallery to select an image
     private void selectImageFromGallery() {
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         i.setType("image/*");
         startActivityForResult(i, IMAGE_REQ);
     }
 
+    // Opens the camera app to take a photo
     private void openCamera() {
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (i.resolveActivity(getPackageManager()) != null) startActivityForResult(i, CAMERA_REQ);
         else Toast.makeText(this, "No camera app found.", Toast.LENGTH_SHORT).show();
     }
 
+    // Handles results from both gallery and camera actions
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -380,6 +391,7 @@ public class LostReportActivity extends AppCompatActivity {
         }
     }
 
+    // Converts a captured image bitmap into a URI so it can be uploaded
     private Uri getImageUri(Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);

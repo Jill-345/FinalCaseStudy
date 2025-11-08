@@ -24,6 +24,7 @@ import java.util.List;
 
 public class MatchingResultFound extends AppCompatActivity {
 
+    // Declare necessary components for Firebase and UI
     private RecyclerView recyclerView;
     private Spinner spinner;
     private boolean spinnerInitialized = false;
@@ -45,11 +46,11 @@ public class MatchingResultFound extends AppCompatActivity {
             return insets;
         });
 
+        // // Initialize all UI components and firebase
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         spinner = findViewById(R.id.spinner);
         tabLayout = findViewById(R.id.tabLayout);
-
         db = FirebaseFirestore.getInstance();
         itemList = new ArrayList<>();
         adapter = new MatchingResultFoundAdapter(this, itemList);
@@ -63,15 +64,16 @@ public class MatchingResultFound extends AppCompatActivity {
             Toast.makeText(this, "No search term provided.", Toast.LENGTH_SHORT).show();
         }
 
-        // ✅ Campus Spinner setup (no intents, just filter)
+        // Setup Campus Spinner
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this,
-                R.array.campus, // your XML already has android:entries="@array/campus"
+                R.array.campus,
                 android.R.layout.simple_spinner_item
         );
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
 
+        // Handle campus spinner item selection
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -98,10 +100,11 @@ public class MatchingResultFound extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        // Setup tabs for filtering by category
         setupTabs();
     }
 
-    // ✅ Tab setup (still filters by category)
+    // Setup TabLayout for category filtering
     private void setupTabs() {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -114,6 +117,7 @@ public class MatchingResultFound extends AppCompatActivity {
                     return;
                 }
 
+                // Filter results based on selected category and campus
                 if (selectedCategory.equals("All")) {
                     if (selectedCampus.equals("All Campuses")) {
                         loadMatchingResults(searchQuery);
@@ -136,13 +140,14 @@ public class MatchingResultFound extends AppCompatActivity {
         });
     }
 
-    // ✅ Load Firestore data
+    // Load all matching Firestore data based on search query
     private void loadMatchingResults(String query) {
         db.collection("reported_items")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     itemList.clear();
 
+                    // Get document fields
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String itemName = doc.getString("itemName");
                         String description = doc.getString("description");
@@ -153,6 +158,7 @@ public class MatchingResultFound extends AppCompatActivity {
                         String date = doc.getString("dateFound");
                         String imageUrl = doc.getString("imageUrl");
 
+                        // Check if item matches search query
                         if (matchesQuery(query, itemName, description, location, finder, category, campus, date)) {
                             itemList.add(new MatchingResultFoundData(
                                     doc.getId(),
@@ -174,7 +180,7 @@ public class MatchingResultFound extends AppCompatActivity {
                 );
     }
 
-    // ✅ Filter by Category + Search
+    // Filter Firestore data by category + search query
     private void filterByCategoryAndSearch(String category, String query) {
         db.collection("reported_items")
                 .whereEqualTo("category", category)
@@ -212,7 +218,7 @@ public class MatchingResultFound extends AppCompatActivity {
                 );
     }
 
-    // ✅ Filter by Campus + Search
+    // Filter Firestore data by campus + search query
     private void filterByCampusAndSearch(String campus, String query) {
         db.collection("reported_items")
                 .whereEqualTo("campus", campus)
@@ -250,7 +256,7 @@ public class MatchingResultFound extends AppCompatActivity {
                 );
     }
 
-    // ✅ Filter by Category + Campus + Search
+    // Filter Firestore data by category, campus, and search query
     private void filterByCategoryCampusAndSearch(String category, String campus, String query) {
         db.collection("reported_items")
                 .whereEqualTo("category", category)
@@ -288,7 +294,7 @@ public class MatchingResultFound extends AppCompatActivity {
                 );
     }
 
-    // ✅ Text matching helper
+    // Method to check if any field matches the search query
     private boolean matchesQuery(String query, String... fields) {
         String lowerQuery = query.trim().toLowerCase();
         for (String field : fields) {

@@ -1,6 +1,8 @@
 package com.example.finalcasestudy;
 
 public class MatchingResultFoundData {
+
+    // Declare string that store the details
     private String documentId;
     private String itemName;
     private String date;
@@ -15,6 +17,7 @@ public class MatchingResultFoundData {
         this.imageUrl = imageUrl;
     }
 
+    // Getter and setter for the details
     public String getDocumentId() { return documentId; }
     public void setDocumentId(String documentId) { this.documentId = documentId; }
 
