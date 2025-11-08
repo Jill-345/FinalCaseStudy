@@ -15,64 +15,83 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+/**
+ * Adapter class that connects the list of lost items (data) to the RecyclerView UI.
+ * It handles displaying item images, names, dates, and navigation to details.
+ */
 public class ItemLostAdapter extends RecyclerView.Adapter<ItemLostAdapter.ViewHolder> {
 
     private Context context;
     private List<ItemLostData> itemList;
 
+    // Constructor — takes in context (for UI navigation) and list of lost items
     public ItemLostAdapter(Context context, List<ItemLostData> itemList) {
         this.context = context;
         this.itemList = itemList;
     }
 
+    // Inflates each item layout from XML and creates a ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate the layout for a single item card (activity_item_lost_frame.xml)
         View view = LayoutInflater.from(context).inflate(R.layout.activity_item_lost_frame, parent, false);
         return new ViewHolder(view);
     }
 
+    // Binds data from ItemLostData to each item view
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ItemLostData item = itemList.get(position);
+
+        // Display the item name and date lost
         holder.tvItemName.setText(item.getName());
         holder.tvDate.setText(item.getDate());
 
+        // Load the image using Picasso (handles image loading from URLs efficiently)
         if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
             Picasso.get()
-                    .load(item.getImageUrl())
-                    .placeholder(R.drawable.plus_placeholder)
-                    .error(R.drawable.plus_placeholder)
-                    .fit()
-                    .centerCrop()
-                    .into(holder.ivItemImage);
+                    .load(item.getImageUrl())                  // Image URL from Firestore
+                    .placeholder(R.drawable.plus_placeholder)  // Default image while loading
+                    .error(R.drawable.plus_placeholder)        // Image to show if loading fails
+                    .fit()                                    // Fit the image within the ImageView
+                    .centerCrop()                             // Crop the image to fill
+                    .into(holder.ivItemImage);                // Display image in the ImageView
         } else {
+            // If no image URL exists, use the placeholder
             holder.ivItemImage.setImageResource(R.drawable.plus_placeholder);
         }
 
-        // ✅ Click “More Details” to open LostDetailsActivity
+        // When the "More Details" text is clicked, open the LostDetailsActivity
         holder.tvMoreDetails.setOnClickListener(v -> {
             Intent intent = new Intent(context, LostDetailsActivity.class);
-            intent.putExtra("documentId", item.getDocumentId());
-            context.startActivity(intent);
+            intent.putExtra("documentId", item.getDocumentId()); // Pass Firestore document ID
+            context.startActivity(intent); // Launch the details page
         });
     }
 
+    // Returns how many items are in the list
     @Override
     public int getItemCount() {
         return itemList.size();
     }
 
+    /**
+     * ViewHolder — holds references to the views for each data item.
+     * It prevents repeated calls to findViewById for better performance.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvItemName, tvDate, tvMoreDetails;
         ImageView ivItemImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvItemName = itemView.findViewById(R.id.textview3);
-            tvDate = itemView.findViewById(R.id.textview4);
-            tvMoreDetails = itemView.findViewById(R.id.textview5);
-            ivItemImage = itemView.findViewById(R.id.imageview2);
+
+            // Connect Java variables with their corresponding XML elements
+            tvItemName = itemView.findViewById(R.id.textview3);   // Item name text
+            tvDate = itemView.findViewById(R.id.textview4);       // Date lost text
+            tvMoreDetails = itemView.findViewById(R.id.textview5); // "More details" link
+            ivItemImage = itemView.findViewById(R.id.imageview2);  // Item image
         }
     }
 }

@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class LostDetailsActivity extends AppCompatActivity {
 
+    // Declare UI elements and spinner
     private Spinner spinner;
     private boolean spinnerInitialized;
 
@@ -47,7 +48,6 @@ public class LostDetailsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_lost_details);
 
-        // ✅ Handle window insets
         View mainView = findViewById(R.id.main);
         ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -55,13 +55,13 @@ public class LostDetailsActivity extends AppCompatActivity {
             return insets;
         });
 
-        // ✅ Initialize Firebase
+        // Initialize Firebase
         db = FirebaseFirestore.getInstance();
 
-        // ✅ Spinner setup
+        // Spinner setup
         spinner = findViewById(R.id.spinner8);
 
-        // ✅ Initialize UI elements
+        // Initialize all UI elements
         ivItemImage = findViewById(R.id.ivItemImage);
         tvItemName = findViewById(R.id.textViewItemName);
         tvDescription = findViewById(R.id.textViewDescription);
@@ -75,16 +75,16 @@ public class LostDetailsActivity extends AppCompatActivity {
         radioFound = findViewById(R.id.radioFound);
         radioNotFound = findViewById(R.id.radioNotFound);
 
-        // ✅ Get document ID from intent
+        // Get the Firestore document ID passed from ItemLostAdapter
         documentId = getIntent().getStringExtra("documentId");
         if (documentId != null && !documentId.isEmpty()) {
-            loadItemDetails(documentId);
+            loadItemDetails(documentId); // Load details for the selected lost item
         } else {
             Toast.makeText(this, "No document ID received.", Toast.LENGTH_SHORT).show();
             finish();
         }
 
-        // ✅ Update Firestore when radio button changes (with auto-date)
+        // Update Firestore when radio button changes
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             final String newStatus;
             if (checkedId == R.id.radioFound) {
@@ -95,6 +95,7 @@ public class LostDetailsActivity extends AppCompatActivity {
                 newStatus = "";
             }
 
+            // Update Firestore if status is valid
             if (!newStatus.isEmpty() && documentId != null) {
                 Map<String, Object> updateData = new HashMap<>();
                 updateData.put("status", newStatus);
@@ -109,10 +110,11 @@ public class LostDetailsActivity extends AppCompatActivity {
             }
         });
 
+        // Initialize navigation spinner
         setupSpinner();
     }
 
-    // 🔹 Spinner navigation setup
+    // Spinner navigation setup
     private void setupSpinner() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -151,7 +153,7 @@ public class LostDetailsActivity extends AppCompatActivity {
         });
     }
 
-    // 🔹 Load Lost Item Details from Firestore
+    // Loads the lost item details from Firestore using the document ID
     private void loadItemDetails(String documentId) {
         db.collection("lost_items").document(documentId)
                 .get()
@@ -161,7 +163,7 @@ public class LostDetailsActivity extends AppCompatActivity {
                 );
     }
 
-    // 🔹 Display data to screen
+    // Displays all retrieved data from Firestore into the UI components
     private void displayItemDetails(DocumentSnapshot doc) {
         if (doc.exists()) {
             tvItemName.setText(doc.getString("itemName"));
@@ -173,11 +175,13 @@ public class LostDetailsActivity extends AppCompatActivity {
             tvLocationLoss.setText(doc.getString("location"));
             tvCampus.setText(doc.getString("campus"));
 
+            // Load item image with Picasso
             String imageUrl = doc.getString("imageUrl");
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Picasso.get().load(imageUrl).into(ivItemImage);
             }
 
+            // Current status in the radio buttons
             String status = doc.getString("status");
             if ("Found".equalsIgnoreCase(status)) {
                 radioFound.setChecked(true);
@@ -187,7 +191,7 @@ public class LostDetailsActivity extends AppCompatActivity {
         }
     }
 
-    // 🔹 Spinner Navigation Helper
+    // Opens a new activity only if it's not already the current one
     private void openIfNotCurrent(Class<?> targetActivity) {
         if (!getClass().equals(targetActivity)) {
             Intent intent = new Intent(this, targetActivity);

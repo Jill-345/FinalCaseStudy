@@ -19,12 +19,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Declare UI components for user input and actions
+    // Declare UI elements and firebase authentication instance
     private EditText emailField, passwordField;
     private Button signInBtn;
     private TextView resendEmailText, forgotPasswordText;
-
-    // Firebase authentication instance
     private FirebaseAuth mAuth;
 
     @Override
@@ -42,14 +40,14 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
 
-        // Link XML components with their respective IDs
+        // Initialize all UI elements
         emailField = findViewById(R.id.editTextText5);
         passwordField = findViewById(R.id.editTextText6);
         signInBtn = findViewById(R.id.button4);
         resendEmailText = findViewById(R.id.textViewResend);
         forgotPasswordText = findViewById(R.id.textView9);
 
-        // Set onClick listeners for buttons and text options
+        // Set onClick listeners for buttons
         signInBtn.setOnClickListener(v -> loginUser());                    // Log in the user
         resendEmailText.setOnClickListener(v -> resendVerificationEmail()); // Resend email verification
         forgotPasswordText.setOnClickListener(v -> showForgotPasswordDialog()); // Show password reset dialog
